@@ -42,19 +42,11 @@
                     </a>
                     <ul class="nav-group-sub collapse">
                         <li class="nav-item"><a href="index.html" class="nav-link">Kategori</a>
-                    </ul>
-                    <ul class="nav-group-sub collapse">
                         <li class="nav-item"><a href="index.html" class="nav-link">Sub Kategori</a>
-                    </ul>
-                    <ul class="nav-group-sub collapse">
                         <li class="nav-item"><a href="index.html" class="nav-link">Grup</a>
-                    </ul>
-                    <ul class="nav-group-sub collapse">
                         <li class="nav-item"><a href="index.html" class="nav-link">Lingkup</a>
                     </ul>
                 </li>
-
-
             </ul>
         </div>
         <!-- /main navigation -->
