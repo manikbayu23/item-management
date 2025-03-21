@@ -9,7 +9,7 @@
 
         <div class="navbar-brand flex-lg-0 flex-1">
             <a href="{{ route('admin.dashboard') }}" class="d-inline-flex align-items-center">
-                <img src="{{ asset('assets/user/img/logo-sanggar.png') }}" alt="logo sanggar">
+                <img src="{{ asset('assets/user/img/logo-sanggar.png') }}" alt="logo silagas">
                 {{-- <img src="../../../assets/images/logo_text_light.svg" class="d-none d-sm-inline-block h-16px ms-3"
                     alt=""> --}}
             </a>

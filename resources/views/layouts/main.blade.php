@@ -14,7 +14,14 @@
     <link href="{{ asset('assets/css/ltr/all.min.css') }}" id="stylesheet" rel="stylesheet" type="text/css">
 
 
+
     @stack('style_admin')
+
+    <style>
+        .datepicker {
+            z-index: 9999;
+        }
+    </style>
     <!-- /global stylesheets -->
 
     <!-- Core JS files -->
@@ -23,6 +30,11 @@
 
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/jquery/jquery.min.js') }}"></script>
+
+    <script src="{{ asset('assets/js/vendor/notifications/noty.min.js') }}"></script>
+    <script src="{{ asset('assets/demo/pages/extra_noty.js') }}"></script>
+    <!-- /theme JS files -->
+
 
     @stack('script_admin')
 
@@ -68,7 +80,6 @@
 
     </div>
     <!-- /page content -->
-
 
 </body>
 

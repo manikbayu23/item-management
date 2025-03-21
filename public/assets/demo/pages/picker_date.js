@@ -177,7 +177,9 @@ var DateTimePickers = function() {
                 container: '.content-inner',
                 buttonClass: 'btn',
                 prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
-                nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;'
+                nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
+                format: "yyyy",   // Hanya tahun
+                pickLevel: 2      // Level pemilihan tahun saja
             });
         }
 

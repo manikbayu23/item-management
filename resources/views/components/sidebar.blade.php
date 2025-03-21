@@ -7,7 +7,7 @@
         <!-- Sidebar header -->
         <div class="sidebar-section">
             <div class="sidebar-section-body d-flex justify-content-center">
-                <h5 class="sidebar-resize-hide flex-grow-1 my-auto">Menu</h5>
+                <h5 class="sidebar-resize-hide flex-grow-1 my-auto">ADMIN SILAGAS</h5>
 
                 <div>
                     <button type="button"
@@ -30,21 +30,23 @@
             <ul class="nav nav-sidebar" data-nav-type="accordion">
 
                 <!-- Main -->
-                <li class="nav-item-header pt-0">
+                {{-- <li class="nav-item-header pt-0">
                     <div class="text-uppercase fs-sm lh-sm sidebar-resize-hide opacity-50">Main</div>
                     <i class="ph-dots-three sidebar-resize-show"></i>
-                </li>
+                </li> --}}
 
                 <li class="nav-item nav-item-submenu">
                     <a href="#" class="nav-link">
-                        <i class="ph-layout"></i>
+                        <i class="ph-database"></i>
                         <span>Master</span>
                     </a>
                     <ul class="nav-group-sub collapse">
-                        <li class="nav-item"><a href="index.html" class="nav-link">Kategori</a>
-                        <li class="nav-item"><a href="index.html" class="nav-link">Sub Kategori</a>
-                        <li class="nav-item"><a href="index.html" class="nav-link">Grup</a>
-                        <li class="nav-item"><a href="index.html" class="nav-link">Lingkup</a>
+                        <li class="nav-item"><a href="{{ route('admin.master.group.index') }}"
+                                class="nav-link {{ Route::is('admin.master.group.*') ? 'active' : '' }}">Golongan</a>
+                        <li class="nav-item"><a href="{{ route('admin.master.scope.index') }}"
+                                class="nav-link {{ Route::is('admin.master.scope.*') ? 'active' : '' }}">Bidang</a>
+                        <li class="nav-item"><a href="index.html" class="nav-link">Kelompok</a>
+                        <li class="nav-item"><a href="index.html" class="nav-link">Sub Keolompok</a>
                     </ul>
                 </li>
             </ul>
