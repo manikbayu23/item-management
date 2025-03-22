@@ -45,8 +45,10 @@
                                 class="nav-link {{ Route::is('admin.master.group.*') ? 'active' : '' }}">Golongan</a>
                         <li class="nav-item"><a href="{{ route('admin.master.scope.index') }}"
                                 class="nav-link {{ Route::is('admin.master.scope.*') ? 'active' : '' }}">Bidang</a>
-                        <li class="nav-item"><a href="index.html" class="nav-link">Kelompok</a>
-                        <li class="nav-item"><a href="index.html" class="nav-link">Sub Keolompok</a>
+                        <li class="nav-item"><a href="{{ route('admin.master.category.index') }}" class="nav-link"
+                                {{ Route::is('admin.master.category.*') ? 'active' : '' }}>Kelompok</a>
+                        <li class="nav-item"><a href="{{ route('admin.master.sub-category.index') }}" class="nav-link"
+                                {{ Route::is('admin.master.sub-category.*') ? 'active' : '' }}>Sub Keolompok</a>
                     </ul>
                 </li>
             </ul>

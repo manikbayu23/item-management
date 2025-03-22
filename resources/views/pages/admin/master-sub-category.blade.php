@@ -1,12 +1,12 @@
 @extends('layouts.main')
 
-@section('title_admin', 'Master Bidang')
+@section('title_admin', 'Master Sub Kelompok')
 
 @section('content_admin')
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end">
-                <button type="button" id="addScope" class="btn btn-primary"><i class="ph-plus"></i></button>
+                <button type="button" id="addCategory" class="btn btn-primary"><i class="ph-plus"></i></button>
             </div>
 
             <table class="table table-striped datatable-pagination">
@@ -35,7 +35,7 @@
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <button type="button" data-id="{{ $row->id }}"
                                                 data-code="{{ $row->code }}" data-description="{{ $row->description }}"
-                                                data-period="{{ $row->period }}" data-group-id="{{ $row->group_id }}"
+                                                data-period="{{ $row->period }}" data-category-id="{{ $row->scope_id }}"
                                                 class="edit-scope dropdown-item">
                                                 <i class="ph-pencil-line me-2"></i>
                                                 Edit
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    <div id="scopeModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
+    <div id="subCategoryModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -70,19 +70,19 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="formScope" method="POST">
+                <form id="formSubCategory" method="POST">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="id" id="idScope" value="{{ old('id') }}">
+                        <input type="hidden" name="id" id="idSubCategory" value="{{ old('id') }}">
                         <div class="row">
                             <div class="col-md-6 col-sm-12 mb-3">
-                                <label class="form-label">Golongan :</label>
-                                <select name="idGroup" id="idGroup" class="form-control select">
-                                    <option value="" disabled selected>-- Pilih Golongan --</option>
-                                    @foreach ($groups as $group)
-                                        <option value="{{ $group->id }}"
-                                            @if ($group->id == old('idGroup')) selected @endif>{{ $group->code }} -
-                                            {{ $group->description }}</option>
+                                <label class="form-label">Kelompok :</label>
+                                <select name="idCategory" id="idCategory" class="form-control select">
+                                    <option value="" disabled selected>-- Pilih Kelompok --</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}"
+                                            @if ($category->id == old('idCategory')) selected @endif>{{ $category->code }} -
+                                            {{ $category->description }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -156,11 +156,11 @@
         $(document).ready(function() {
 
             let form = {
-                id: $('#idScope'),
+                id: $('#idSubCategory'),
                 code: $('#inputCode'),
                 description: $('#description'),
                 period: $('#period'),
-                idGroup: $('#idGroup'),
+                idCategory: $('#idCategory'),
             }
 
             @if (session('success'))
@@ -170,26 +170,23 @@
                 }).show();
             @endif
 
-            console.log("{{ old('idGroup') }}");
-
-
             @if ($errors->any())
                 @if (old('id'))
                     $('.modal-title').html(
-                        '<i class="ph-pencil-line"></i> Edit Bidang : {{ old('description') }}');
+                        '<i class="ph-pencil-line"></i> Edit Sub Kelompok : {{ old('description') }}');
 
-                    $('#formScope').attr('action',
-                        '{{ route('admin.master.scope.update', ['id' => ':id']) }}'
+                    $('#formSubCategory').attr('action',
+                        '{{ route('admin.master.sub-category.update', ['id' => ':id']) }}'
                         .replace(
                             ':id', "{{ old('id') }}"));
-                    form.idGroup.val('{{ old('idGroup') }}').trigger('change').prop('disabled', false);
-                    $('#formScope').append('<input type="hidden" name="_method" value="PUT">');
+                    form.idCategory.val('{{ old('idCategory') }}').trigger('change').prop('disabled', false);
+                    $('#formSubCategory').append('<input type="hidden" name="_method" value="PUT">');
                 @else
-                    $('.modal-title').html('<i class="ph-plus"></i> Tambah Bidang');
-                    $('#formScope').attr('action',
-                        '{{ route('admin.master.scope.store') }}');
+                    $('.modal-title').html('<i class="ph-plus"></i> Tambah Sub Kelompok');
+                    $('#formSubCategory').attr('action',
+                        '{{ route('admin.master.sub-category.store') }}');
                 @endif
-                $('#scopeModal').modal('show');
+                $('#subCategoryModal').modal('show');
             @endif
 
 
@@ -198,35 +195,35 @@
                 const code = $(this).data('code');
                 const description = $(this).data('description');
                 const period = $(this).data('period');
-                const idGroup = $(this).data('group-id');
+                const idCategory = $(this).data('category-id');
 
                 form.id.val(id);
                 form.code.val(code);
                 form.description.val(description);
                 form.period.val(period);
-                form.idGroup.val(idGroup).prop('disabled', false);
+                form.idCategory.val(idCategory).prop('disabled', false);
 
-                $('.modal-title').html(`<i class="ph-pencil-line"></i> Edit Bidang : ${description}`);
-                $('#formScope').attr('action',
-                    '{{ route('admin.master.scope.update', ['id' => ':id']) }}'
+                $('.modal-title').html(`<i class="ph-pencil-line"></i> Edit Sub Kelompok : ${description}`);
+                $('#formSubCategory').attr('action',
+                    '{{ route('admin.master.sub-category.update', ['id' => ':id']) }}'
                     .replace(
                         ':id', id));
-                $('#formScope').append('<input type="hidden" name="_method" value="PUT">');
-                $('#scopeModal').modal('show');
+                $('#formSubCategory').append('<input type="hidden" name="_method" value="PUT">');
+                $('#subCategoryModal').modal('show');
             });
 
-            $('#addScope').on('click', function() {
+            $('#addCategory').on('click', function() {
                 form.id.val('');
                 form.description.val('');
                 form.period.val('');
                 form.code.val('');
-                form.idGroup.val('').prop('disabled', false);
+                form.idCategory.val('').prop('disabled', false);
 
-                $('.modal-title').html('<i class="ph-plus"></i> Tambah Bidang');
+                $('.modal-title').html('<i class="ph-plus"></i> Tambah Sub Kelompok');
 
-                $('#formScope').attr('action',
-                    '{{ route('admin.master.scope.store') }}');
-                $('#scopeModal').modal('show');
+                $('#formSubCategory').attr('action',
+                    '{{ route('admin.master.sub-category.store') }}');
+                $('#subCategoryModal').modal('show');
             })
 
             $('#inputCode').on('input', function() {
@@ -238,7 +235,7 @@
                 const code = $(this).data('code');
                 Swal.fire({
                     title: 'Perhatian!',
-                    text: `Hapus bidang, code : ${code}?`,
+                    text: `Hapus sub kelompok, code : ${code}?`,
                     icon: 'info',
                     showCancelButton: true,
                     customClass: {
@@ -248,7 +245,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $('.delete-form').attr('action',
-                            '{{ route('admin.master.scope.destroy', ['id' => ':id']) }}'
+                            '{{ route('admin.master.sub-category.destroy', ['id' => ':id']) }}'
                             .replace(
                                 ':id', id));
                         $('.delete-form').submit();
@@ -256,12 +253,12 @@
                 });
             });
 
-            $('#idGroup').on('change', function() {
+            $('#idCategory').on('change', function() {
                 const id = $(this).val();
 
                 $.ajax({
                     method: 'GET',
-                    url: "{{ route('admin.master.scope.last-code') }}?idGroup=" + id,
+                    url: "{{ route('admin.master.sub-category.last-code') }}?idCategory=" + id,
                     dataType: 'json',
                     success: function(response) {
                         form.code.val(response.code);

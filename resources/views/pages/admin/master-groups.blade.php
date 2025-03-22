@@ -16,7 +16,7 @@
                         <th class="text-center">Kode</th>
                         <th>Deskripsi</th>
                         <th class="text-center">Periode</th>
-                        <th class="text-center">Actions</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,7 +91,7 @@
                                     </span>
                                     <input type="text" id="period" name="period"
                                         class="form-control datepicker-basic" value="{{ old('period') }}"
-                                        placeholder="Pilih Tahun" required>
+                                        placeholder="Pilih Periode" required>
                                 </div>
                                 @if ($errors->has('period'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
@@ -157,6 +157,7 @@
                         '{{ route('admin.master.group.update', ['id' => ':id']) }}'
                         .replace(
                             ':id', "{{ old('id') }}"));
+                    $('#formGroup').append('<input type="hidden" name="_method" value="PUT">');
                 @else
                     $('.modal-title').html('<i class="ph-plus"></i> Tambah Golongan');
                     $('#formGroup').attr('action',
@@ -209,7 +210,7 @@
                 const code = $(this).data('code');
                 Swal.fire({
                     title: 'Perhatian!',
-                    text: `Hapus kategori code : ${code}`,
+                    text: `Hapus kategori, code : ${code}?`,
                     icon: 'info',
                     showCancelButton: true,
                     customClass: {

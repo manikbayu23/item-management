@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController as AdminCategory;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\GroupController as AdminGroup;
 use App\Http\Controllers\Admin\ScopeController as AdminScope;
+use App\Http\Controllers\Admin\SubCategoryController as AdminSubCategory;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,10 +35,18 @@ Route::prefix('/admin')->name('admin.')->group(function () {
             Route::delete('/destroy/{id}', [AdminScope::class, 'destroy'])->name('destroy');
         });
         Route::prefix('/category')->name('category.')->group(function () {
-            Route::get('/', [AdminDashboard::class, 'index'])->name('index');
+            Route::get('/', [AdminCategory::class, 'index'])->name('index');
+            Route::get('/last-code', [AdminCategory::class, 'lastCode'])->name('last-code');
+            Route::post('/', [AdminCategory::class, 'store'])->name('store');
+            Route::put('/update/{id}', [AdminCategory::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [AdminCategory::class, 'destroy'])->name('destroy');
         });
         Route::prefix('/sub-category')->name('sub-category.')->group(function () {
-            Route::get('/', [AdminDashboard::class, 'index'])->name('index');
+            Route::get('/', [AdminSubCategory::class, 'index'])->name('index');
+            Route::get('/last-code', [AdminSubCategory::class, 'lastCode'])->name('last-code');
+            Route::post('/', [AdminSubCategory::class, 'store'])->name('store');
+            Route::put('/update/{id}', [AdminSubCategory::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
         });
     });
 });

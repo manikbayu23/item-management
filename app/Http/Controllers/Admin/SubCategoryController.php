@@ -2,27 +2,28 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Category;
 use Carbon\Carbon;
 use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Models\Scope;
+use App\Models\SubCategory;
 
-class ScopeController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
+class SubCategoryController extends Controller
+{ /**
+  * Display a listing of the resource.
+  */
     public function index()
     {
-        $data = Scope::all();
-        $groups = Group::all();
+        $data = SubCategory::all();
+        $categories = Category::orderBy('code', 'asc')->get();
         return view(
-            'pages.admin.master-scopes',
+            'pages.admin.master-sub-category',
             [
                 'data' => $data,
-                'groups' => $groups
+                'categories' => $categories
             ]
         );
     }
@@ -30,12 +31,12 @@ class ScopeController extends Controller
     public function lastCode(Request $request)
     {
         try {
-            $id = $request->input('idGroup');
-            $codeGroup = Group::where('id', $id)->pluck('code')->first();
+            $id = $request->input('idCategory');
+            $codeGroup = Category::where('id', $id)->pluck('code')->first();
 
             // Ambil kode terakhir dari Scope yang memiliki prefix sesuai dengan codeGroup
-            $codeScope = Scope::where('code', 'like', "{$codeGroup}%")
-                ->where('group_id', $id)
+            $codeScope = SubCategory::where('code', 'like', "{$codeGroup}%")
+                ->where('category_id', $id)
                 ->latest('code')
                 ->pluck('code')
                 ->first();
@@ -63,14 +64,6 @@ class ScopeController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -79,43 +72,26 @@ class ScopeController extends Controller
             'code' => [
                 'required',
                 'regex:/^\d+(\.\d+)*\.$/',
-                'unique:scopes,code'
+                'unique:sub_categories,code'
             ],
             'description' => 'required',
             'period' => 'required',
-            'idGroup' => 'required'
+            'idCategory' => 'required'
         ], [
             'code.required' => 'Kode wajib diisi.',
             'code.unique' => 'Kode ini sudah terdaftar di sistem.',
             'description' => 'Deskripsi wajib diisi.',
             'period' => 'Periode wajib diisi.',
-            'idGroup' => 'Golongan wajib dipilih.'
+            'idCategory' => 'Kelompok wajib dipilih.'
         ]);
 
-
-        Scope::create([
+        SubCategory::create([
             'code' => $request->input('code'),
             'description' => strtoupper($request->input('description')),
             'period' => $request->input('period'),
-            'group_id' => $request->input('idGroup')
+            'category_id' => $request->input('idCategory')
         ]);
-        return redirect()->back()->with('success', 'Berhasil menambah golongan.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return redirect()->back()->with('success', 'Berhasil menambah sub kelompok.');
     }
 
     /**
@@ -128,29 +104,29 @@ class ScopeController extends Controller
             'code' => [
                 'required',
                 'regex:/^\d+(\.\d+)*\.$/',
-                Rule::unique('scopes', 'code')->ignore($id)
+                Rule::unique('sub_categories', 'code')->ignore($id)
             ],
             'description' => 'required',
             'period' => 'required',
-            'idGroup' => 'required'
+            'idCategory' => 'required'
         ], [
             'code.required' => 'Kode wajib diisi.',
             'code.regex' => 'Format kode tidak valid.',
             'code.unique' => 'Kode ini sudah terdaftar di sistem.',
             'description' => 'Deskripsi wajib diisi.',
             'period' => 'Periode wajib diisi.',
-            'idGroup' => 'Golongan wajib dipilih.'
+            'idCategory' => 'Kelompok wajib dipilih.'
         ]);
 
-        $group = Scope::findOrFail($id);
-        $group->group_id = $request->input('idGroup');
+        $group = SubCategory::findOrFail($id);
+        $group->category_id = $request->input('idCategory');
         $group->code = $request->input('code');
         $group->description = strtoupper($request->input('description'));
         $group->period = $request->input('period');
         $group->updated_at = Carbon::now();
         $group->save();
 
-        return redirect()->back()->with('success', 'Berhasil memperbarui golongan.');
+        return redirect()->back()->with('success', 'Berhasil memperbarui sub kelompok.');
     }
 
     /**
@@ -158,8 +134,8 @@ class ScopeController extends Controller
      */
     public function destroy(string $id)
     {
-        $group = Scope::findOrFail($id);
+        $group = SubCategory::findOrFail($id);
         $group->delete();
-        return redirect()->back()->with('success', 'Berhasil menghapus bidang');
+        return redirect()->back()->with('success', 'Berhasil menghapus sub kelompok');
     }
 }

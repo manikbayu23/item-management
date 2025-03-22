@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Category;
 use Carbon\Carbon;
 use App\Models\Group;
 use Illuminate\Http\Request;
@@ -10,25 +11,51 @@ use App\Http\Controllers\Controller;
 use App\Models\Scope;
 
 class CategoryController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
+{ /**
+  * Display a listing of the resource.
+  */
     public function index()
     {
-        $data = Scope::all();
-        return view('pages.admin.master-scopes', compact('data'));
+        $data = Category::all();
+        $scopes = Scope::all();
+        return view(
+            'pages.admin.master-category',
+            [
+                'data' => $data,
+                'scopes' => $scopes
+            ]
+        );
     }
 
-    public function lastCode()
+    public function lastCode(Request $request)
     {
         try {
-            $code = Group::latest('code')->pluck('code')->first();
-            if ($code) {
-                $code = (intval($code) + 1) . '.';
+            $id = $request->input('idScope');
+            $codeGroup = Scope::where('id', $id)->pluck('code')->first();
+
+            // Ambil kode terakhir dari Scope yang memiliki prefix sesuai dengan codeGroup
+            $codeScope = Category::where('code', 'like', "{$codeGroup}%")
+                ->where('scope_id', $id)
+                ->latest('code')
+                ->pluck('code')
+                ->first();
+
+
+            if ($codeScope) {
+                // Ambil dua angka terakhir setelah titik terakhir
+                preg_match('/\.(\d+)\.$/', $codeScope, $matches);
+
+                // Ambil angka terakhir, jika ada
+                $lastNumber = isset($matches[1]) ? intval($matches[1]) : 0;
+
+                // Tambahkan 1 dan pastikan format tetap '00', '01', '02', ...
+                $newNumber = str_pad($lastNumber + 1, 2, '0', STR_PAD_LEFT);
+
+                $code = "{$codeGroup}{$newNumber}.";
             } else {
-                $code = '1.';
+                $code = "{$codeGroup}00.";
             }
+
             return response()->json(['success' => 'true', 'code' => $code]);
         } catch (\Throwable $th) {
             return response()->json(['success' => 'false', 'message' => $th->getMessage()], 500);
@@ -51,26 +78,28 @@ class CategoryController extends Controller
         $request->validate([
             'code' => [
                 'required',
-                'unique:groups,code'
+                'regex:/^\d+(\.\d+)*\.$/',
+                'unique:categories,code'
             ],
             'description' => 'required',
             'period' => 'required',
-            'idGroup' => 'required'
+            'idScope' => 'required'
         ], [
             'code.required' => 'Kode wajib diisi.',
             'code.unique' => 'Kode ini sudah terdaftar di sistem.',
             'description' => 'Deskripsi wajib diisi.',
             'period' => 'Periode wajib diisi.',
-            'IdGroup' => 'Golongan wajib dipilig.'
+            'idScope' => 'Bidang wajib dipilih.'
         ]);
 
-        Group::create([
+
+        Category::create([
             'code' => $request->input('code'),
             'description' => strtoupper($request->input('description')),
             'period' => $request->input('period'),
-            'group_id' => $request->input('group_id')
+            'scope_id' => $request->input('idScope')
         ]);
-        return redirect()->back()->with('success', 'Berhasil menambah golongan.');
+        return redirect()->back()->with('success', 'Berhasil menambah kelompok.');
     }
 
     /**
@@ -94,30 +123,34 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
+
         $request->validate([
             'code' => [
                 'required',
-                'regex:/^\d+\.$/',
-                Rule::unique('groups', 'code')->ignore($id)
+                'regex:/^\d+(\.\d+)*\.$/',
+                Rule::unique('categories', 'code')->ignore($id)
             ],
             'description' => 'required',
-            'period' => 'required'
+            'period' => 'required',
+            'idScope' => 'required'
         ], [
             'code.required' => 'Kode wajib diisi.',
             'code.regex' => 'Format kode tidak valid.',
             'code.unique' => 'Kode ini sudah terdaftar di sistem.',
             'description' => 'Deskripsi wajib diisi.',
             'period' => 'Periode wajib diisi.',
+            'idScope' => 'Bidang wajib dipilih.'
         ]);
 
-        $group = Group::findOrFail($id);
+        $group = Category::findOrFail($id);
+        $group->scope_id = $request->input('idScope');
         $group->code = $request->input('code');
         $group->description = strtoupper($request->input('description'));
         $group->period = $request->input('period');
         $group->updated_at = Carbon::now();
         $group->save();
 
-        return redirect()->back()->with('success', 'Berhasil memperbarui golongan.');
+        return redirect()->back()->with('success', 'Berhasil memperbarui kelompok.');
     }
 
     /**
@@ -125,8 +158,8 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        $group = Group::findOrFail($id);
+        $group = Category::findOrFail($id);
         $group->delete();
-        return redirect()->back()->with('success', 'Berhasil menghapus golongan');
+        return redirect()->back()->with('success', 'Berhasil menghapus kelompok');
     }
 }
