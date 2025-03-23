@@ -17,7 +17,7 @@ class SubCategoryController extends Controller
   */
     public function index()
     {
-        $data = SubCategory::all();
+        $data = SubCategory::orderBy('code', 'asc')->get();
         $categories = Category::orderBy('code', 'asc')->get();
         return view(
             'pages.admin.master-sub-category',
@@ -52,9 +52,9 @@ class SubCategoryController extends Controller
                 // Tambahkan 1 dan pastikan format tetap '00', '01', '02', ...
                 $newNumber = str_pad($lastNumber + 1, 2, '0', STR_PAD_LEFT);
 
-                $code = "{$codeGroup}{$newNumber}.";
+                $code = "{$codeGroup}{$newNumber}";
             } else {
-                $code = "{$codeGroup}00.";
+                $code = "{$codeGroup}00";
             }
 
             return response()->json(['success' => 'true', 'code' => $code]);
@@ -68,6 +68,9 @@ class SubCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge([
+            'code' => rtrim($request->input('code'), '.') . '.'
+        ]);
         $request->validate([
             'code' => [
                 'required',
@@ -99,7 +102,9 @@ class SubCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
+        $request->merge([
+            'code' => rtrim($request->input('code'), '.') . '.'
+        ]);
         $request->validate([
             'code' => [
                 'required',

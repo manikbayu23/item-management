@@ -16,8 +16,8 @@ class ScopeController extends Controller
      */
     public function index()
     {
-        $data = Scope::all();
-        $groups = Group::all();
+        $data = Scope::orderBy('code', 'asc')->get();
+        $groups = Group::orderBy('code', 'asc')->get();
         return view(
             'pages.admin.master-scopes',
             [
@@ -51,9 +51,9 @@ class ScopeController extends Controller
                 // Tambahkan 1 dan pastikan format tetap '00', '01', '02', ...
                 $newNumber = str_pad($lastNumber + 1, 2, '0', STR_PAD_LEFT);
 
-                $code = "{$codeGroup}{$newNumber}.";
+                $code = "{$codeGroup}{$newNumber}";
             } else {
-                $code = "{$codeGroup}00.";
+                $code = "{$codeGroup}00";
             }
 
             return response()->json(['success' => 'true', 'code' => $code]);
@@ -75,6 +75,9 @@ class ScopeController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge([
+            'code' => rtrim($request->input('code'), '.') . '.'
+        ]);
         $request->validate([
             'code' => [
                 'required',
@@ -103,27 +106,13 @@ class ScopeController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-
+        $request->merge([
+            'code' => rtrim($request->input('code'), '.') . '.'
+        ]);
         $request->validate([
             'code' => [
                 'required',

@@ -48,7 +48,7 @@
                         <li class="nav-item"><a href="{{ route('admin.master.category.index') }}" class="nav-link"
                                 {{ Route::is('admin.master.category.*') ? 'active' : '' }}>Kelompok</a>
                         <li class="nav-item"><a href="{{ route('admin.master.sub-category.index') }}" class="nav-link"
-                                {{ Route::is('admin.master.sub-category.*') ? 'active' : '' }}>Sub Keolompok</a>
+                                {{ Route::is('admin.master.sub-category.*') ? 'active' : '' }}>Sub Kelompok</a>
                     </ul>
                 </li>
             </ul>

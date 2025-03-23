@@ -16,8 +16,8 @@ class CategoryController extends Controller
   */
     public function index()
     {
-        $data = Category::all();
-        $scopes = Scope::all();
+        $data = Category::orderBy('code', 'asc')->get();
+        $scopes = Scope::orderBy('code', 'asc')->get();
         return view(
             'pages.admin.master-category',
             [
@@ -51,9 +51,9 @@ class CategoryController extends Controller
                 // Tambahkan 1 dan pastikan format tetap '00', '01', '02', ...
                 $newNumber = str_pad($lastNumber + 1, 2, '0', STR_PAD_LEFT);
 
-                $code = "{$codeGroup}{$newNumber}.";
+                $code = "{$codeGroup}{$newNumber}";
             } else {
-                $code = "{$codeGroup}00.";
+                $code = "{$codeGroup}00";
             }
 
             return response()->json(['success' => 'true', 'code' => $code]);
@@ -63,18 +63,13 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
+        $request->merge([
+            'code' => rtrim($request->input('code'), '.') . '.'
+        ]);
         $request->validate([
             'code' => [
                 'required',
@@ -103,27 +98,13 @@ class CategoryController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-
+        $request->merge([
+            'code' => rtrim($request->input('code'), '.') . '.'
+        ]);
         $request->validate([
             'code' => [
                 'required',

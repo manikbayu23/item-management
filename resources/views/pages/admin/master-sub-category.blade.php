@@ -23,7 +23,9 @@
                     @foreach ($data as $index => $row)
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
-                            <td class="text-center">{{ $row->code }}</td>
+                            <td class="text-center"> <span
+                                    class="badge text-reset bg-dark bg-opacity-20">{{ rtrim($row->code, '.') }}</span></td>
+                            </td>
                             <td>{{ $row->description }}</td>
                             <td class="text-center">{{ $row->period }}</td>
                             <td class="text-center">
@@ -34,14 +36,14 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <button type="button" data-id="{{ $row->id }}"
-                                                data-code="{{ $row->code }}" data-description="{{ $row->description }}"
-                                                data-period="{{ $row->period }}" data-category-id="{{ $row->scope_id }}"
-                                                class="edit-scope dropdown-item">
+                                                data-code="{{ trim($row->code, '.') }}"
+                                                data-description="{{ $row->description }}" data-period="{{ $row->period }}"
+                                                data-category-id="{{ $row->category_id }}" class="edit-scope dropdown-item">
                                                 <i class="ph-pencil-line me-2"></i>
                                                 Edit
                                             </button>
                                             <button type="button" data-id="{{ $row->id }}"
-                                                data-code="{{ $row->code }}" class="delete-scope dropdown-item">
+                                                data-code="{{ trim($row->code, '.') }}" class="delete-scope dropdown-item">
                                                 <i class="ph-trash me-2"></i>
                                                 Delete
                                             </button>
@@ -81,7 +83,8 @@
                                     <option value="" disabled selected>-- Pilih Kelompok --</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
-                                            @if ($category->id == old('idCategory')) selected @endif>{{ $category->code }} -
+                                            @if ($category->id == old('idCategory')) selected @endif>
+                                            [{{ rtrim($category->code, '.') }}]
                                             {{ $category->description }}</option>
                                     @endforeach
                                 </select>
@@ -89,7 +92,7 @@
                             <div class="col-md-6 col-sm-12 mb-3">
                                 <label class="form-label">Kode :</label>
                                 <input type="text" name="code" id="inputCode" value="{{ old('code') }}"
-                                    class="form-control" placeholder="00" required @readonly(true)>
+                                    class="form-control" placeholder="Example : 1.00.00.00" required @readonly(true)>
                                 @if ($errors->has('code'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('code') }}</div>
@@ -124,7 +127,7 @@
 
                     </div>
                     <div class="modal-footer justify-content-end">
-                        <button data-bs-dismiss="modal" class="btn btn-light">
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-light">
                             <i class="ph-x me-1"></i>
                             Tutup
                         </button>
@@ -223,6 +226,7 @@
 
                 $('#formSubCategory').attr('action',
                     '{{ route('admin.master.sub-category.store') }}');
+                $('#formSubCategory').append('<input type="hidden" name="_method" value="POST">');
                 $('#subCategoryModal').modal('show');
             })
 

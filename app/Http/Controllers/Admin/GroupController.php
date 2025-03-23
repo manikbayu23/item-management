@@ -15,7 +15,7 @@ class GroupController extends Controller
      */
     public function index()
     {
-        $data = Group::all();
+        $data = Group::orderBy('code', 'asc')->get();
         return view('pages.admin.master-groups', compact('data'));
     }
 
@@ -24,9 +24,9 @@ class GroupController extends Controller
         try {
             $code = Group::latest('code')->pluck('code')->first();
             if ($code) {
-                $code = (intval($code) + 1) . '.';
+                $code = (intval($code) + 1);
             } else {
-                $code = '1.';
+                $code = '1';
             }
             return response()->json(['success' => 'true', 'code' => $code]);
         } catch (\Throwable $th) {
@@ -47,6 +47,9 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge([
+            'code' => rtrim($request->input('code'), '.') . '.'
+        ]);
         $request->validate([
             'code' => [
                 'required',
@@ -92,6 +95,9 @@ class GroupController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $request->merge([
+            'code' => rtrim($request->input('code'), '.') . '.'
+        ]);
         $request->validate([
             'code' => [
                 'required',
