@@ -1,17 +1,18 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController as AdminCategory;
+use App\Http\Controllers\Admin\ConditionContoller as AdminCondition;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\GroupController as AdminGroup;
 use App\Http\Controllers\Admin\ScopeController as AdminScope;
 use App\Http\Controllers\Admin\SubCategoryController as AdminSubCategory;
+use App\Http\Controllers\Admin\UserAccountController as AdminUserAccount;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -49,5 +50,12 @@ Route::prefix('/admin')->name('admin.')->group(function () {
             Route::delete('/destroy/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
         });
     });
+    Route::prefix('/user-accounts')->name('user-accounts.')->group(function () {
+        Route::get('/', [AdminUserAccount::class, 'index'])->name('index');
+        Route::get('/create', [AdminUserAccount::class, 'create'])->name('create');
+        Route::post('/', [AdminUserAccount::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [AdminUserAccount::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AdminUserAccount::class, 'update'])->name('update');
+        Route::delete('/{id}', [AdminUserAccount::class, 'destroy'])->name('destroy');
+    });
 });
-

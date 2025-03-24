@@ -10,7 +10,7 @@
 // Setup module
 // ------------------------------
 
-const FileUpload = function() {
+const FileUpload = function () {
 
 
     //
@@ -18,7 +18,7 @@ const FileUpload = function() {
     //
 
     // Bootstrap file upload
-    const _componentFileUpload = function() {
+    const _componentFileUpload = function () {
         if (!$().fileinput) {
             console.warn('Warning - fileinput.min.js is not loaded.');
             return;
@@ -67,6 +67,22 @@ const FileUpload = function() {
         //
         // Basic example
         //
+        $('.file-input-edit').fileinput({
+            browseLabel: 'Browse',
+            browseIcon: '<i class="ph-file-plus me-2"></i>',
+            uploadIcon: '<i class="ph-file-arrow-up me-2"></i>',
+            removeIcon: '<i class="ph-x fs-base me-2"></i>',
+            layoutTemplates: {
+                icon: '<i class="ph-check"></i>'
+            },
+            uploadClass: 'btn btn-light',
+            removeClass: 'btn btn-light',
+            initialCaption: "No file selected",
+            previewZoomButtonClasses: previewZoomButtonClasses,
+            previewZoomButtonIcons: previewZoomButtonIcons,
+            fileActionSettings: fileActionSettings
+        });
+
 
         $('.file-input').fileinput({
             browseLabel: 'Browse',
@@ -83,6 +99,7 @@ const FileUpload = function() {
             previewZoomButtonIcons: previewZoomButtonIcons,
             fileActionSettings: fileActionSettings
         });
+
 
 
         //
@@ -149,10 +166,10 @@ const FileUpload = function() {
                 icon: '<i class="ph-check"></i>',
                 main1: "{preview}\n" +
                     "<div class='input-group {class}'>\n" +
-                        "{browse}\n" +
-                        "{caption}\n" +
-                        "{upload}\n" +
-                        "{remove}\n" +
+                    "{browse}\n" +
+                    "{caption}\n" +
+                    "{upload}\n" +
+                    "{remove}\n" +
                     "</div>"
             },
             initialCaption: "No file selected",
@@ -181,8 +198,8 @@ const FileUpload = function() {
                 '../../../assets/images/demo/images/2.png',
             ],
             initialPreviewConfig: [
-                {caption: 'Jane.jpg', size: 930321, key: 1, url: '{$url}', showDrag: false},
-                {caption: 'Anna.jpg', size: 1218822, key: 2, url: '{$url}', showDrag: false}
+                { caption: 'Jane.jpg', size: 930321, key: 1, url: '{$url}', showDrag: false },
+                { caption: 'Anna.jpg', size: 1218822, key: 2, url: '{$url}', showDrag: false }
             ],
             initialPreviewAsData: true,
             overwriteInitial: false,
@@ -212,8 +229,8 @@ const FileUpload = function() {
                 '../../../assets/images/demo/images/2.png'
             ],
             initialPreviewConfig: [
-                {caption: 'Jane.jpg', size: 930321, key: 1, url: '{$url}'},
-                {caption: 'Anna.jpg', size: 1218822, key: 2, url: '{$url}'}
+                { caption: 'Jane.jpg', size: 930321, key: 1, url: '{$url}' },
+                { caption: 'Anna.jpg', size: 1218822, key: 2, url: '{$url}' }
             ],
             initialPreviewAsData: true,
             overwriteInitial: true,
@@ -264,7 +281,7 @@ const FileUpload = function() {
         //
 
         // Disable/enable button
-        $('#btn-modify').on('click', function() {
+        $('#btn-modify').on('click', function () {
             $btn = $(this);
             if ($btn.text() == 'Disable file input') {
                 $('#file-input-methods').fileinput('disable');
@@ -285,7 +302,7 @@ const FileUpload = function() {
     //
 
     return {
-        init: function() {
+        init: function () {
             _componentFileUpload();
         }
     }
@@ -295,6 +312,6 @@ const FileUpload = function() {
 // Initialize module
 // ------------------------------
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     FileUpload.init();
 });

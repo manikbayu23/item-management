@@ -34,7 +34,24 @@
                     <div class="text-uppercase fs-sm lh-sm sidebar-resize-hide opacity-50">Main</div>
                     <i class="ph-dots-three sidebar-resize-show"></i>
                 </li> --}}
-
+                <li class="nav-item">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="nav-link {{ Route::is('admin.dashboard.*') ? 'active' : '' }}">
+                        <i class="ph-house"></i>
+                        <span>
+                            Dashboard
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.user-accounts.index') }}"
+                        class="nav-link {{ Route::is('admin.user-accounts.*') ? 'active' : '' }}">
+                        <i class="ph-users"></i>
+                        <span>
+                            Akun Pengguna
+                        </span>
+                    </a>
+                </li>
                 <li class="nav-item nav-item-submenu">
                     <a href="#" class="nav-link">
                         <i class="ph-database"></i>
