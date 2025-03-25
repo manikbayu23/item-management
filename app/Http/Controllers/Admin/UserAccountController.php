@@ -119,6 +119,7 @@ class UserAccountController extends Controller
     {
         $user = User::find($id);
         $divisions = Division::all();
+
         return view('pages.admin.edit-user-account', compact(['divisions', 'user']));
     }
 
@@ -225,5 +226,17 @@ class UserAccountController extends Controller
             DB::rollBack();
             return back()->with('error', 'Gagal menghapus akun: ' . $e->getMessage());
         }
+    }
+
+    public function profile_picture($folder, $filename)
+    {
+        $path = storage_path("app/private/$folder/$filename");
+        // dd($path);
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path);
     }
 }

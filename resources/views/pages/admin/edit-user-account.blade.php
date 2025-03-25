@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title_admin', 'Buat Akun Pengguna')
+@section('title_admin', 'Edit Akun Pengguna')
 
 @section('content_admin')
     <div class="content">
@@ -15,8 +15,10 @@
                             <label class="form-label">Foto Profil :</label>
                             <input type="file" name="profile_picture" class="file-input-edit" id="profile_picture"
                                 accept="image/*"
-                                data-initial-preview="{{ optional($user->account)->profile_picture ? asset('storage/' . $user->account->profile_picture) : '' }}"
+                                data-initial-preview="{{ optional($user->account)->profile_picture ? json_encode([url('/admin/user-accounts/profile-picture/' . $user->account->profile_picture)]) : '[]' }}"
+                                data-initial-preview-config="{{ optional($user->account)->profile_picture ? json_encode([['caption' => basename($user->account->profile_picture), 'key' => 1]]) : '[]' }}"
                                 data-initial-caption="{{ optional($user->account)->profile_picture ? basename($user->account->profile_picture) : '' }}">
+
                         </div>
                         <div class="col-md-9 col-sm-12 mb-3 row">
                             <div class="col-md-6 col-sm-12 mb-3">

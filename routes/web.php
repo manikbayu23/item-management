@@ -57,5 +57,6 @@ Route::prefix('/admin')->name('admin.')->group(function () {
         Route::get('/{id}/edit', [AdminUserAccount::class, 'edit'])->name('edit');
         Route::put('/{id}', [AdminUserAccount::class, 'update'])->name('update');
         Route::delete('/{id}', [AdminUserAccount::class, 'destroy'])->name('destroy');
+        Route::get('/profile-picture/{folder}/{filename}', [AdminUserAccount::class, 'profile_picture'])->name('profile-picture');
     });
 });

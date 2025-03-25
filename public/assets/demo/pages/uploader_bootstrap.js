@@ -78,9 +78,16 @@ const FileUpload = function () {
             uploadClass: 'btn btn-light',
             removeClass: 'btn btn-light',
             initialCaption: "No file selected",
+            previewFileType: "image",
+            initialPreviewAsData: true,  // 🔥 Tambahkan ini untuk preview gambar!
+            overwriteInitial: true,  // Pastikan gambar lama tidak ditumpuk
+            initialPreview: $('.file-input-edit').data('initial-preview'),  // Ambil dari atribut HTML
+            initialPreviewConfig: $('.file-input-edit').data('initial-preview-config'),
             previewZoomButtonClasses: previewZoomButtonClasses,
             previewZoomButtonIcons: previewZoomButtonIcons,
-            fileActionSettings: fileActionSettings
+            fileActionSettings: fileActionSettings,
+            showUpload: false,
+            showRemove: false,
         });
 
 
@@ -97,9 +104,10 @@ const FileUpload = function () {
             initialCaption: "No file selected",
             previewZoomButtonClasses: previewZoomButtonClasses,
             previewZoomButtonIcons: previewZoomButtonIcons,
-            fileActionSettings: fileActionSettings
+            fileActionSettings: fileActionSettings,
+            showUpload: false,
+            showRemove: false,
         });
-
 
 
         //
