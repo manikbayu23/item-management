@@ -18,6 +18,10 @@
                                 data-initial-preview="{{ optional($user->account)->profile_picture ? json_encode([url('/admin/user-accounts/profile-picture/' . $user->account->profile_picture)]) : '[]' }}"
                                 data-initial-preview-config="{{ optional($user->account)->profile_picture ? json_encode([['caption' => basename($user->account->profile_picture), 'key' => 1]]) : '[]' }}"
                                 data-initial-caption="{{ optional($user->account)->profile_picture ? basename($user->account->profile_picture) : '' }}">
+                            @if ($errors->has('profile_picture'))
+                                <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
+                                    {{ $errors->first('profile_picture') }}</div>
+                            @endif
 
                         </div>
                         <div class="col-md-9 col-sm-12 mb-3 row">
@@ -135,6 +139,13 @@
         $(document).ready(function() {
             @if (optional($user->account) == null)
                 $('#password').val(generateRandomPassword());
+            @endif
+
+            @if (session('error'))
+                new Noty({
+                    text: "{{ session('error') }}",
+                    type: 'error'
+                }).show();
             @endif
 
             $('#repeat-password').click(function() {

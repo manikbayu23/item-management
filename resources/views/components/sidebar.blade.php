@@ -36,7 +36,7 @@
                 </li> --}}
                 <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}"
-                        class="nav-link {{ Route::is('admin.dashboard.*') ? 'active' : '' }}">
+                        class="nav-link {{ Route::is('admin.dashboard') ? 'active' : '' }}">
                         <i class="ph-house"></i>
                         <span>
                             Dashboard
@@ -53,7 +53,7 @@
                     </a>
                 </li>
                 <li class="nav-item nav-item-submenu">
-                    <a href="#" class="nav-link">
+                    <a href="#" class="nav-link  {{ Route::is('admin.master.*') ? 'active' : '' }}">
                         <i class="ph-database"></i>
                         <span>Master</span>
                     </a>

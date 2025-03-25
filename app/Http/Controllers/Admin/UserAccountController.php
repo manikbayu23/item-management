@@ -111,11 +111,11 @@ class UserAccountController extends Controller
             return redirect()->route('admin.user-accounts.index')->with('success', 'Berhasil membuat akun pengguna.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->nack()->with('error', 'Gagal memperbarui akun pengguna.');
+            return back()->with('error', 'Gagal menbuat akun pengguna :' . $th->getMessage());
         }
     }
 
-    public function edit(String $id)
+    public function edit(string $id)
     {
         $user = User::find($id);
         $divisions = Division::all();
@@ -128,7 +128,7 @@ class UserAccountController extends Controller
         $user = User::findOrFail($id);
 
         $validated = $request->validate([
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_picture' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'required|string|max:255',
             'division' => 'required',
             'role' => 'required|in:admin,user',
@@ -137,6 +137,7 @@ class UserAccountController extends Controller
             'password' => 'nullable|string|min:8|max:255',
             'address' => 'required|string|max:1000'
         ], [
+            'profile_picture.required' => 'Foto profil wajib diupload',
             'profile_picture.image' => 'File harus berupa gambar',
             'profile_picture.max' => 'Ukuran gambar maksimal 2MB',
             'name.required' => 'Nama wajib diisi',
@@ -201,7 +202,7 @@ class UserAccountController extends Controller
         }
     }
 
-    public function destroy(String $id)
+    public function destroy(string $id)
     {
 
         $user = User::with('account')->findOrFail($id);

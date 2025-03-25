@@ -6,35 +6,42 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use GuzzleHttp\Psr7\Response;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     public function login()
     {
+        if (Auth::check()) {
+
+            return Auth::user()->account->role == 'admin' ? redirect()->route('admin.dashboard') : redirect('/'); // Ubah ke route tujuan
+        }
         return view('pages.auth.login');
     }
-    public function register(Request $request)
+    public function do_login(Request $request)
     {
-        try {
-            // Validasi input
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:6|confirmed',
-            ]);
+        $validate = $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ], [
+            'email.required' => 'Kode wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
+        ]);
 
-            // Buat user baru
-            $user = new User;
-            $user->name = $request->input('name');
-            $user->email = $request->input('email');
-            $user->password = bcrypt($request->input('password'));
-            $user->save();
+        // Cek apakah pengguna login dengan email atau username
 
-
-            return 'success';
-
-        } catch (\Throwable $th) {
-            throw $th;
+        if (Auth::attempt(['email' => $validate['email'], 'password' => $validate['password']])) {
+            return Auth::user()->account->role === 'admin'
+                ? redirect()->route('admin.dashboard')
+                : redirect('/');
         }
+
+        return back()->withErrors(['failed' => 'Email / Password Salah.'])->withInput();
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('login');
     }
 }

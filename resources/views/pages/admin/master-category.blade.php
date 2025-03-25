@@ -23,8 +23,9 @@
                     @foreach ($data as $index => $row)
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
-                            <td class="text-center"><span
-                                    class="badge text-reset bg-dark bg-opacity-20">{{ rtrim($row->code, '.') }}</span></td>
+                            <td class="text-center">
+                                <span class="badge text-reset bg-dark bg-opacity-20">{{ rtrim($row->code, '.') }}</span>
+                            </td>
                             <td>{{ $row->description }}</td>
                             <td class="text-center">{{ $row->period }}</td>
                             <td class="text-center">

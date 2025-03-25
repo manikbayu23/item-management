@@ -14,6 +14,10 @@
                             <label class="form-label">Foto Profil :</label>
                             <input type="file" name="profile_picture" class="file-input" id="profile_picture"
                                 accept="image/*">
+                            @if ($errors->has('profile_picture'))
+                                <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
+                                    {{ $errors->first('profile_picture') }}</div>
+                            @endif
                         </div>
                         <div class="col-md-9 col-sm-12 mb-3 row">
                             <div class="col-md-6 col-sm-12 mb-3">
@@ -120,6 +124,13 @@
 @push('script_admin')
     <script>
         $(document).ready(function() {
+            @if (session('error'))
+                new Noty({
+                    text: "{{ session('error') }}",
+                    type: 'error'
+                }).show();
+            @endif
+
             $('#password').val(generateRandomPassword());
 
             $('#repeat-password').click(function() {

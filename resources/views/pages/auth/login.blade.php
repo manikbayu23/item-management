@@ -7,14 +7,14 @@
     <div class="content d-flex justify-content-center align-items-center">
 
         <!-- Login form -->
-        <form class="login-form" method="POST" action="{{ route('login.post') }}">
+        <form class="login-form" method="POST" action="{{ route('do-login') }}">
             @csrf
-            @if ($errors->has('identifier'))
+            @if ($errors->has('failed'))
                 <div class="alert alert-warning alert-icon-start alert-dismissible fade show">
                     <span class="alert-icon bg-warning text-white">
                         <i class="ph-warning-circle"></i>
                     </span>
-                    <span class="fw-semibold">Warning!</span> {{ $errors->first('identifier') }}
+                    <span class="fw-semibold">Warning!</span> {{ $errors->first('failed') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
@@ -34,15 +34,15 @@
                         <div class="d-inline-flex text-primary align-items-center justify-content-center mb-4 mt-2">
                             <i class="ph-user-circle ph-3x"></i>
                         </div>
-                        <h5 class="mb-0">Login to your account</h5>
-                        <span class="d-block text-muted">Enter your credentials below</span>
+                        <h5 class="mb-0">Masuk ke akun</h5>
+                        <span class="d-block text-muted">Masukan kredensial</span>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Username/Email</label>
+                        <label class="form-label">Email</label>
                         <div class="form-control-feedback form-control-feedback-start">
-                            <input type="text" name="identifier" value="{{ old('identifier') }}" class="form-control"
-                                placeholder="john@doe.com" required>
+                            <input type="email" name="email" value="{{ old('email', 'johndoe@example.com') }}"
+                                class="form-control" placeholder="john@doe.com" required>
                             <div class="form-control-feedback-icon">
                                 <i class="ph-user-circle text-muted"></i>
                             </div>
@@ -52,8 +52,8 @@
                     <div class="mb-3">
                         <label class="form-label">Password</label>
                         <div class="form-control-feedback form-control-feedback-start">
-                            <input type="password" name="password" value="{{ old('password') }}" class="form-control"
-                                placeholder="•••••••••••" required>
+                            <input type="password" name="password" value="{{ old('password', '12345678') }}"
+                                class="form-control" placeholder="•••••••••••" required>
                             <div class="form-control-feedback-icon">
                                 <i class="ph-lock text-muted"></i>
                             </div>
