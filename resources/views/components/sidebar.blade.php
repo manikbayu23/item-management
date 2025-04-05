@@ -66,6 +66,10 @@
                                 {{ Route::is('admin.master.category.*') ? 'active' : '' }}>Kelompok</a>
                         <li class="nav-item"><a href="{{ route('admin.master.sub-category.index') }}" class="nav-link"
                                 {{ Route::is('admin.master.sub-category.*') ? 'active' : '' }}>Sub Kelompok</a>
+                        <li class="nav-item"><a href="{{ route('admin.master.departments.index') }}" class="nav-link"
+                                {{ Route::is('admin.master.departments.*') ? 'active' : '' }}>Departemen</a>
+                        <li class="nav-item"><a href="{{ route('admin.master.divisions.index') }}" class="nav-link"
+                                {{ Route::is('admin.master.divisions.*') ? 'active' : '' }}>Divisi</a>
                     </ul>
                 </li>
             </ul>

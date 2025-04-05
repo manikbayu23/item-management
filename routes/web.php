@@ -49,6 +49,20 @@ Route::middleware(['role:admin'])->group(function () {
                 Route::put('/update/{id}', [AdminSubCategory::class, 'update'])->name('update');
                 Route::delete('/destroy/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
             });
+            Route::prefix('/departments')->name('departments.')->group(function () {
+                Route::get('/', [AdminSubCategory::class, 'index'])->name('index');
+                Route::get('/last-code', [AdminSubCategory::class, 'lastCode'])->name('last-code');
+                Route::post('/', [AdminSubCategory::class, 'store'])->name('store');
+                Route::put('/update/{id}', [AdminSubCategory::class, 'update'])->name('update');
+                Route::delete('/destroy/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
+            });
+            Route::prefix('/divisions')->name('divisions.')->group(function () {
+                Route::get('/', [AdminSubCategory::class, 'index'])->name('index');
+                Route::get('/last-code', [AdminSubCategory::class, 'lastCode'])->name('last-code');
+                Route::post('/', [AdminSubCategory::class, 'store'])->name('store');
+                Route::put('/update/{id}', [AdminSubCategory::class, 'update'])->name('update');
+                Route::delete('/destroy/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
+            });
         });
         Route::prefix('/user-accounts')->name('user-accounts.')->group(function () {
             Route::get('/', [AdminUserAccount::class, 'index'])->name('index');
