@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\CategoryController as AdminCategory;
 use App\Http\Controllers\Admin\ConditionContoller as AdminCondition;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
+use App\Http\Controllers\Admin\DepartmentController as AdminDepartment;
+use App\Http\Controllers\Admin\DivisionController as AdminDivision;
 use App\Http\Controllers\Admin\GroupController as AdminGroup;
 use App\Http\Controllers\Admin\ScopeController as AdminScope;
 use App\Http\Controllers\Admin\SubCategoryController as AdminSubCategory;
@@ -50,18 +52,16 @@ Route::middleware(['role:admin'])->group(function () {
                 Route::delete('/destroy/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
             });
             Route::prefix('/departments')->name('departments.')->group(function () {
-                Route::get('/', [AdminSubCategory::class, 'index'])->name('index');
-                Route::get('/last-code', [AdminSubCategory::class, 'lastCode'])->name('last-code');
-                Route::post('/', [AdminSubCategory::class, 'store'])->name('store');
-                Route::put('/update/{id}', [AdminSubCategory::class, 'update'])->name('update');
-                Route::delete('/destroy/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
+                Route::get('/', [AdminDepartment::class, 'index'])->name('index');
+                Route::post('/', [AdminDepartment::class, 'store'])->name('store');
+                Route::put('/{id}', [AdminDepartment::class, 'update'])->name('update');
+                Route::delete('/{id}', [AdminDepartment::class, 'destroy'])->name('destroy');
             });
             Route::prefix('/divisions')->name('divisions.')->group(function () {
-                Route::get('/', [AdminSubCategory::class, 'index'])->name('index');
-                Route::get('/last-code', [AdminSubCategory::class, 'lastCode'])->name('last-code');
-                Route::post('/', [AdminSubCategory::class, 'store'])->name('store');
-                Route::put('/update/{id}', [AdminSubCategory::class, 'update'])->name('update');
-                Route::delete('/destroy/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
+                Route::get('/', [AdminDivision::class, 'index'])->name('index');
+                Route::post('/', [AdminDivision::class, 'store'])->name('store');
+                Route::put('/{id}', [AdminDivision::class, 'update'])->name('update');
+                Route::delete('/{id}', [AdminDivision::class, 'destroy'])->name('destroy');
             });
         });
         Route::prefix('/user-accounts')->name('user-accounts.')->group(function () {

@@ -93,7 +93,7 @@
                             <div class="col-md-6 col-sm-12 mb-3">
                                 <label class="form-label">Kode :</label>
                                 <input type="text" name="code" id="inputCode" value="{{ old('code') }}"
-                                    class="form-control" placeholder="Example : 1.00" required @readonly(true)>
+                                    class="form-control" placeholder="Example : 1.00" @readonly(true)>
                                 @if ($errors->has('code'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('code') }}</div>
@@ -107,7 +107,7 @@
                                     </span>
                                     <input type="text" id="period" name="period"
                                         class="form-control datepicker-basic" value="{{ old('period') }}"
-                                        placeholder="Pilih Periode" required>
+                                        placeholder="Pilih Periode">
                                 </div>
                                 @if ($errors->has('period'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
@@ -118,7 +118,7 @@
                             <div class="col-md-8 mb-3">
                                 <label class="form-label">Deskripsi :</label>
                                 <input type="text" id="description" name="description" value="{{ old('description') }}"
-                                    class="form-control" placeholder="Persediaan" required>
+                                    class="form-control" placeholder="Persediaan">
                                 @if ($errors->has('description'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('description') }}</div>
@@ -210,6 +210,8 @@
                 form.period.val(period);
                 form.idGroup.val(idGroup).prop('disabled', false);
 
+                $('.form-text').empty();
+
                 $('.modal-title').html(`<i class="ph-pencil-line"></i> Edit Bidang : ${description}`);
                 $('#formScope').attr('action',
                     '{{ route('admin.master.scope.update', ['id' => ':id']) }}'
@@ -227,6 +229,8 @@
                 form.idGroup.val('').prop('disabled', false);
 
                 $('.modal-title').html('<i class="ph-plus"></i> Tambah Bidang');
+
+                $('.form-text').empty();
 
                 $('#formScope').attr('action',
                     '{{ route('admin.master.scope.store') }}');

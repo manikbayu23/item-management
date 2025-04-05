@@ -1,21 +1,21 @@
 @extends('layouts.main')
 
-@section('title_admin', 'Master Golongan')
+@section('title_admin', 'Master Divisi')
 
 @section('content_admin')
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end">
-                <button type="button" id="addGroup" class="btn btn-primary"><i class="ph-plus"></i></button>
+                <button type="button" id="addCategory" class="btn btn-primary"><i class="ph-plus"></i></button>
             </div>
 
             <table class="table table-striped datatable-pagination">
                 <thead>
                     <tr>
                         <th class="text-center">No.</th>
+                        <th class="text-center">Kode Departemen</th>
                         <th class="text-center">Kode</th>
-                        <th>Deskripsi</th>
-                        <th class="text-center">Periode</th>
+                        <th>Nama</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -23,11 +23,13 @@
                     @foreach ($data as $index => $row)
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
-                            <td class="text-center"> <span
-                                    class="badge text-reset bg-dark bg-opacity-20">{{ rtrim($row->code, '.') }}</span></td>
+                            <td class="text-center">
+                                {{ $row->department->code }}
                             </td>
-                            <td>{{ $row->description }}</td>
-                            <td class="text-center">{{ $row->period }}</td>
+                            <td class="text-center">
+                                {{ $row->code }}
+                            </td>
+                            <td>{{ $row->name }}</td>
                             <td class="text-center">
                                 <div class="d-inline-flex">
                                     <div class="dropdown">
@@ -36,14 +38,14 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <button type="button" data-id="{{ $row->id }}"
-                                                data-code="{{ rtrim($row->code, '.') }}"
-                                                data-description="{{ $row->description }}" data-period="{{ $row->period }}"
-                                                class="edit-group dropdown-item">
+                                                data-code="{{ $row->code }}" data-name="{{ $row->name }}"
+                                                data-department="{{ $row->department_id }}"
+                                                class="edit-division dropdown-item">
                                                 <i class="ph-pencil-line me-2"></i>
                                                 Edit
                                             </button>
                                             <button type="button" data-id="{{ $row->id }}"
-                                                data-code="{{ rtrim($row->code, '.') }}" class="delete-group dropdown-item">
+                                                data-name="{{ $row->name }}" class="delete-division dropdown-item">
                                                 <i class="ph-trash me-2"></i>
                                                 Delete
                                             </button>
@@ -59,11 +61,10 @@
                     @endforeach
                 </tbody>
             </table>
-
         </div>
     </div>
 
-    <div id="groupModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
+    <div id="divisionModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -72,43 +73,43 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="formGroup" method="POST">
+                <form id="formDivision" method="POST">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="id" id="idGroup" value="{{ old('id') }}">
+                        <input type="hidden" name="id" id="idDivision" value="{{ old('id') }}">
                         <div class="row">
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <label class="form-label">Departemen :</label>
+                                <select name="idDepartment" id="idDepartment" class="form-control select">
+                                    <option value="" disabled selected>-- Pilih Departemen --</option>
+                                    @foreach ($departments as $departmen)
+                                        <option value="{{ $departmen->id }}"
+                                            @if ($departmen->id == old('idDepartment')) selected @endif>
+                                            [{{ $departmen->code }}]
+                                            {{ $departmen->name }}</option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('idDepartment'))
+                                    <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
+                                        {{ $errors->first('idDepartment') }}</div>
+                                @endif
+                            </div>
                             <div class="col-md-6 col-sm-12 mb-3">
                                 <label class="form-label">Kode :</label>
                                 <input type="text" name="code" id="inputCode" value="{{ old('code') }}"
-                                    class="form-control" placeholder="Example : 1" @readonly(true)>
+                                    class="form-control" placeholder="Example : IT">
                                 @if ($errors->has('code'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('code') }}</div>
                                 @endif
                             </div>
-                            <div class="col-md-6 col-sm-12 mb-3">
-                                <label class="form-label">Periode :</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="ph-calendar"></i>
-                                    </span>
-                                    <input type="text" id="period" name="period"
-                                        class="form-control datepicker-basic" value="{{ old('period') }}"
-                                        placeholder="Pilih Periode"@readonly(true)>
-                                </div>
-                                @if ($errors->has('period'))
-                                    <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                        {{ $errors->first('period') }}</div>
-                                @endif
-                            </div>
-
                             <div class="col-md-12 mb-3">
-                                <label class="form-label">Deskripsi :</label>
-                                <input type="text" id="description" name="description" value="{{ old('description') }}"
-                                    class="form-control" placeholder="Persediaan">
-                                @if ($errors->has('description'))
+                                <label class="form-label">Nama :</label>
+                                <input type="text" id="inputName" name="name" value="{{ old('name') }}"
+                                    class="form-control" placeholder="Information Technology">
+                                @if ($errors->has('name'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                        {{ $errors->first('description') }}</div>
+                                        {{ $errors->first('name') }}</div>
                                 @endif
                             </div>
                         </div>
@@ -136,15 +137,19 @@
     <script src="{{ asset('assets/demo/pages/datatables_basic.js') }}"></script>
     <script src="{{ asset('assets/js/vendor/notifications/sweet_alert.min.js') }}"></script>
     <script src="{{ asset('assets/js/vendor/ui/moment/moment.min.js') }}"></script>
-    <script src="{{ asset('assets/js/vendor/pickers/daterangepicker.js') }}"></script>
-    <script src="{{ asset('assets/js/vendor/pickers/datepicker.min.js') }}"></script>
-
-    <script src="{{ asset('assets/demo/pages/picker_date.js') }}"></script>
 @endpush
 
 @push('script_admin')
     <script>
         $(document).ready(function() {
+
+            let form = {
+                id: $('#idDivision'),
+                code: $('#inputCode'),
+                name: $('#inputName'),
+                idDepartment: $('#idDepartment')
+            }
+
             @if (session('success'))
                 new Noty({
                     text: "{{ session('success') }}",
@@ -155,68 +160,70 @@
             @if ($errors->any())
                 @if (old('id'))
                     $('.modal-title').html(
-                        '<i class="ph-pencil-line"></i> Edit Golongan : {{ old('description') }}');
-                    $('#formGroup').attr('action',
-                        '{{ route('admin.master.group.update', ['id' => ':id']) }}'
+                        '<i class="ph-pencil-line"></i> Edit Divisi : {{ old('name') }}');
+
+                    $('#formDivision').attr('action',
+                        '{{ route('admin.master.divisions.update', ['id' => ':id']) }}'
                         .replace(
                             ':id', "{{ old('id') }}"));
-                    $('#formGroup').append('<input type="hidden" name="_method" value="PUT">');
+                    form.idDepartment.val('{{ old('idDepartment') }}').trigger('change').prop('disabled', false);
+                    $('#formDivision').append('<input type="hidden" name="_method" value="PUT">');
                 @else
-                    $('.modal-title').html('<i class="ph-plus"></i> Tambah Golongan');
-                    $('#formGroup').attr('action',
-                        '{{ route('admin.master.group.store') }}');
+                    $('.modal-title').html('<i class="ph-plus"></i> Tambah Departmen');
+                    $('#formDivision').attr('action',
+                        '{{ route('admin.master.divisions.store') }}');
                 @endif
-                $('#groupModal').modal('show');
+                $('#divisionModal').modal('show');
             @endif
 
-            let form = {
-                id: $('#idGroup'),
-                code: $('#inputCode'),
-                description: $('#description'),
-                period: $('#period'),
-            }
 
-            $(document).on('click', '.edit-group', function() {
+            $(document).on('click', '.edit-division', function() {
                 const id = $(this).data('id');
                 const code = $(this).data('code');
-                const description = $(this).data('description');
-                const period = $(this).data('period');
+                const name = $(this).data('name');
+                const idDepartment = $(this).data('department');
 
                 form.id.val(id);
                 form.code.val(code);
-                form.description.val(description);
-                form.period.val(period);
+                form.name.val(name);
+                form.idDepartment.val(idDepartment).prop('disabled', false);
 
                 $('.form-text').empty();
 
-                $('.modal-title').html(`<i class="ph-pencil-line"></i> Edit Golongan : ${description}`);
-                $('#formGroup').attr('action',
-                    '{{ route('admin.master.group.update', ['id' => ':id']) }}'
+                $('.modal-title').html(`<i class="ph-pencil-line"></i> Edit Divisi : ${name}`);
+                $('#formDivision').attr('action',
+                    '{{ route('admin.master.divisions.update', ['id' => ':id']) }}'
                     .replace(
                         ':id', id));
-                $('#formGroup').append('<input type="hidden" name="_method" value="PUT">');
-                $('#groupModal').modal('show');
+                $('#formDivision').append('<input type="hidden" name="_method" value="PUT">');
+                $('#divisionModal').modal('show');
             });
 
-            $('#addGroup').on('click', function() {
+            $('#addCategory').on('click', function() {
                 form.id.val('');
-                form.description.val('');
-                form.period.val('');
+                form.code.val('');
+                form.name.val('');
+                form.idDepartment.val('').prop('disabled', false);
+
                 $('.form-text').empty();
 
-                getLastCode()
+                $('.modal-title').html('<i class="ph-plus"></i> Tambah Divisi');
+
+                $('#formDivision').attr('action',
+                    '{{ route('admin.master.divisions.store') }}');
+                $('#formDivision').append('<input type="hidden" name="_method" value="POST">');
+
+                $('#divisionModal').modal('show');
             })
 
-            $('#inputCode').on('input', function() {
-                $(this).val($(this).val().replace(/[^0-9.]/g, '')); // Hanya angka dan titik
-            });
-
-            $(document).on('click', '.delete-group', function() {
+            $(document).on('click', '.delete-division', function() {
                 const id = $(this).data('id');
                 const code = $(this).data('code');
+                const name = $(this).data('name');
+
                 Swal.fire({
                     title: 'Perhatian!',
-                    text: `Hapus kategori, code : ${code}?`,
+                    text: `Hapus divisi ${name}?`,
                     icon: 'info',
                     showCancelButton: true,
                     customClass: {
@@ -226,39 +233,13 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $('.delete-form').attr('action',
-                            '{{ route('admin.master.group.destroy', ['id' => ':id']) }}'
+                            '{{ route('admin.master.divisions.destroy', ['id' => ':id']) }}'
                             .replace(
                                 ':id', id));
                         $('.delete-form').submit();
                     }
                 });
             });
-
-            function getLastCode() {
-                $.ajax({
-                    method: 'GET',
-                    url: "{{ route('admin.master.group.last-code') }}",
-                    dataType: 'json',
-                    success: function(response) {
-                        form.code.val(response.code);
-                        $('.modal-title').html('<i class="ph-plus"></i> Tambah Golongan');
-
-                        $('#formGroup').attr('action',
-                            '{{ route('admin.master.group.store') }}');
-                        $('#formSubCategory').append(
-                            '<input type="hidden" name="_method" value="POST">');
-
-                        $('#groupModal').modal('show');
-
-                    },
-                    error: function(error) {
-                        new Noty({
-                            text: "Terjadi kesalahan sistem",
-                            type: 'error'
-                        }).show();
-                    }
-                })
-            }
         })
     </script>
 @endpush

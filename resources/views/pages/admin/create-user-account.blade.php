@@ -61,7 +61,7 @@
                             <div class="col-md-4 col-sm-12 mb-3">
                                 <label class="form-label">No Telepon :</label>
                                 <input type="text" name="phone" id="phone" value="{{ old('phone') }}"
-                                    class="form-control" placeholder="Example : 081338756574" required>
+                                    class="form-control" placeholder="Example : 081338756574">
                                 @if ($errors->has('phone'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('phone') }}</div>
@@ -70,7 +70,7 @@
                             <div class="col-md-4 col-sm-12 mb-3">
                                 <label class="form-label">Email :</label>
                                 <input type="email" name="email" id="email" value="{{ old('email') }}"
-                                    class="form-control" placeholder="Example : jongede@gmail.com" required>
+                                    class="form-control" placeholder="Example : jongede@gmail.com">
                                 @if ($errors->has('email'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('email') }}</div>
@@ -81,7 +81,7 @@
                                 <label class="form-label">Password :</label>
                                 <div class="input-group">
                                     <input type="text" name="password" id="password" value="{{ old('password') }}"
-                                        class="form-control" required>
+                                        class="form-control">
                                     <button class="btn btn-light" type="button" id="repeat-password"><i
                                             class="ph-repeat"></i>
                                     </button>
