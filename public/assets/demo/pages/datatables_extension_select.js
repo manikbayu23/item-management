@@ -75,7 +75,7 @@ const DatatableSelect = function() {
                 {
                     orderable: false,
                     width: 100,
-                    targets: 6
+                    targets: 4
                 }
             ],
             select: {

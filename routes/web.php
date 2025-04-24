@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AssetController as AdminAsset;
 use App\Http\Controllers\Admin\CategoryController as AdminCategory;
 use App\Http\Controllers\Admin\ConditionContoller as AdminCondition;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
@@ -72,6 +73,12 @@ Route::middleware(['role:admin'])->group(function () {
             Route::put('/{id}', [AdminUserAccount::class, 'update'])->name('update');
             Route::delete('/{id}', [AdminUserAccount::class, 'destroy'])->name('destroy');
             Route::get('/profile-picture/{folder}/{filename}', [AdminUserAccount::class, 'profile_picture'])->name('profile-picture');
+        });
+        Route::prefix('/assets')->name('assets.')->group(function () {
+            Route::get('/', [AdminAsset::class, 'index'])->name('index');
+            Route::post('/', [AdminAsset::class, 'store'])->name('store');
+            Route::update('/{id}', [AdminAsset::class, 'update'])->name('update');
+            Route::post('/print', [AdminAsset::class, 'printPdf'])->name('print');
         });
     });
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

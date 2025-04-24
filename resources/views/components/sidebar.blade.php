@@ -44,6 +44,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('admin.assets.index') }}"
+                        class="nav-link {{ Route::is('admin.assets.*') ? 'active' : '' }}">
+                        <i class="ph-package"></i>
+                        <span>
+                            Daftar Aset
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('admin.user-accounts.index') }}"
                         class="nav-link {{ Route::is('admin.user-accounts.*') ? 'active' : '' }}">
                         <i class="ph-users"></i>
