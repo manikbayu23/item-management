@@ -77,7 +77,7 @@ Route::middleware(['role:admin'])->group(function () {
         Route::prefix('/assets')->name('assets.')->group(function () {
             Route::get('/', [AdminAsset::class, 'index'])->name('index');
             Route::post('/', [AdminAsset::class, 'store'])->name('store');
-            Route::update('/{id}', [AdminAsset::class, 'update'])->name('update');
+            Route::put('/{id}', [AdminAsset::class, 'update'])->name('update');
             Route::post('/print', [AdminAsset::class, 'printPdf'])->name('print');
         });
     });
