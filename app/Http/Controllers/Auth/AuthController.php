@@ -18,6 +18,13 @@ class AuthController extends Controller
         }
         return view('pages.auth.login');
     }
+    public function loginWithNik()
+    {
+        if (Auth::check()) {
+            return Auth::user()->account->role == 'admin' ? redirect()->route('admin.dashboard') : redirect('/'); // Ubah ke route tujuan
+        }
+        return view('pages.auth.login-with-nik');
+    }
     public function do_login(Request $request)
     {
         $validate = $request->validate([

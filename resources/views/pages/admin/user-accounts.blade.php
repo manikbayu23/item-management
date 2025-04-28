@@ -6,7 +6,8 @@
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end">
-                <a href="{{ route('admin.user-accounts.create') }}" class="btn btn-primary"><i class="ph-plus me-1"></i> Buat
+                <a href="{{ route('admin.user-accounts.create') }}" class="btn btn-primary"><i class="ph-plus-circle me-1"></i>
+                    Buat
                     Akun</a>
             </div>
             <table class="table table-striped datatable-pagination">

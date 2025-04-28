@@ -6,7 +6,7 @@
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end">
-                <button type="button" id="addGroup" class="btn btn-primary"><i class="ph-plus"></i></button>
+                <button type="button" id="addGroup" class="btn btn-primary"><i class="ph-plus-circle"></i></button>
             </div>
 
             <table class="table table-striped datatable-pagination">
@@ -162,7 +162,7 @@
                             ':id', "{{ old('id') }}"));
                     $('#formGroup').append('<input type="hidden" name="_method" value="PUT">');
                 @else
-                    $('.modal-title').html('<i class="ph-plus"></i> Tambah Golongan');
+                    $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Golongan');
                     $('#formGroup').attr('action',
                         '{{ route('admin.master.group.store') }}');
                 @endif
@@ -241,7 +241,7 @@
                     dataType: 'json',
                     success: function(response) {
                         form.code.val(response.code);
-                        $('.modal-title').html('<i class="ph-plus"></i> Tambah Golongan');
+                        $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Golongan');
 
                         $('#formGroup').attr('action',
                             '{{ route('admin.master.group.store') }}');

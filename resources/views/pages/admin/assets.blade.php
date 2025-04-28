@@ -7,7 +7,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-end gap-2">
                 <button type="button" id="printAssets" class="btn btn-success"><i class="ph-printer"></i></button>
-                <button type="button" id="addDepartment" class="btn btn-primary"><i class="ph-plus"></i></button>
+                <button type="button" id="addDepartment" class="btn btn-primary"><i class="ph-plus-circle"></i></button>
             </div>
 
             <table class="table table-striped datatable-pagination datatable-select-checkbox">

@@ -6,7 +6,7 @@
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end">
-                <button type="button" id="addCategory" class="btn btn-primary"><i class="ph-plus"></i></button>
+                <button type="button" id="addCategory" class="btn btn-primary"><i class="ph-plus-circle"></i></button>
             </div>
 
             <table class="table table-striped datatable-pagination">
@@ -77,11 +77,14 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" name="id" id="idCategory" value="{{ old('id') }}">
+                        <input type="hidden" name="oldScope" id="oldScope" value="{{ old('oldScope') }}">
+                        <input type="hidden" name="oldCode" id="oldCode" value="{{ old('oldCode') }}">
                         <div class="row">
                             <div class="col-md-6 col-sm-12 mb-3">
                                 <label class="form-label">Bidang :</label>
-                                <select name="idScope" id="idScope" class="form-control select">
-                                    <option value="" disabled selected>-- Pilih Bidang --</option>
+                                <select name="idScope" id="idScope" class="form-control select"
+                                    data-placeholder="Pilih Bidang...">
+                                    <option></option>
                                     @foreach ($scopes as $scope)
                                         <option value="{{ $scope->id }}"
                                             @if ($scope->id == old('idScope')) selected @endif>
@@ -117,8 +120,8 @@
 
                             <div class="col-md-8 mb-3">
                                 <label class="form-label">Deskripsi :</label>
-                                <input type="text" id="description" name="description" value="{{ old('description') }}"
-                                    class="form-control" placeholder="Persediaan">
+                                <input type="text" id="description" name="description"
+                                    value="{{ old('description') }}" class="form-control" placeholder="Persediaan">
                                 @if ($errors->has('description'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('description') }}</div>
@@ -151,6 +154,8 @@
     <script src="{{ asset('assets/js/vendor/ui/moment/moment.min.js') }}"></script>
     <script src="{{ asset('assets/js/vendor/pickers/daterangepicker.js') }}"></script>
     <script src="{{ asset('assets/js/vendor/pickers/datepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/js/vendor/forms/selects/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/demo/pages/form_select2.js') }}"></script>
 
     <script src="{{ asset('assets/demo/pages/picker_date.js') }}"></script>
 @endpush
@@ -165,6 +170,8 @@
                 description: $('#description'),
                 period: $('#period'),
                 idScope: $('#idScope'),
+                oldScope: $('#oldScope'),
+                oldCode: $('#oldCode'),
             }
 
             @if (session('success'))
@@ -183,16 +190,17 @@
                         '{{ route('admin.master.category.update', ['id' => ':id']) }}'
                         .replace(
                             ':id', "{{ old('id') }}"));
+                    form.oldScope.val('{{ old('oldScope') }}');
+                    form.oldCode.val('{{ old('oldCode') }}');
                     form.idScope.val('{{ old('idScope') }}').trigger('change').prop('disabled', false);
                     $('#formCategory').append('<input type="hidden" name="_method" value="PUT">');
                 @else
-                    $('.modal-title').html('<i class="ph-plus"></i> Tambah Kelompok');
+                    $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Kelompok');
                     $('#formCategory').attr('action',
                         '{{ route('admin.master.category.store') }}');
                 @endif
                 $('#categoryModal').modal('show');
             @endif
-
 
             $(document).on('click', '.edit-scope', function() {
                 const id = $(this).data('id');
@@ -201,11 +209,14 @@
                 const period = $(this).data('period');
                 const idScope = $(this).data('scope-id');
 
+                form.oldScope.val(idScope);
+                form.oldCode.val(code);
+
                 form.id.val(id);
                 form.code.val(code);
                 form.description.val(description);
                 form.period.val(period);
-                form.idScope.val(idScope).prop('disabled', false);
+                form.idScope.val(idScope).trigger('change').prop('disabled', false);
 
                 $('.form-text').empty();
 
@@ -219,14 +230,17 @@
             });
 
             $('#addCategory').on('click', function() {
+                form.oldScope.val('');
+                form.oldCode.val('');
+
                 form.id.val('');
                 form.description.val('');
                 form.period.val('');
                 form.code.val('');
-                form.idScope.val('').prop('disabled', false);
+                form.idScope.val('').trigger('change').prop('disabled', false);
                 $('.form-text').empty();
 
-                $('.modal-title').html('<i class="ph-plus"></i> Tambah Kelompok');
+                $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Kelompok');
 
                 $('#formCategory').attr('action',
                     '{{ route('admin.master.category.store') }}');
@@ -264,6 +278,13 @@
 
             $('#idScope').on('change', function() {
                 const id = $(this).val();
+
+                if (!id) return;
+
+                if (form.oldScope.val() == id) {
+                    form.code.val(form.oldCode.val());
+                    return;
+                }
 
                 $.ajax({
                     method: 'GET',

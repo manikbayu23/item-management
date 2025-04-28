@@ -6,7 +6,7 @@
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end">
-                <button type="button" id="addScope" class="btn btn-primary"><i class="ph-plus"></i></button>
+                <button type="button" id="addScope" class="btn btn-primary"><i class="ph-plus-circle"></i></button>
             </div>
 
             <table class="table table-striped datatable-pagination">
@@ -76,11 +76,14 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" name="id" id="idScope" value="{{ old('id') }}">
+                        <input type="hidden" name="oldGroup" id="oldGroup" value="{{ old('oldGroup') }}">
+                        <input type="hidden" name="oldCode" id="oldCode" value="{{ old('oldCode') }}">
                         <div class="row">
                             <div class="col-md-6 col-sm-12 mb-3">
                                 <label class="form-label">Golongan :</label>
-                                <select name="idGroup" id="idGroup" class="form-control select">
-                                    <option value="" disabled selected>-- Pilih Golongan --</option>
+                                <select name="idGroup" id="idGroup" class="form-control select"
+                                    data-placeholder="Pilih Golongan...">
+                                    <option></option>
                                     @foreach ($groups as $group)
                                         <option value="{{ $group->id }}"
                                             @if ($group->id == old('idGroup')) selected @endif>
@@ -117,8 +120,8 @@
 
                             <div class="col-md-8 mb-3">
                                 <label class="form-label">Deskripsi :</label>
-                                <input type="text" id="description" name="description" value="{{ old('description') }}"
-                                    class="form-control" placeholder="Persediaan">
+                                <input type="text" id="description" name="description"
+                                    value="{{ old('description') }}" class="form-control" placeholder="Persediaan">
                                 @if ($errors->has('description'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('description') }}</div>
@@ -151,6 +154,8 @@
     <script src="{{ asset('assets/js/vendor/ui/moment/moment.min.js') }}"></script>
     <script src="{{ asset('assets/js/vendor/pickers/daterangepicker.js') }}"></script>
     <script src="{{ asset('assets/js/vendor/pickers/datepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/js/vendor/forms/selects/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/demo/pages/form_select2.js') }}"></script>
 
     <script src="{{ asset('assets/demo/pages/picker_date.js') }}"></script>
 @endpush
@@ -165,6 +170,8 @@
                 description: $('#description'),
                 period: $('#period'),
                 idGroup: $('#idGroup'),
+                oldGroup: $('#oldGroup'),
+                oldCode: $('#oldCode'),
             }
 
             @if (session('success'))
@@ -173,9 +180,6 @@
                     type: 'success'
                 }).show();
             @endif
-
-            console.log("{{ old('idGroup') }}");
-
 
             @if ($errors->any())
                 @if (old('id'))
@@ -186,16 +190,17 @@
                         '{{ route('admin.master.scope.update', ['id' => ':id']) }}'
                         .replace(
                             ':id', "{{ old('id') }}"));
+                    form.oldCode.val('{{ old('oldCode') }}');
+                    form.oldGroup.val('{{ old('oldGroup') }}');
                     form.idGroup.val('{{ old('idGroup') }}').trigger('change').prop('disabled', false);
                     $('#formScope').append('<input type="hidden" name="_method" value="PUT">');
                 @else
-                    $('.modal-title').html('<i class="ph-plus"></i> Tambah Bidang');
+                    $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Bidang');
                     $('#formScope').attr('action',
                         '{{ route('admin.master.scope.store') }}');
                 @endif
                 $('#scopeModal').modal('show');
             @endif
-
 
             $(document).on('click', '.edit-scope', function() {
                 const id = $(this).data('id');
@@ -204,11 +209,14 @@
                 const period = $(this).data('period');
                 const idGroup = $(this).data('group-id');
 
+                form.oldCode.val(code);
+                form.oldGroup.val(idGroup);
+
                 form.id.val(id);
                 form.code.val(code);
                 form.description.val(description);
                 form.period.val(period);
-                form.idGroup.val(idGroup).prop('disabled', false);
+                form.idGroup.val(idGroup).trigger('change').prop('disabled', false);
 
                 $('.form-text').empty();
 
@@ -222,13 +230,16 @@
             });
 
             $('#addScope').on('click', function() {
+                form.oldCode.val('');
+                form.oldGroup.val('');
+
                 form.id.val('');
                 form.description.val('');
                 form.period.val('');
                 form.code.val('');
-                form.idGroup.val('').prop('disabled', false);
+                form.idGroup.val('').trigger('change').prop('disabled', false);
 
-                $('.modal-title').html('<i class="ph-plus"></i> Tambah Bidang');
+                $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Bidang');
 
                 $('.form-text').empty();
 
@@ -265,9 +276,16 @@
                 });
             });
 
+
             $('#idGroup').on('change', function() {
                 const id = $(this).val();
 
+                if (!id) return;
+
+                if (id == form.oldGroup.val()) {
+                    form.code.val(form.oldCode.val());
+                    return;
+                }
                 $.ajax({
                     method: 'GET',
                     url: "{{ route('admin.master.scope.last-code') }}?idGroup=" + id,

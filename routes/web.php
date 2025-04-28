@@ -11,14 +11,22 @@ use App\Http\Controllers\Admin\ScopeController as AdminScope;
 use App\Http\Controllers\Admin\SubCategoryController as AdminSubCategory;
 use App\Http\Controllers\Admin\UserAccountController as AdminUserAccount;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\User\AssetSubmissionController as UserAssetSubmission;
+use App\Http\Controllers\User\DashboardController as UserDashboard;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/login-with-nik', [AuthController::class, 'loginWithNik'])->name('login-with-nik');
 Route::post('/login', [AuthController::class, 'do_login'])->name('do-login');
+
+Route::prefix('/')->name('user.')->group(function () {
+    Route::get('/', [UserDashboard::class, 'index'])->name('dashboard');
+    Route::prefix('/assets')->name('assets.')->group(function () {
+        Route::get('/history', [UserAssetSubmission::class, 'index'])->name('history');
+        Route::get('/form', [UserAssetSubmission::class, 'form'])->name('form');
+
+    });
+});
 
 Route::middleware(['role:admin'])->group(function () {
     Route::prefix('/admin')->name('admin.')->group(function () {
@@ -28,29 +36,29 @@ Route::middleware(['role:admin'])->group(function () {
                 Route::get('/', [AdminGroup::class, 'index'])->name('index');
                 Route::get('/last-code', [AdminGroup::class, 'lastCode'])->name('last-code');
                 Route::post('/', [AdminGroup::class, 'store'])->name('store');
-                Route::put('/update/{id}', [AdminGroup::class, 'update'])->name('update');
-                Route::delete('/destroy/{id}', [AdminGroup::class, 'destroy'])->name('destroy');
+                Route::put('/{id}', [AdminGroup::class, 'update'])->name('update');
+                Route::delete('/{id}', [AdminGroup::class, 'destroy'])->name('destroy');
             });
             Route::prefix('/scopes')->name('scope.')->group(function () {
                 Route::get('/', [AdminScope::class, 'index'])->name('index');
                 Route::get('/last-code', [AdminScope::class, 'lastCode'])->name('last-code');
                 Route::post('/', [AdminScope::class, 'store'])->name('store');
-                Route::put('/update/{id}', [AdminScope::class, 'update'])->name('update');
-                Route::delete('/destroy/{id}', [AdminScope::class, 'destroy'])->name('destroy');
+                Route::put('/{id}', [AdminScope::class, 'update'])->name('update');
+                Route::delete('/{id}', [AdminScope::class, 'destroy'])->name('destroy');
             });
-            Route::prefix('/category')->name('category.')->group(function () {
+            Route::prefix('/categories')->name('category.')->group(function () {
                 Route::get('/', [AdminCategory::class, 'index'])->name('index');
                 Route::get('/last-code', [AdminCategory::class, 'lastCode'])->name('last-code');
                 Route::post('/', [AdminCategory::class, 'store'])->name('store');
-                Route::put('/update/{id}', [AdminCategory::class, 'update'])->name('update');
-                Route::delete('/destroy/{id}', [AdminCategory::class, 'destroy'])->name('destroy');
+                Route::put('/{id}', [AdminCategory::class, 'update'])->name('update');
+                Route::delete('/{id}', [AdminCategory::class, 'destroy'])->name('destroy');
             });
-            Route::prefix('/sub-category')->name('sub-category.')->group(function () {
+            Route::prefix('/sub-categories')->name('sub-category.')->group(function () {
                 Route::get('/', [AdminSubCategory::class, 'index'])->name('index');
                 Route::get('/last-code', [AdminSubCategory::class, 'lastCode'])->name('last-code');
                 Route::post('/', [AdminSubCategory::class, 'store'])->name('store');
-                Route::put('/update/{id}', [AdminSubCategory::class, 'update'])->name('update');
-                Route::delete('/destroy/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
+                Route::put('/{id}', [AdminSubCategory::class, 'update'])->name('update');
+                Route::delete('/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
             });
             Route::prefix('/departments')->name('departments.')->group(function () {
                 Route::get('/', [AdminDepartment::class, 'index'])->name('index');
@@ -83,3 +91,4 @@ Route::middleware(['role:admin'])->group(function () {
     });
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
+

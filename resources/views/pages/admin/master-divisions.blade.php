@@ -6,7 +6,7 @@
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end">
-                <button type="button" id="addCategory" class="btn btn-primary"><i class="ph-plus"></i></button>
+                <button type="button" id="addCategory" class="btn btn-primary"><i class="ph-plus-circle"></i></button>
             </div>
 
             <table class="table table-striped datatable-pagination">
@@ -169,7 +169,7 @@
                     form.idDepartment.val('{{ old('idDepartment') }}').trigger('change').prop('disabled', false);
                     $('#formDivision').append('<input type="hidden" name="_method" value="PUT">');
                 @else
-                    $('.modal-title').html('<i class="ph-plus"></i> Tambah Departmen');
+                    $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Departmen');
                     $('#formDivision').attr('action',
                         '{{ route('admin.master.divisions.store') }}');
                 @endif
@@ -207,7 +207,7 @@
 
                 $('.form-text').empty();
 
-                $('.modal-title').html('<i class="ph-plus"></i> Tambah Divisi');
+                $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Divisi');
 
                 $('#formDivision').attr('action',
                     '{{ route('admin.master.divisions.store') }}');

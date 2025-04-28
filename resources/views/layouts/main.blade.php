@@ -14,7 +14,6 @@
     <link href="{{ asset('assets/css/ltr/all.min.css') }}" id="stylesheet" rel="stylesheet" type="text/css">
 
 
-
     @stack('style_admin')
 
     <style>
