@@ -19,12 +19,13 @@ Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/login-with-nik', [AuthController::class, 'loginWithNik'])->name('login-with-nik');
 Route::post('/login', [AuthController::class, 'do_login'])->name('do-login');
 
-Route::prefix('/')->name('user.')->group(function () {
-    Route::get('/', [UserDashboard::class, 'index'])->name('dashboard');
-    Route::prefix('/assets')->name('assets.')->group(function () {
-        Route::get('/history', [UserAssetSubmission::class, 'index'])->name('history');
-        Route::get('/form', [UserAssetSubmission::class, 'form'])->name('form');
-
+Route::middleware(['role:admin,user'])->group(function () {
+    Route::prefix('/')->name('user.')->group(function () {
+        Route::get('/', [UserDashboard::class, 'index'])->name('dashboard');
+        Route::prefix('/assets')->name('assets.')->group(function () {
+            Route::get('/history', [UserAssetSubmission::class, 'index'])->name('history');
+            Route::get('/form', [UserAssetSubmission::class, 'form'])->name('form');
+        });
     });
 });
 
@@ -82,10 +83,13 @@ Route::middleware(['role:admin'])->group(function () {
             Route::delete('/{id}', [AdminUserAccount::class, 'destroy'])->name('destroy');
             Route::get('/profile-picture/{folder}/{filename}', [AdminUserAccount::class, 'profile_picture'])->name('profile-picture');
         });
-        Route::prefix('/assets')->name('assets.')->group(function () {
+        Route::prefix('/assets')->name('asset.')->group(function () {
             Route::get('/', [AdminAsset::class, 'index'])->name('index');
+            Route::get('/last-code', [AdminAsset::class, 'lastCode'])->name('last-code');
+            Route::get('/create', [AdminAsset::class, 'create'])->name('create');
             Route::post('/', [AdminAsset::class, 'store'])->name('store');
             Route::put('/{id}', [AdminAsset::class, 'update'])->name('update');
+            Route::put('/{id}/update-status', [AdminAsset::class, 'updateStatus'])->name('update-status');
             Route::post('/print', [AdminAsset::class, 'printPdf'])->name('print');
         });
     });

@@ -7,7 +7,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-end gap-2">
                 <button type="button" id="printAssets" class="btn btn-success"><i class="ph-printer"></i></button>
-                <button type="button" id="addDepartment" class="btn btn-primary"><i class="ph-plus-circle"></i></button>
+                <a href="{{ route('admin.asset.create') }}" class="btn btn-primary"><i class="ph-plus-circle"></i></a>
             </div>
 
             <table class="table table-striped datatable-pagination datatable-select-checkbox">
@@ -55,14 +55,22 @@
                                                 <i class="ph-printer me-2"></i>
                                                 Print
                                             </button>
-                                            <button type="button" class="delete-scope dropdown-item">
-                                                <i class="ph-check-circle me-2"></i>
-                                                Nonaktifkan
-                                            </button>
-                                            <button type="button" class="delete-scope dropdown-item">
-                                                <i class="ph-x-circle me-2"></i>
-                                                Aktifkan
-                                            </button>
+                                            <form class="updateStatus" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="button" class="option-status dropdown-item"
+                                                    data-id="{{ $row->id }}" data-name="{{ $row->name }}"
+                                                    data-status="1">
+                                                    <i class="ph-check-circle me-2"></i>
+                                                    Aktifkan
+                                                </button>
+                                                <button type="button" class="option-status dropdown-item"
+                                                    data-id="{{ $row->id }}" data-name="{{ $row->name }}"
+                                                    data-status="0">
+                                                    <i class="ph-x-circle me-2"></i>
+                                                    Nonaktifkan
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +160,7 @@
 
             const printAsset = (type) => {
                 $.ajax({
-                    url: '{{ route('admin.assets.print') }}', // URL untuk mengakses controller
+                    url: '{{ route('admin.asset.print') }}', // URL untuk mengakses controller
                     type: 'POST',
                     data: {
                         assets: asset.assets, // Kirim data assets
@@ -177,6 +185,38 @@
                     }
                 });
             }
+
+            $('.option-status').on('click', function() {
+                const id = $(this).data('id');
+                const name = $(this).data('name');
+                const status = $(this).data('status');
+
+                let text = 'menonaktifkan';
+                if (status) {
+                    text = 'mengaktifkan';
+                }
+
+                Swal.fire({
+                    title: 'Perhatian!',
+                    text: `Yakin ingin ${text} ${name}?`,
+                    icon: 'info',
+                    showCancelButton: true,
+                    customClass: {
+                        confirmButton: 'btn btn-primary',
+                        cancelButton: 'btn btn-light'
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('.updateStatus').attr('action',
+                            '{{ route('admin.asset.update-status', ['id' => ':id']) }}'
+                            .replace(
+                                ':id', id));
+                        $('.updateStatus').append('<input type="hidden" name="status" value="' +
+                            status + '">');
+                        $('.updateStatus').submit();
+                    }
+                });
+            })
         })
     </script>
 @endpush

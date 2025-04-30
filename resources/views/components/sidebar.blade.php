@@ -44,8 +44,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.assets.index') }}"
-                        class="nav-link {{ Route::is('admin.assets.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.asset.index') }}"
+                        class="nav-link {{ Route::is('admin.asset.*') ? 'active' : '' }}">
                         <i class="ph-package"></i>
                         <span>
                             Daftar Aset
