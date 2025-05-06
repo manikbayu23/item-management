@@ -39,30 +39,16 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">NIK</label>
                         <div class="form-control-feedback form-control-feedback-start">
-                            <input type="email" name="email" value="{{ old('email', 'johndoe@example.com') }}"
-                                class="form-control" placeholder="john@doe.com" required>
+                            <input type="text" name="nik" value="{{ old('nik', '12131323') }}" class="form-control"
+                                placeholder="123123123xxxx" required>
                             <div class="form-control-feedback-icon">
-                                <i class="ph-user-circle text-muted"></i>
+                                <i class="ph-identification-card text-muted"></i>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <div class="form-control-feedback form-control-feedback-start">
-                            <input type="password" name="password" value="{{ old('password', '12345678') }}"
-                                class="form-control" placeholder="•••••••••••" required>
-                            <div class="form-control-feedback-icon">
-                                <i class="ph-lock text-muted"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        {{-- <a href="{{ route('forgot_password') }}">Forgot password?</a> --}}
-                    </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary w-100">Sign in</button>
                     </div>
@@ -72,15 +58,14 @@
                     </div>
 
                     <div class="text-center mb-3">
-                        <a href="{{ route('login-with-nik') }}"
+                        <a href="{{ route('login') }}"
                             class="btn btn-flat-secondary btn-labeled btn-labeled-start rounded-pill">
                             <span class="btn-labeled-icon bg-secondary text-white rounded-pill">
-                                <i class="ph-identification-card"></i>
+                                <i class="ph-user-circle"></i>
                             </span>
-                            NIK
+                            Akun Silagas
                         </a>
                     </div>
-
                 </div>
             </div>
         </form>

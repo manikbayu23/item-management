@@ -183,6 +183,30 @@ var DateTimePickers = function() {
             });
         }
 
+        // Basic example
+        const dpBasicLoanElement = document.querySelector('.datepicker-basic-loan');
+        if(dpBasicLoanElement) {
+            const dpBasicLoan = new Datepicker(dpBasicLoanElement, {
+                container: '.content-inner',
+                buttonClass: 'btn',
+                prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
+                nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
+                minDate : new Date()
+            });
+        }
+
+        // Basic example
+        const dpBasicReturnElement = document.querySelector('.datepicker-basic-return');
+        if(dpBasicReturnElement) {
+            const dpBasicReturn = new Datepicker(dpBasicReturnElement, {
+                container: '.content-inner',
+                buttonClass: 'btn',
+                prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
+                nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
+                minDate : new Date()
+            });
+        }
+
         // Hide on selection
         const dpAutoHideElement = document.querySelector('.datepicker-autohide');
         if(dpAutoHideElement) {
