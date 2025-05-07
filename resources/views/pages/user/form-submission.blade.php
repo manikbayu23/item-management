@@ -2,11 +2,12 @@
 @section('title', 'Form Peminjaman Aset')
 @section('content_user')
     <div class="d-flex justify-content-center">
-        <div class="card col-12 col-md-10 col-lg-8">
+        <div class="card col-12 col-md-10 col-lg-8 rounded-0">
             <form action="">
                 <div class="card-body">
                     <fieldset>
-                        <legend class="fs-base fw-bold border-bottom pb-2 mb-3">Data Diri</legend>
+                        <legend class="fs-base fw-bold border-bottom pb-2 mb-3"><i class="ph-user-circle"></i> Data Diri
+                        </legend>
                         <div class="row mb-3">
                             <div class="col-12 col-md-6">
                                 <label class="form-label">Nama <span class="text-danger">*</span></label></label>
@@ -19,7 +20,8 @@
                         </div>
                     </fieldset>
                     <fieldset>
-                        <legend class="fs-base fw-bold border-bottom pb-2 mb-3">Data Peminjaman</legend>
+                        <legend class="fs-base fw-bold border-bottom pb-2 mb-3"><i class="ph-package"></i> Data Peminjaman
+                        </legend>
                         <div class="row mb-3">
                             <div class="col-12 mb-3">
                                 <label class="form-label">Detail Asset <span class="text-danger">*</span></label></label>
@@ -63,7 +65,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="d-flex justify-content-end gap-2">
-                        <button class="btn btn-primary">Submit</button>
+                        <button class="btn btn-primary"><i class="ph-paper-plane-tilt"></i> Submit</button>
                     </div>
                 </div>
             </form>
