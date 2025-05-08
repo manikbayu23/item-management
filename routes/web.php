@@ -85,7 +85,7 @@ Route::middleware(['role:admin'])->group(function () {
         });
         Route::prefix('/assets')->name('asset.')->group(function () {
             Route::get('/', [AdminAsset::class, 'index'])->name('index');
-            Route::get('/', [AdminAsset::class, 'data'])->name('data');
+            Route::get('/data', [AdminAsset::class, 'data'])->name('data');
             Route::get('/last-code', [AdminAsset::class, 'lastCode'])->name('last-code');
             Route::get('/create', [AdminAsset::class, 'create'])->name('create');
             Route::post('/', [AdminAsset::class, 'store'])->name('store');

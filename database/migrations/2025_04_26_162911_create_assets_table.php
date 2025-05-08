@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -20,7 +19,7 @@ return new class extends Migration
             $table->year('procurement')->nullable()->comment('Tahun Pengadaan');
             $table->date('acquisition')->comment('Tanggal Perolehan');
 
-            $table->foreignId('program_id');
+            $table->foreignId('department_id');
 
             $table->string('type', length: 100)->comment('Jenis Barang');
             $table->text('asset_identity')->comment('Identitas Barang');

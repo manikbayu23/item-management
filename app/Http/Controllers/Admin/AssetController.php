@@ -11,6 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use Illuminate\Support\Facades\Storage;
 
 class AssetController extends Controller
@@ -48,7 +49,9 @@ class AssetController extends Controller
         return view('pages.admin.assets', compact(['data']));
     }
 
-    public function data(Request $request) {}
+    public function data(Request $request)
+    {
+    }
 
     public function lastCode(Request $request)
     {
@@ -57,13 +60,10 @@ class AssetController extends Controller
             $codeSubCategory = SubCategory::where('id', $id)->pluck('code')->first();
 
             // // Ambil kode terakhir dari Scope yang memiliki prefix sesuai dengan codeGroup
-            // $codeScope = Scope::where('code', 'like', "{$codeGroup}%")
-            //     ->where('group_id', $id)
-            //     ->latest('code')
-            //     ->pluck('code')
-            //     ->first();
-
-            $codeAsset = '1.00.00.00.01';
+            $codeAsset = Asset::where('asset_code', 'like', "{$codeSubCategory}%")
+                ->latest('asset_code')
+                ->pluck('asset_code')
+                ->first();
 
             if ($codeAsset) {
                 // Ambil dua angka terakhir setelah titik terakhir
@@ -74,11 +74,11 @@ class AssetController extends Controller
 
 
                 // Tambahkan 1 dan pastikan format tetap '00', '01', '02', ...
-                $newNumber = str_pad($lastNumber + 1, 2, '0', STR_PAD_LEFT);
+                $newNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
 
                 $code = "{$codeSubCategory}{$newNumber}";
             } else {
-                $code = "{$codeSubCategory}00";
+                $code = "{$codeSubCategory}00001";
             }
 
             return response()->json(['success' => 'true', 'code' => $code]);
@@ -90,7 +90,48 @@ class AssetController extends Controller
     public function create()
     {
         $subCategories = SubCategory::all();
-        return view('pages.admin.add-asset', compact(['subCategories']));
+        $location = Location::findOrFail(1);
+        $departments = Department::all();
+        $units = [
+            'Berat' => [
+                'Kg (kilogram)',
+                'Ton'
+            ],
+            'Isi' => [
+                'L (liter)',
+                'GL (gallon)',
+                'M3 (meter kubik)'
+            ],
+            'Panjang' => [
+                'M (meter)',
+                'Km (kilometer)'
+            ],
+            'Luas' => [
+                'Ha (hektar)',
+                'M2 (persegi'
+            ],
+            'Jumlah' =>
+                [
+                    'Buah',
+                    'Batang',
+                    'Botol',
+                    'Doos',
+                    'Zak',
+                    'Ekor',
+                    'Stel',
+                    'Rim',
+                    'Unit',
+                    'Pucuk',
+                    'Set',
+                    'Lembar',
+                    'Box',
+                    'Pasang',
+                    'Roll',
+                    'Lusin/Gross',
+                    'Eksemplar'
+                ]
+        ];
+        return view('pages.admin.create-asset', compact(['departments', 'subCategories', 'location', 'units']));
     }
 
     public function store(Request $request)
@@ -164,7 +205,7 @@ class AssetController extends Controller
 
             Asset::create([
                 'asset_code' => $validated['asset_code'],
-                'location_code' =>  Location::findOrFail(1)->code,
+                'location_code' => Location::findOrFail(1)->code,
                 'procurement' => $validated['procurement'],
                 'acquisition' => $validated['acquisition'],
                 'program_id' => $validated['program_id'],
