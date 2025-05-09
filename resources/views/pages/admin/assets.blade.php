@@ -10,8 +10,8 @@
                 <a href="{{ route('admin.asset.create') }}" class="btn btn-primary"><i class="ph-plus-circle"></i></a>
             </div>
 
-            <table class="table table-striped datatable-pagination datatable-select-checkbox">
-                <thead>
+            <table id="asset-table" class="table table-striped datatable-select-checkbox">
+                {{-- <thead>
                     <tr>
                         <th class="text-center"></th>
                         <th class="text-center">No</th>
@@ -77,7 +77,7 @@
                             </td>
                         </tr>
                     @endforeach
-                </tbody>
+                </tbody> --}}
             </table>
         </div>
     </div>
@@ -107,6 +107,100 @@
                     type: 'success'
                 }).show();
             @endif
+
+            let table = $('#asset-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '{{ route('admin.asset.data') }}',
+                    data: function(d) {
+                        d.name = $('#filterName').val();
+                        d.status = $('#filterStatus').val();
+                    },
+                    dataSrc: 'data'
+                },
+                columns: [{
+                        title: 'No',
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        className: 'text-center',
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        title: 'Kode Aset',
+                        data: 'asset_code',
+                        name: 'asset_code'
+                    }, {
+                        title: 'Tahun Pengadaan',
+                        data: 'procurement',
+                        name: 'procurement',
+                        className: 'text-center',
+                    }, {
+                        title: 'Status',
+                        data: 'status',
+                        className: 'text-center',
+                        render: function(data) {
+                            let text = 'Aktif';
+                            let color = 'bg-success';
+                            let icon = 'ph-check-circle';
+                            if (data == '0') {
+                                text = 'NonAktif';
+                                color = 'bg-danger';
+                                icon = 'ph-close';
+                            }
+                            return `<span class="badge ${color} rounded-4"><i class="${icon}"></i> ${text}</span>`
+                        }
+                    },
+                    {
+                        title: 'Aksi',
+                        data: 'id',
+                        className: 'text-center',
+                        render: (data, type, row, meta) => {
+
+                            let html = `<div class="d-inline-flex">
+                                    <div class="dropdown">
+                                        <a href="#" class="text-body" data-bs-toggle="dropdown">
+                                            <i class="ph-list"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <button type="button" class="edit-asset dropdown-item" data-id="${data}">
+                                                <i class="ph-pencil-line me-2"></i>
+                                                Edit
+                                            </button>
+                                            <button type="button" class="dropdown-item printAsset"
+                                                data-index="${meta.row}" data-name="Traktor" data-code="">
+                                                <i class="ph-printer me-2"></i>
+                                                Print
+                                            </button>
+                                            <button type="button" class="option-status dropdown-item"
+                                                data-id="${data}" data-name=""
+                                                data-status="1">
+                                                <i class="ph-check-circle me-2"></i>
+                                                Aktifkan
+                                            </button>
+                                            <button type="button" class="option-status dropdown-item"
+                                                data-id="${data}" data-name=""
+                                                data-status="0">
+                                                <i class="ph-x-circle me-2"></i>
+                                                Nonaktifkan
+                                            </button>
+                                        </div>
+                                    </div>`;
+
+                            return html;
+                        }
+                    }
+                ]
+            });
+
+            $('#asset-table').on('click', '.edit-asset', function() {
+                const id = $(this).data('id')
+                window.location.href = '{{ route('admin.asset.edit', ':id') }}'.replace(':id', id);
+            })
+
 
             class Asset {
                 assets = [];

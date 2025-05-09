@@ -87,6 +87,7 @@ Route::middleware(['role:admin'])->group(function () {
             Route::get('/', [AdminAsset::class, 'index'])->name('index');
             Route::get('/data', [AdminAsset::class, 'data'])->name('data');
             Route::get('/create', [AdminAsset::class, 'create'])->name('create');
+            Route::get('/{id}', [AdminAsset::class, 'edit'])->name('edit');
             Route::post('/', [AdminAsset::class, 'store'])->name('store');
             Route::put('/{id}', [AdminAsset::class, 'update'])->name('update');
             Route::put('/{id}/update-status', [AdminAsset::class, 'updateStatus'])->name('update-status');
@@ -95,6 +96,13 @@ Route::middleware(['role:admin'])->group(function () {
             Route::get('/get-sub-categories', [AdminAsset::class, 'getSubCategories'])->name('get-sub-categories');
             Route::get('/last-code', [AdminAsset::class, 'lastCode'])->name('last-code');
             Route::post('/print', [AdminAsset::class, 'printPdf'])->name('print');
+        });
+        Route::get('/picture/{folder}/{filename}', function ($folder, $filename) {
+            $path = storage_path("app/private/$folder/$filename");
+            if (!file_exists($path)) {
+                abort(404);
+            }
+            return response()->file($path);
         });
     });
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

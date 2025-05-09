@@ -19,7 +19,7 @@
             <li class="nav-item nav-item-dropdown-lg dropdown ms-lg-2">
                 <a href="#" class="navbar-nav-link align-items-center rounded-pill p-1" data-bs-toggle="dropdown">
                     <div class="status-indicator-container">
-                        <img src="{{ optional(Auth::user()->account)->profile_picture ? url('/admin/user-accounts/profile-picture/' . Auth::user()->account->profile_picture) : '' }}"
+                        <img src="{{ optional(Auth::user()->account)->profile_picture ? url('/admin/picture/' . Auth::user()->account->profile_picture) : '' }}"
                             class="w-32px h-32px rounded-pill" alt="{{ Auth::user()->name }}">
                         <span class="status-indicator bg-success"></span>
                     </div>

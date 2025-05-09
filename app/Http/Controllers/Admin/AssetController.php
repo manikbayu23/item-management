@@ -61,13 +61,13 @@ class AssetController extends Controller
             $query = Asset::query();
 
             if ($sub_category = $request->input('sub_category') !== 'ALL') {
-                $query->where('sub_category_id', $sub_category);
+                $query->where('department_id', $sub_category);
             }
 
             // Search filter
             if ($search = $request->input('search.value')) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
+                    $q->where('type', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%");
                 });
             }
@@ -75,12 +75,12 @@ class AssetController extends Controller
             $totalFiltered = $query->count();
 
             // Ordering
-            $orderCol = $columns[$request->input('order.0.column')];
-            $orderDir = $request->input('order.0.dir');
-            $query->orderBy($orderCol, $orderDir);
+            // $orderCol = $columns[$request->input('order.0.column')];
+            // $orderDir = $request->input('order.0.dir');
+            // $query->orderBy($orderCol, $orderDir);
 
             // Pagination
-            $start  = $request->input('start');
+            $start = $request->input('start');
             $length = $request->input('length');
             $data = $query->offset($start)->limit($length)->get();
 
@@ -126,25 +126,25 @@ class AssetController extends Controller
                 'M2 (persegi'
             ],
             'Jumlah' =>
-            [
-                'Buah',
-                'Batang',
-                'Botol',
-                'Doos',
-                'Zak',
-                'Ekor',
-                'Stel',
-                'Rim',
-                'Unit',
-                'Pucuk',
-                'Set',
-                'Lembar',
-                'Box',
-                'Pasang',
-                'Roll',
-                'Lusin/Gross',
-                'Eksemplar'
-            ]
+                [
+                    'Buah',
+                    'Batang',
+                    'Botol',
+                    'Doos',
+                    'Zak',
+                    'Ekor',
+                    'Stel',
+                    'Rim',
+                    'Unit',
+                    'Pucuk',
+                    'Set',
+                    'Lembar',
+                    'Box',
+                    'Pasang',
+                    'Roll',
+                    'Lusin/Gross',
+                    'Eksemplar'
+                ]
         ];
         return view('pages.admin.create-asset', compact(['departments', 'groups', 'location', 'units']));
     }
@@ -240,22 +240,22 @@ class AssetController extends Controller
 
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'asset_code' => [
                 'required',
-                'regex:/^\d+(\.\d+)*\.$/',
+                'regex:/^\d{1,5}(\.\d{1,5})*$/',
                 'unique:assets,asset_code'
             ],
             'procurement' => 'required|date_format:Y', // Tahun saja (contoh: 2023)
             'acquisition' => 'required|date', // Format tanggal (YYYY-MM-DD)
             'type' => 'required|string|max:100', // VARCHAR dengan maksimal 255 karakter
 
+            'department_id' => 'required', // TEXT
             'asset_identity' => 'required|string', // TEXT
             'qty' => 'required|integer|min:0', // Integer minimal 1
             'unit' => 'required|string|max:50', // VARCHAR dengan maksimal 50 karakter
             'description' => 'required|string', // TEXT
-            'filename' => 'required|image|mimes:jpg,png,jpeg|max:1024' // Gambar dengan format jpg/png/jpeg maksimal 1MB (1024KB)
+            'file_name' => 'required|image|mimes:jpg,png,jpeg|max:1024' // Gambar dengan format jpg/png/jpeg maksimal 1MB (1024KB)
         ], [
             'asset_code.required' => 'Kode aset wajib diisi.',
             'asset_code.unique' => 'Kode aset ini sudah terdaftar di sistem, mohon load ulang kode.',
@@ -270,6 +270,8 @@ class AssetController extends Controller
             'type.required' => 'Jenis aset wajib diisi.',
             'type.string' => 'Jenis aset harus berupa teks.',
             'type.max' => 'Jenis aset maksimal 100 karakter.',
+
+            'department_id.required' => 'Departemen wajib dipilih.',
 
             'asset_identity.required' => 'Identitas aset wajib diisi.',
             'asset_identity.string' => 'Identitas aset harus berupa teks.',
@@ -292,8 +294,6 @@ class AssetController extends Controller
         ]);
 
         try {
-
-
             if ($request->hasFile('file_name')) {
                 // Delete old picture if exists
                 $file = $request->file('file_name');
@@ -307,7 +307,7 @@ class AssetController extends Controller
                 $file->storeAs('asset_pictures', $filename);
 
                 // Simpan path di database (pastikan nama kolom sesuai)
-                $validated['file_ename'] = $filename; // Sesuaikan dengan nama field di form ('filename' bukan 'pr
+                $validated['file_name'] = $filename; // Sesuaikan dengan nama field di form ('filename' bukan 'pr
             }
 
             DB::beginTransaction();
@@ -327,13 +327,17 @@ class AssetController extends Controller
                 ], 422);
             }
 
+
+            $location = Location::findOrFail(1)->code;
+            $locationCode = $location . '.1.' . $validated['procurement'];
             Asset::create([
                 'asset_code' => $validated['asset_code'],
-                'location_code' => Location::findOrFail(1)->code,
+                'location_code' => $locationCode,
                 'procurement' => $validated['procurement'],
-                'acquisition' => $validated['acquisition'],
-                'program_id' => $validated['program_id'],
+                'acquisition' => Carbon::parse($validated['acquisition']),
+                'department_id' => $validated['department_id'],
                 'type' => $validated['type'],
+                'status' => 1,
                 'asset_identity' => $validated['asset_identity'],
                 'qty' => $validated['qty'],
                 'unit' => $validated['unit'],
@@ -358,12 +362,60 @@ class AssetController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function edit(string $id)
+    {
+        $asset = Asset::find($id);
+        $groups = Group::all();
+        $subCategories = SubCategory::all();
+        $location = Location::findOrFail(1);
+        $departments = Department::all();
+        $units = [
+            'Berat' => [
+                'Kg (kilogram)',
+                'Ton'
+            ],
+            'Isi' => [
+                'L (liter)',
+                'GL (gallon)',
+                'M3 (meter kubik)'
+            ],
+            'Panjang' => [
+                'M (meter)',
+                'Km (kilometer)'
+            ],
+            'Luas' => [
+                'Ha (hektar)',
+                'M2 (persegi'
+            ],
+            'Jumlah' =>
+                [
+                    'Buah',
+                    'Batang',
+                    'Botol',
+                    'Doos',
+                    'Zak',
+                    'Ekor',
+                    'Stel',
+                    'Rim',
+                    'Unit',
+                    'Pucuk',
+                    'Set',
+                    'Lembar',
+                    'Box',
+                    'Pasang',
+                    'Roll',
+                    'Lusin/Gross',
+                    'Eksemplar'
+                ]
+        ];
+        return view('pages.admin.edit-asset', compact(['asset', 'departments', 'groups', 'location', 'units']));
+    }
+    public function update($id, Request $request)
     {
         $validated = $request->validate([
             'asset_code' => [
                 'required',
-                'regex:/^\d+(\.\d+)*\.$/',
+                'regex:/^\d{1,5}(\.\d{1,5})*$/',
                 Rule::unique('assets')->ignore($id)
             ],
             'procurement' => 'required|date_format:Y', // Tahun saja (contoh: 2023)
@@ -374,7 +426,7 @@ class AssetController extends Controller
             'qty' => 'required|integer|min:0', // Integer minimal 1
             'unit' => 'required|string|max:50', // VARCHAR dengan maksimal 50 karakter
             'description' => 'required|string', // TEXT
-            'filename' => 'required|image|mimes:jpg,png,jpeg|max:1024' // Gambar dengan format jpg/png/jpeg maksimal 1MB (1024KB)
+            'file_name' => 'nullable|image|mimes:jpg,png,jpeg|max:1024' // Gambar dengan format jpg/png/jpeg maksimal 1MB (1024KB)
         ], [
             'asset_code.required' => 'Kode aset wajib diisi.',
             'asset_code.unique' => 'Kode aset ini sudah terdaftar di sistem, mohon load ulang kode.',
@@ -404,7 +456,7 @@ class AssetController extends Controller
             'description.required' => 'Deskripsi wajib diisi.',
             'description.string' => 'Deskripsi harus berupa teks.',
 
-            'file_name.required' => 'File gambar wajib diunggah.',
+            // 'file_name.required' => 'File gambar wajib diunggah.',
             'file_name.image' => 'File harus berupa gambar.',
             'file_name.mimes' => 'Format gambar yang diperbolehkan: jpg, png, jpeg.',
             'file_name.max' => 'Ukuran gambar maksimal 1MB.'
@@ -432,10 +484,14 @@ class AssetController extends Controller
 
             $asset = Asset::findOrFail($id);
 
+            $location = Location::findOrFail(1)->code;
+            $locationCode = $location . '.1.' . $validated['procurement'];
+
             $updateData = [
                 'asset_code' => $validated['asset_code'],
+                'location_code' => $locationCode,
                 'procurement' => $validated['procurement'],
-                'acquisition' => $validated['acquisition'],
+                'acquisition' => Carbon::parse($validated['acquisition']),
                 'type' => $validated['type'],
                 'asset_identity' => $validated['asset_identity'],
                 'qty' => $validated['qty'],

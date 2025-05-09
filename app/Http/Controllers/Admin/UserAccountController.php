@@ -228,16 +228,4 @@ class UserAccountController extends Controller
             return back()->with('error', 'Gagal menghapus akun: ' . $e->getMessage());
         }
     }
-
-    public function profile_picture($folder, $filename)
-    {
-        $path = storage_path("app/private/$folder/$filename");
-        // dd($path);
-
-        if (!file_exists($path)) {
-            abort(404);
-        }
-
-        return response()->file($path);
-    }
 }

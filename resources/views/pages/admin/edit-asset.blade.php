@@ -1,16 +1,20 @@
 @extends('layouts.main')
 
-@section('title_admin', 'Tambah Asset')
+@section('title_admin', 'Edit Asset : ' . $asset->asset_code)
 
 @section('content_admin')
     <div class="content">
         <div class="card">
-            <form id="form" action="{{ route('admin.asset.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="form" action="{{ route('admin.asset.update', $asset->id) }}" enctype="multipart/form-data">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12 col-md-3 mb-3">
                             <label class="form-label">Foto aset: <span class="text-danger">*</span> </label>
-                            <input type="file" name="file_name" class="file-input" id="file_name" accept="image/*">
+                            <input type="file" name="file_name" class="file-input" id="file_name" accept="image/*"
+                                data-initial-preview="{{ json_encode([url('admin/picture/asset_pictures/' . $asset->file_name)]) }}"
+                                data-initial-preview-config="{{ json_encode([['caption' => $asset->file_name, 'key' => 1]]) }}"
+                                data-initial-preview-as-data="true" data-initial-caption="{{ $asset->file_name }}"
+                                data-preview-file-type="image">
                             <div class="form-text text-danger text-error" id="file_name_error" style="display: none;">
                                 <i class="ph-x-circle me-1"></i>
                                 <span></span>
@@ -54,9 +58,8 @@
                                             <i class="ph-calendar"></i>
                                         </span>
                                         <input type="text" id="procurement" name="procurement"
-                                            class="form-control datepicker-basic"
-                                            value="{{ old('procurement', now()->year) }}" placeholder="2025"
-                                            @readonly(true)>
+                                            class="form-control datepicker-basic" value="{{ $asset->procurement }}"
+                                            placeholder="2025" @readonly(true)>
                                     </div>
                                     <div class="form-text text-danger text-error" id="procurement_error"
                                         style="display: none;">
@@ -65,7 +68,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 mb-3 row">
+                            <div class="col-12 mb-3 row showCol" style="display: none">
                                 <label class="form-label col-12 col-md-3">Golongan: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-6">
@@ -84,7 +87,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 mb-3 row">
+                            <div class="col-12 mb-3 row showCol" style="display: none">
                                 <label class="form-label col-12 col-md-3">Bidang: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-6">
@@ -98,7 +101,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 mb-3 row">
+                            <div class="col-12 mb-3 row showCol" style="display: none">
                                 <label class="form-label col-12 col-md-3">Kelompok: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-6">
@@ -113,7 +116,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 mb-3 row">
+                            <div class="col-12 mb-3 row showCol" style="display: none">
                                 <label class="form-label col-12 col-md-3">Sub Kelompok: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-6">
@@ -137,10 +140,16 @@
                                 <label class="form-label col-12 col-md-3">Kode Aset:<span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-5">
-                                    <input type="text" name="asset_code" id="asset_code"
-                                        value="{{ old(key: 'code') }}" class="form-control" placeholder=""
-                                        @readonly(true)>
-
+                                    <div class="input-group">
+                                        <input type="text" name="asset_code" id="asset_code"
+                                            value="{{ $asset->asset_code }}" class="form-control" @readonly(true)>
+                                        <button type="button" class="btn btn-light btn-icon" id="btn-return-asset-code">
+                                            <i class="ph-clock-counter-clockwise"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-warning btn-icon" id="btn-edit-asset-code">
+                                            <i class="ph-pencil-line "></i>
+                                        </button>
+                                    </div>
                                     <div class="form-text text-danger text-error" id="asset_code_error"
                                         style="display: none;">
                                         <i class="ph-x-circle me-1"></i>
@@ -156,7 +165,8 @@
                                         data-minimum-results-for-search="Infinity" data-placeholder="Pilih Departemen">
                                         @foreach ($departments as $key => $department)
                                             <option></option>
-                                            <option value="{{ $department->id }}"x>
+                                            <option value="{{ $department->id }}"
+                                                @if ($department->id == $asset->department_id) selected @endif>
                                                 {{ $department->code }}
                                                 {{ $department->name }}
                                             </option>
@@ -173,7 +183,7 @@
                                 <label class="form-label col-12 col-md-3">Jenis Barang: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-9">
-                                    <input type="text" name="type" id="type" value="{{ old(key: 'type') }}"
+                                    <input type="text" name="type" id="type" value="{{ $asset->type }}"
                                         class="form-control" placeholder="">
                                     <div class="form-text text-danger text-error" id="type_error" style="display: none;">
                                         <i class="ph-x-circle me-1"></i>
@@ -186,7 +196,7 @@
                                         class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="asset_identity" id="asset_identity" class="form-control" rows="3">{{ old('asset_identity') }}</textarea>
+                                    <textarea name="asset_identity" id="asset_identity" class="form-control" rows="3">{{ $asset->asset_identity }}</textarea>
                                     <div class="form-text text-danger text-error" id="asset_identity_error"
                                         style="display: none;">
                                         <i class="ph-x-circle me-1"></i>
@@ -204,7 +214,7 @@
                                         </span>
                                         <input type="text" class="form-control datepicker-basic-loan"
                                             name="acquisition" placeholder="Pilih Tanggal Peminjaman"
-                                            value="{{ old('acquisition', now()->format('D/M/Y')) }}">
+                                            value="{{ Carbon\Carbon::parse($asset->acquisition)->format('D/M/Y') }}">
                                     </div>
                                     <div class="form-text text-danger text-error" id="acquisition_error"
                                         style="display: none;">
@@ -224,7 +234,7 @@
                                                 <i class="ph-minus ph-sm"></i>
                                             </button>
                                             <input class="form-control form-control-number text-center" id="qty"
-                                                type="number" name="qty" value="1">
+                                                type="number" name="qty" value="{{ $asset->qty }}">
                                             <button type="button" class="btn btn-light btn-icon"
                                                 onclick="this.parentNode.querySelector('#qty').stepUp()">
                                                 <i class="ph-plus ph-sm"></i>
@@ -244,7 +254,9 @@
                                                 @foreach ($units as $key => $unit)
                                                     <optgroup label="Satuan {{ $key }}">
                                                         @foreach ($unit as $name)
-                                                            <option value="{{ $name }}">{{ $name }}
+                                                            <option value="{{ $name }}"
+                                                                @if ($name == $asset->unit) selected @endif>
+                                                                {{ $name }}
                                                             </option>
                                                         @endforeach
                                                     </optgroup>
@@ -260,10 +272,10 @@
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="form-label col-12 col-md-2">Keterangan: <span class="text-danger">*</span>
+                                <label class="form-label col-12 col-md-3">Keterangan: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-lg-9">
-                                    <textarea name="description" id="description" class="form-control" rows="3">{{ old('description') }}</textarea>
+                                    <textarea name="description" id="description" class="form-control" rows="3">{{ $asset->description }}</textarea>
                                     <div class="form-text text-danger text-error" id="description_error"
                                         style="display: none;">
                                         <i class="ph-x-circle me-1"></i>
@@ -299,6 +311,8 @@
 @push('script_admin')
     <script>
         $(document).ready(function() {
+
+            let oldAssetCode = @json($asset->asset_code);
 
             $('#scope').prop('disabled', true);
             $('#category').prop('disabled', true);
@@ -455,10 +469,11 @@
                 e.preventDefault();
 
                 let formData = new FormData(this);
+                formData.append('_method', 'PUT');
 
                 $.ajax({
                     url: $(this).attr('action'),
-                    type: 'POST',
+                    method: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
@@ -467,6 +482,7 @@
                     },
                     success: function(response) {
                         // Show success message
+
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -509,84 +525,13 @@
 
             })
 
-            // $(document).ready(function() {
-            //     // Handle ketika file dipilih
-            //     $('#product-images').on('change', function(e) {
-            //         const files = e.target.files;
-            //         const previewContainer = $('#image-preview');
+            $('#btn-edit-asset-code').on('click', function() {
+                $('.showCol').show();
+            })
 
-            //         $.each(files, function(index, file) {
-            //             // Validasi ukuran file (maksimal 5MB)
-            //             if (file.size > 5 * 1024 * 1024) {
-            //                 alert('File ' + file.name + ' melebihi ukuran maksimal 5MB');
-            //                 return true; // continue dalam $.each
-            //             }
-
-            //             // Validasi tipe file
-            //             if (!file.type.match('image.*')) {
-            //                 alert('File ' + file.name + ' bukan gambar yang valid');
-            //                 return true; // continue dalam $.each
-            //             }
-
-            //             const reader = new FileReader();
-
-            //             reader.onload = function(e) {
-            //                 const previewImage = $('<div>').addClass(
-            //                     'preview-image col-auto');
-
-            //                 previewImage.html(`
-        //             <img src="${e.target.result}" alt="Preview">
-        //             <div class="delete-btn">×</div>
-        //         `);
-
-            //                 previewContainer.append(previewImage);
-
-            //                 // Tambahkan event untuk tombol delete
-            //                 previewImage.find('.delete-btn').on('click', function() {
-            //                     previewImage.remove();
-            //                     // Hapus file dari input files (memerlukan cara khusus)
-            //                     removeFileFromInput(index);
-            //                 });
-            //             };
-
-            //             reader.readAsDataURL(file);
-            //         });
-
-            //         // Reset input file untuk mengizinkan upload file yang sama lagi
-            //         $(this).val('');
-            //     });
-
-            //     // Fungsi untuk drag and drop
-            //     const uploadArea = $('.upload-box');
-
-            //     uploadArea.on('dragover', function(e) {
-            //         e.preventDefault();
-            //         $(this).css('background-color', '#f0f0f0');
-            //     });
-
-            //     uploadArea.on('dragleave', function() {
-            //         $(this).css('background-color', '');
-            //     });
-
-            //     uploadArea.on('drop', function(e) {
-            //         e.preventDefault();
-            //         $(this).css('background-color', '');
-
-            //         const files = e.originalEvent.dataTransfer.files;
-            //         $('#product-images')[0].files = files;
-
-            //         // Trigger change event
-            //         $('#product-images').trigger('change');
-            //     });
-
-            //     // Fungsi untuk menghapus file dari input (hanya visual, karena FileList tidak bisa dimodifikasi langsung)
-            //     function removeFileFromInput(index) {
-            //         // Karena FileList tidak bisa dimodifikasi langsung, kita perlu membuat solusi alternatif
-            //         // Solusi yang lebih baik adalah menyimpan file yang valid di array terpisah
-            //         console.log('File index ' + index +
-            //             ' dihapus (implementasi lengkap memerlukan penanganan lebih lanjut)');
-            //     }
-            // });
+            $('#btn-return-asset-code').on('click', function() {
+                $('#asset_code').val(oldAssetCode);
+            })
         });
     </script>
 @endpush
