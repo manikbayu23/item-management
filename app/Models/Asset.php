@@ -22,4 +22,9 @@ class Asset extends Model
         'description',
         'file_name'
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

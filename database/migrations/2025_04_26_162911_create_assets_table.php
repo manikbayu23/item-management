@@ -19,6 +19,8 @@ return new class extends Migration {
             $table->year('procurement')->nullable()->comment('Tahun Pengadaan');
             $table->date('acquisition')->comment('Tanggal Perolehan');
 
+            $table->char('status', length: 1)->comment('Status Aset');
+
             $table->foreignId('department_id');
 
             $table->string('type', length: 100)->comment('Jenis Barang');

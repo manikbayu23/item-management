@@ -5,51 +5,50 @@
 @section('content_admin')
     <div class="content">
         <div class="card">
-            <form id="form" method="POST" enctype="multipart/form-data">
+            <form id="form" action="{{ route('admin.asset.store') }}" method="POST" enctype="multipart/form-data">
                 <div class="card-body">
-                    @csrf
                     <div class="row">
                         <div class="col-12 col-md-3 mb-3">
                             <label class="form-label">Foto aset: <span class="text-danger">*</span> </label>
-                            <input type="file" name="profile_picture" class="file-input" id="profile_picture"
-                                accept="image/*">
-                            @if ($errors->has('profile_picture'))
-                                <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                    {{ $errors->first('profile_picture') }}</div>
-                            @endif
+                            <input type="file" name="file_name" class="file-input" id="file_name" accept="image/*">
+                            <div class="form-text text-danger text-error" id="file_name_error" style="display: none;">
+                                <i class="ph-x-circle me-1"></i>
+                                <span></span>
+                            </div>
                         </div>
                         <div class="col-12 col-md-9 mb-3 row">
                             <div class="col-12 mb-3 row">
-                                <label class="col-form-label col-3">Provinsi: </label>
-                                <div class="col-8">
+                                <label class="col-form-label col-12 col-md-3">Provinsi: </label>
+                                <div class="col-12 col-md-8">
                                     <input type="text" class="form-control-plaintext fw-semibold" readonly
                                         value="{{ $location->province }}">
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="col-form-label col-3">Kabupaten: </label>
-                                <div class="col-8">
+                                <label class="col-form-label col-12 col-md-3">Kabupaten: </label>
+                                <div class="col-12 col-md-8">
                                     <input type="text" class="form-control-plaintext fw-semibold" readonly
                                         value="{{ $location->regency }}">
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="col-form-label col-3">Kecamatan: </label>
-                                <div class="col-8">
+                                <label class="col-form-label col-12 col-md-3">Kecamatan: </label>
+                                <div class="col-12 col-md-8">
                                     <input type="text" class="form-control-plaintext fw-semibold" readonly
                                         value="{{ $location->district }}">
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="col-form-label col-3">Desa: </label>
-                                <div class="col-8">
+                                <label class="col-form-label col-12 col-md-3">Desa: </label>
+                                <div class="col-12 col-md-8">
                                     <input type="text" class="form-control-plaintext fw-semibold" readonly
                                         value="{{ $location->area }}">
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="form-label col-3">Tahun Pengadaan: <span class="text-danger">*</span> </label>
-                                <div class="col-2">
+                                <label class="form-label col-12 col-md-3">Tahun Pengadaan: <span
+                                        class="text-danger">*</span> </label>
+                                <div class="col-12 col-md-2">
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <i class="ph-calendar"></i>
@@ -59,36 +58,87 @@
                                             value="{{ old('procurement', now()->year) }}" placeholder="2025"
                                             @readonly(true)>
                                     </div>
-                                    @if ($errors->has('procurement'))
-                                        <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                            {{ $errors->first('procurement') }}</div>
-                                    @endif
+                                    <div class="form-text text-danger text-error" id="procurement_error"
+                                        style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="form-label col-3">Sub Kelompok: <span class="text-danger">*</span> </label>
-                                <div class="col-6">
-                                    <select name="idSubCategory" id="idSubCategory" class="form-control select "
-                                        data-placeholder="Pilih Sub Kelompok...">
+                                <label class="form-label col-12 col-md-3">Golongan: <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-12 col-md-6">
+                                    <select name="group" id="group" class="form-control select"
+                                        data-placeholder="Pilih Golongan...">
                                         <option></option>
-                                        @foreach ($subCategories as $subCategory)
-                                            <option value="{{ $subCategory->id }}"
-                                                @if ($subCategory->id == old('idSubCategory')) selected @endif>
-                                                [{{ rtrim($subCategory->code, '.') }}]
-                                                {{ $subCategory->description }}</option>
+                                        @foreach ($groups as $group)
+                                            <option value="{{ $group->id }}">
+                                                [{{ rtrim($group->code, '.') }}]
+                                                {{ $group->description }}</option>
                                         @endforeach
                                     </select>
-                                    @if ($errors->has('idSubCategory'))
-                                        <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                            {{ $errors->first('idSubCategory') }}</div>
-                                    @endif
+                                    <div class="form-text text-danger text-error" id="group_error" style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="col-form-label col-lg-3">Bidang: <span class="text-danger">*</span></label>
-                                <div class="col-lg-5">
+                                <label class="form-label col-12 col-md-3">Bidang: <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-12 col-md-6">
+                                    <select name="scope" id="scope" class="form-control select"
+                                        data-placeholder="Pilih Bidang...">
+                                        <option></option>
+                                    </select>
+                                    <div class="form-text text-danger text-error" id="scope_error" style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3 row">
+                                <label class="form-label col-12 col-md-3">Kelompok: <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-12 col-md-6">
+                                    <select name="category" id="category" class="form-control select "
+                                        data-placeholder="Pilih Kelompok...">
+                                        <option></option>
+                                    </select>
+                                    <div class="form-text text-danger text-error" id="category_error"
+                                        style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3 row">
+                                <label class="form-label col-12 col-md-3">Sub Kelompok: <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-12 col-md-6">
+                                    <select name="sub_category" id="sub_category" class="form-control select "
+                                        data-placeholder="Pilih Sub Kelompok...">
+                                        <option></option>
+                                        {{-- @foreach ($subCategories as $subCategory)
+                                            <option value="{{ $subCategory->id }}">
+                                                [{{ rtrim($subCategory->code, '.') }}]
+                                                {{ $subCategory->description }}</option>
+                                        @endforeach --}}
+                                    </select>
+                                    <div class="form-text text-danger text-error" id="sub_category_error"
+                                        style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3 row">
+                                <label class="col-form-label col-12 col-lg-3">Departemen: <span
+                                        class="text-danger">*</span></label>
+                                <div class="col-12 col-lg-5">
                                     <select class="form-control select" name="department_id" id="department_id"
-                                        data-minimum-results-for-search="Infinity" data-placeholder="Pilih Bidang">
+                                        data-minimum-results-for-search="Infinity" data-placeholder="Pilih Departemen">
                                         @foreach ($departments as $key => $department)
                                             <option></option>
                                             <option value="{{ $department->id }}"
@@ -98,49 +148,57 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    @if ($errors->has('department_id'))
-                                        <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                            {{ $errors->first('department_id') }}</div>
-                                    @endif
+                                    <div class="form-text text-danger text-error" id="department_id_error"
+                                        style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="form-label col-3">Kode Aset:<span class="text-danger">*</span> </label>
-                                <div class="col-5">
-                                    <input type="text" name="asset_code" id="asset_code" value="{{ old(key: 'code') }}"
-                                        class="form-control" placeholder="" @readonly(true)>
-                                    @if ($errors->has('code'))
-                                        <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                            {{ $errors->first('code') }}</div>
-                                    @endif
+                                <label class="form-label col-12 col-md-3">Kode Aset:<span class="text-danger">*</span>
+                                </label>
+                                <div class="col-12 col-md-5">
+                                    <input type="text" name="asset_code" id="asset_code"
+                                        value="{{ old(key: 'code') }}" class="form-control" placeholder=""
+                                        @readonly(true)>
+
+                                    <div class="form-text text-danger text-error" id="asset_code_error"
+                                        style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="form-label col-3">Jenis Barang: <span class="text-danger">*</span> </label>
-                                <div class="col-9">
+                                <label class="form-label col-12 col-md-3">Jenis Barang: <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-12 col-md-9">
                                     <input type="text" name="type" id="type" value="{{ old(key: 'type') }}"
                                         class="form-control" placeholder="">
-                                    @if ($errors->has('type'))
-                                        <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                            {{ $errors->first('type') }}</div>
-                                    @endif
+                                    <div class="form-text text-danger text-error" id="type_error" style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="form-label col-3">Identitas Barang: <span class="text-danger">*</span>
+                                <label class="form-label col-12 col-md-3">Identitas Barang: <span
+                                        class="text-danger">*</span>
                                 </label>
-                                <div class="col-9">
+                                <div class="col-12 col-md-9">
                                     <textarea name="asset_identity" id="asset_identity" class="form-control" rows="3">{{ old('asset_identity') }}</textarea>
-                                    @if ($errors->has('asset_identity'))
-                                        <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                            {{ $errors->first('asset_identity') }}</div>
-                                    @endif
+                                    <div class="form-text text-danger text-error" id="asset_identity_error"
+                                        style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="form-label col-3">Tanggal Perolehan: <span
+                                <label class="form-label col-12 col-md-3">Tanggal Perolehan: <span
                                         class="text-danger">*</span></label>
-                                <div class="col-3">
+                                <div class="col-12 col-md-3">
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <i class="ph-calendar"></i>
@@ -149,16 +207,18 @@
                                             name="acquisition" placeholder="Pilih Tanggal Peminjaman"
                                             value="{{ old('acquisition', now()->format('D/M/Y')) }}">
                                     </div>
-                                    @if ($errors->has('acquisition'))
-                                        <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                            {{ $errors->first('acquisition') }}</div>
-                                    @endif
+                                    <div class="form-text text-danger text-error" id="acquisition_error"
+                                        style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="form-label col-3">Jumlah: <span class="text-danger">*</span> </label>
-                                <div class="col-9 row">
-                                    <div class="col-4">
+                                <label class="form-label col-12 col-md-3">Jumlah: <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-12 col-md-9 row">
+                                    <div class="col-12 col-md-4">
                                         <div class="input-group">
                                             <button type="button" class="btn btn-light btn-icon"
                                                 onclick="this.parentNode.querySelector('#qty').stepDown()">
@@ -171,14 +231,15 @@
                                                 <i class="ph-plus ph-sm"></i>
                                             </button>
                                         </div>
-                                        @if ($errors->has('qty'))
-                                            <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                                {{ $errors->first('qty') }}</div>
-                                        @endif
+                                        <div class="form-text text-danger text-error" id="qty_error"
+                                            style="display: none;">
+                                            <i class="ph-x-circle me-1"></i>
+                                            <span></span>
+                                        </div>
                                     </div>
-                                    <div class="col-6 row">
-                                        <label class="col-form-label col-lg-3 text-end">Satuan</label>
-                                        <div class="col-lg-9">
+                                    <div class="col-12 col-md-6 row">
+                                        <label class="col-form-label col-12 col-lg-3 text-end">Satuan</label>
+                                        <div class="col-12 col-lg-9">
                                             <select class="form-control select" name="unit" id="unit"
                                                 data-minimum-results-for-search="Infinity">
                                                 @foreach ($units as $key => $unit)
@@ -190,47 +251,27 @@
                                                     </optgroup>
                                                 @endforeach
                                             </select>
-                                            @if ($errors->has('unit'))
-                                                <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                                    {{ $errors->first('unit') }}</div>
-                                            @endif
+                                            <div class="form-text text-danger text-error" id="unit_error"
+                                                style="display: none;">
+                                                <i class="ph-x-circle me-1"></i>
+                                                <span></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="form-label col-3">Keterangan: <span class="text-danger">*</span> </label>
-                                <div class="col-9">
+                                <label class="form-label col-3 col-md-12">Keterangan: <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-12 col-lg-9">
                                     <textarea name="description" id="description" class="form-control" rows="3">{{ old('description') }}</textarea>
-                                    @if ($errors->has('description'))
-                                        <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                            {{ $errors->first('description') }}</div>
-                                    @endif
+                                    <div class="form-text text-danger text-error" id="description_error"
+                                        style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
-                            {{-- <div class="col-12 mb-3">
-                                <label class="form-label">Gambar Produk:</label>
-                                <div class="upload-area">
-                                    <!-- Preview gambar yang sudah diupload -->
-                                    <div id="image-preview" class="row">
-                                        <!-- Gambar akan muncul di sini -->
-                                    </div>
-
-                                    <!-- Area upload -->
-                                    <div class="upload-box">
-                                        <input type="file" name="product_images[]" id="product-images" multiple
-                                            accept="image/*" style="display: none;">
-                                        <label for="product-images" class="upload-label">
-                                            <div class="upload-content">
-                                                <i class="ph-cloud-arrow-up fs-1 text-muted"></i>
-                                                <p class="mb-0">Seret dan lepas gambar di sini atau klik untuk memilih</p>
-                                                <small class="text-muted">Format: JPG, JPEG, PNG (Maksimal 5MB per
-                                                    gambar)</small>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -243,75 +284,6 @@
         </div>
     </div>
 @endsection
-
-@push('style_admin')
-    {{-- <style>
-        .upload-area {
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-
-        .upload-box {
-            text-align: center;
-            padding: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .upload-box:hover {
-            background-color: #f0f0f0;
-        }
-
-        .upload-label {
-            display: block;
-            cursor: pointer;
-        }
-
-        .upload-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        #image-preview {
-            margin-bottom: 15px;
-        }
-
-        .preview-image {
-            position: relative;
-            width: 130px;
-            height: 120px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .preview-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .preview-image .delete-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 20px;
-            height: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 12px;
-        }
-    </style> --}}
-@endpush
 
 @push('script_admin')
     <script src="{{ asset('assets/js/vendor/notifications/sweet_alert.min.js') }}"></script>
@@ -328,44 +300,209 @@
 @push('script_admin')
     <script>
         $(document).ready(function() {
-            @if (session('error'))
-                new Noty({
-                    text: "{{ session('error') }}",
-                    type: 'error'
-                }).show();
-            @endif
 
-            let form = {
-                asset_code: $('#asset_code')
-            }
-
-            $('#idSubCategory').on('change', function() {
+            $('#group').on('change', function() {
                 const id = $(this).val();
 
                 if (!id) return;
-                // if (id == form.oldGroup.val()) {
-                //     form.code.val(form.oldCode.val());
-                //     return;
-                // }
+
+                $('#scope').prop('disabled', true).empty();
+                $('#category').prop('disabled', true).empty();
+                $('#sub_category').prop('disabled', true).empty();
+                $('#asset_code').val('');
+
+                $.ajax({
+                    method: 'GET',
+                    url: "{{ route('admin.asset.get-scopes') }}?idGroup=" + id,
+                    dataType: 'json',
+                    success: function(response) {
+                        let option = '<option></option>';
+                        response.data.forEach((scope, index) => {
+                            const {
+                                id,
+                                code,
+                                description
+                            } = scope;
+                            option +=
+                                `<option value="${id}">[${code.replace(/\.+$/, '')}] ${description}</option>`;
+                        });
+
+                        $('#scope').append(option);
+                        $('#scope').prop('disabled', false);
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan pada jaringan, silahkan coba lagi.',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-primary',
+                            },
+                        })
+                    }
+                })
+            })
+
+            $('#scope').on('change', function() {
+                const id = $(this).val();
+
+                if (!id) return;
+
+                $('#category').prop('disabled', true).empty();
+                $('#sub_category').prop('disabled', true).empty();
+                $('#asset_code').val('');
+
+                $.ajax({
+                    method: 'GET',
+                    url: "{{ route('admin.asset.get-categories') }}?idScope=" + id,
+                    dataType: 'json',
+                    success: function(response) {
+                        let option = '<option></option>';
+                        response.data.forEach((category, index) => {
+                            const {
+                                id,
+                                code,
+                                description
+                            } = category;
+                            option +=
+                                `<option value="${id}">[${code.replace(/\.+$/, '')}] ${description}</option>`;
+                        });
+
+                        $('#category').append(option);
+                        $('#category').prop('disabled', false);
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan pada jaringan, silahkan coba lagi.',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-primary',
+                            },
+                        })
+                    }
+                })
+            })
+
+            $('#category').on('change', function() {
+                const id = $(this).val();
+
+                if (!id) return;
+
+                $('#sub_category').prop('disabled', true).empty();
+                $('#asset_code').val('');
+
+                $.ajax({
+                    method: 'GET',
+                    url: "{{ route('admin.asset.get-sub-categories') }}?idCategory=" + id,
+                    dataType: 'json',
+                    success: function(response) {
+                        let option = '<option></option>';
+                        response.data.forEach((sub_category, index) => {
+                            const {
+                                id,
+                                code,
+                                description
+                            } = sub_category;
+                            option +=
+                                `<option value="${id}">[${code.replace(/\.+$/, '')}] ${description}</option>`;
+                        });
+
+                        $('#sub_category').append(option);
+                        $('#sub_category').prop('disabled', false);
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan pada jaringan, silahkan coba lagi.',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-primary',
+                            },
+                        })
+                    }
+                })
+            })
+
+            $('#sub_category').on('change', function() {
+                const id = $(this).val();
+
+                if (!id) return;
+
                 $.ajax({
                     method: 'GET',
                     url: "{{ route('admin.asset.last-code') }}?idSubCategory=" + id,
                     dataType: 'json',
                     success: function(response) {
-                        form.asset_code.val(response.code);
+                        $('#asset_code').val(response.code);
                     },
-                    error: function(error) {
-                        new Noty({
-                            text: "Terjadi kesalahan sistem",
-                            type: 'error'
-                        }).show();
+                    error: function(xhr) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan pada jaringan, silahkan coba lagi.',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-primary',
+                            },
+                        })
                     }
                 })
             });
 
             $('#form').on('submit', function(e) {
                 e.preventDefault();
-                console.log($(this).serialize());
+
+                let formData = new FormData(this);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            if (response.redirect) {
+                                window.location.href = response.redirect;
+                            }
+                        });
+                    },
+                    error: function(xhr) {
+                        const response = xhr.responseJSON;
+                        if (xhr.status == 422) {
+                            $('.text-error').hide().find('span').text('');
+
+                            Object.entries(response.errors).forEach(([field, messages]) => {
+                                $(`#${field}_error`).show().find('span').text(messages[
+                                    0]);
+                            });
+
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Terjadi kesalahan pada jaringan, silahkan coba lagi.',
+                                icon: 'error',
+                                customClass: {
+                                    confirmButton: 'btn btn-primary',
+                                },
+                            })
+                        }
+                    },
+                    complete: function() {
+                        // Restore button state
+                        // submitButton.prop('disabled', false).html(originalContent);
+                    }
+                });
 
             })
 

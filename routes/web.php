@@ -86,11 +86,14 @@ Route::middleware(['role:admin'])->group(function () {
         Route::prefix('/assets')->name('asset.')->group(function () {
             Route::get('/', [AdminAsset::class, 'index'])->name('index');
             Route::get('/data', [AdminAsset::class, 'data'])->name('data');
-            Route::get('/last-code', [AdminAsset::class, 'lastCode'])->name('last-code');
             Route::get('/create', [AdminAsset::class, 'create'])->name('create');
             Route::post('/', [AdminAsset::class, 'store'])->name('store');
             Route::put('/{id}', [AdminAsset::class, 'update'])->name('update');
             Route::put('/{id}/update-status', [AdminAsset::class, 'updateStatus'])->name('update-status');
+            Route::get('/get-scopes', [AdminAsset::class, 'getScopes'])->name('get-scopes');
+            Route::get('/get-categories', [AdminAsset::class, 'getCategories'])->name('get-categories');
+            Route::get('/get-sub-categories', [AdminAsset::class, 'getSubCategories'])->name('get-sub-categories');
+            Route::get('/last-code', [AdminAsset::class, 'lastCode'])->name('last-code');
             Route::post('/print', [AdminAsset::class, 'printPdf'])->name('print');
         });
     });
