@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title_admin', 'Edit Asset : ' . $asset->asset_code)
+@section('title_admin', 'Edit Asset : ' . $asset->asset_code ?? '')
 
 @section('content_admin')
     <div class="content">
@@ -123,11 +123,6 @@
                                     <select name="sub_category" id="sub_category" class="form-control select "
                                         data-placeholder="Pilih Sub Kelompok...">
                                         <option></option>
-                                        {{-- @foreach ($subCategories as $subCategory)
-                                            <option value="{{ $subCategory->id }}">
-                                                [{{ rtrim($subCategory->code, '.') }}]
-                                                {{ $subCategory->description }}</option>
-                                        @endforeach --}}
                                     </select>
                                     <div class="form-text text-danger text-error" id="sub_category_error"
                                         style="display: none;">
@@ -142,7 +137,8 @@
                                 <div class="col-12 col-md-5">
                                     <div class="input-group">
                                         <input type="text" name="asset_code" id="asset_code"
-                                            value="{{ $asset->asset_code }}" class="form-control" @readonly(true)>
+                                            value="{{ $asset->asset_code ?? '' }}" class="form-control"
+                                            @readonly(true)>
                                         <button type="button" class="btn btn-light btn-icon" id="btn-return-asset-code">
                                             <i class="ph-clock-counter-clockwise"></i>
                                         </button>
@@ -312,11 +308,12 @@
     <script>
         $(document).ready(function() {
 
-            let oldAssetCode = @json($asset->asset_code);
+            let oldAssetCode = @json($asset->asset_code ?? '');
 
             $('#scope').prop('disabled', true);
             $('#category').prop('disabled', true);
             $('#sub_category').prop('disabled', true);
+
             $('#group').on('change', function() {
                 const id = $(this).val();
 
@@ -523,15 +520,19 @@
                     }
                 });
 
-            })
+            });
 
             $('#btn-edit-asset-code').on('click', function() {
                 $('.showCol').show();
-            })
+            });
 
             $('#btn-return-asset-code').on('click', function() {
+                $('#group').val('').trigger('change');
+                $('#scope').prop('disabled', true).empty();
+                $('#category').prop('disabled', true).empty();
+                $('#sub_category').prop('disabled', true).empty();
                 $('#asset_code').val(oldAssetCode);
-            })
+            });
         });
     </script>
 @endpush

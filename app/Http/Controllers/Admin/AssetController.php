@@ -22,67 +22,43 @@ class AssetController extends Controller
 {
     public function index()
     {
-        $data = collect([
-            [
-                'id' => 1,
-                'code' => '00.00.00.00',
-                'name' => 'Traktor'
-            ],
-            [
-                'id' => 1,
-                'code' => '00.00.00.00',
-                'name' => 'Traktor'
-            ],
-            [
-                'id' => 1,
-                'code' => '00.00.00.00',
-                'name' => 'Traktor'
-            ],
-            [
-                'id' => 1,
-                'code' => '00.00.00.00',
-                'name' => 'Traktor'
-            ],
-            [
-                'id' => 1,
-                'code' => '00.00.00.00',
-                'name' => 'Traktor'
-            ],
-        ]);
-        $data = $data->map(fn($item) => (object) $item)->toArray();
-        return view('pages.admin.assets', compact(['data']));
+        return view('pages.admin.assets');
     }
 
     public function data(Request $request)
     {
         try {
-            $columns = ['id', 'name', 'email', 'created_at'];
+            $columns = ['created_at', 'id', 'asset_code', 'procurement'];
 
             $query = Asset::query();
 
-            if ($sub_category = $request->input('sub_category') !== 'ALL') {
-                $query->where('department_id', $sub_category);
-            }
+            $query->with(['department' => function ($q) {
+                $q->select('id', 'code', 'name');
+            }]);
+            // if ($sub_category = $request->input('sub_category') !== 'ALL') {
+            //     $query->where('department_id', $sub_category);
+            // }
 
             // Search filter
             if ($search = $request->input('search.value')) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('type', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
+                    $q->where('asset_code', 'like', "%{$search}%");
                 });
             }
 
             $totalFiltered = $query->count();
 
             // Ordering
-            // $orderCol = $columns[$request->input('order.0.column')];
-            // $orderDir = $request->input('order.0.dir');
-            // $query->orderBy($orderCol, $orderDir);
+            $orderCol = $columns[$request->input('order.0.column')];
+            $orderDir = $request->input('order.0.dir');
+            $query->orderBy($orderCol, $orderDir);
 
             // Pagination
             $start = $request->input('start');
             $length = $request->input('length');
-            $data = $query->offset($start)->limit($length)->get();
+            $data = $query->offset($start)
+                ->limit($length)
+                ->get();
 
             // Total semua data (tanpa filter)
             $totalData = Asset::count();
@@ -126,25 +102,25 @@ class AssetController extends Controller
                 'M2 (persegi'
             ],
             'Jumlah' =>
-                [
-                    'Buah',
-                    'Batang',
-                    'Botol',
-                    'Doos',
-                    'Zak',
-                    'Ekor',
-                    'Stel',
-                    'Rim',
-                    'Unit',
-                    'Pucuk',
-                    'Set',
-                    'Lembar',
-                    'Box',
-                    'Pasang',
-                    'Roll',
-                    'Lusin/Gross',
-                    'Eksemplar'
-                ]
+            [
+                'Buah',
+                'Batang',
+                'Botol',
+                'Doos',
+                'Zak',
+                'Ekor',
+                'Stel',
+                'Rim',
+                'Unit',
+                'Pucuk',
+                'Set',
+                'Lembar',
+                'Box',
+                'Pasang',
+                'Roll',
+                'Lusin/Gross',
+                'Eksemplar'
+            ]
         ];
         return view('pages.admin.create-asset', compact(['departments', 'groups', 'location', 'units']));
     }
@@ -388,25 +364,25 @@ class AssetController extends Controller
                 'M2 (persegi'
             ],
             'Jumlah' =>
-                [
-                    'Buah',
-                    'Batang',
-                    'Botol',
-                    'Doos',
-                    'Zak',
-                    'Ekor',
-                    'Stel',
-                    'Rim',
-                    'Unit',
-                    'Pucuk',
-                    'Set',
-                    'Lembar',
-                    'Box',
-                    'Pasang',
-                    'Roll',
-                    'Lusin/Gross',
-                    'Eksemplar'
-                ]
+            [
+                'Buah',
+                'Batang',
+                'Botol',
+                'Doos',
+                'Zak',
+                'Ekor',
+                'Stel',
+                'Rim',
+                'Unit',
+                'Pucuk',
+                'Set',
+                'Lembar',
+                'Box',
+                'Pasang',
+                'Roll',
+                'Lusin/Gross',
+                'Eksemplar'
+            ]
         ];
         return view('pages.admin.edit-asset', compact(['asset', 'departments', 'groups', 'location', 'units']));
     }
@@ -538,7 +514,13 @@ class AssetController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $status = $request->input('status');
-        return redirect()->back()->with('success', 'Berhasil ' . ($status ? 'mengaktifkan' : 'menonaktifkan') . ' Asset');
+        $asset = Asset::findOrFail($id);
+        $asset->status = $status;
+        $asset->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil ' . ($status ? 'mengaktifkan' : 'menonaktifkan') . ' asset ' . $asset->asset_code
+        ]);
     }
 
     public function asset_picture($folder, $filename)

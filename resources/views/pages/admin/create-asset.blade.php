@@ -54,9 +54,8 @@
                                             <i class="ph-calendar"></i>
                                         </span>
                                         <input type="text" id="procurement" name="procurement"
-                                            class="form-control datepicker-basic"
-                                            value="{{ old('procurement', now()->year) }}" placeholder="2025"
-                                            @readonly(true)>
+                                            class="form-control datepicker-basic" value="{{ now()->year }}"
+                                            placeholder="2025" @readonly(true)>
                                     </div>
                                     <div class="form-text text-danger text-error" id="procurement_error"
                                         style="display: none;">
@@ -137,8 +136,7 @@
                                 <label class="form-label col-12 col-md-3">Kode Aset:<span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-5">
-                                    <input type="text" name="asset_code" id="asset_code"
-                                        value="{{ old(key: 'code') }}" class="form-control" placeholder=""
+                                    <input type="text" name="asset_code" id="asset_code" class="form-control"
                                         @readonly(true)>
 
                                     <div class="form-text text-danger text-error" id="asset_code_error"
@@ -173,8 +171,7 @@
                                 <label class="form-label col-12 col-md-3">Jenis Barang: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-9">
-                                    <input type="text" name="type" id="type" value="{{ old(key: 'type') }}"
-                                        class="form-control" placeholder="">
+                                    <input type="text" name="type" id="type" class="form-control">
                                     <div class="form-text text-danger text-error" id="type_error" style="display: none;">
                                         <i class="ph-x-circle me-1"></i>
                                         <span></span>
@@ -186,7 +183,7 @@
                                         class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="asset_identity" id="asset_identity" class="form-control" rows="3">{{ old('asset_identity') }}</textarea>
+                                    <textarea name="asset_identity" id="asset_identity" class="form-control" rows="3"></textarea>
                                     <div class="form-text text-danger text-error" id="asset_identity_error"
                                         style="display: none;">
                                         <i class="ph-x-circle me-1"></i>
@@ -204,7 +201,7 @@
                                         </span>
                                         <input type="text" class="form-control datepicker-basic-loan"
                                             name="acquisition" placeholder="Pilih Tanggal Peminjaman"
-                                            value="{{ old('acquisition', now()->format('D/M/Y')) }}">
+                                            value="{{ now()->format('D/M/Y') }}">
                                     </div>
                                     <div class="form-text text-danger text-error" id="acquisition_error"
                                         style="display: none;">
