@@ -119,11 +119,6 @@
                                     <select name="sub_category" id="sub_category" class="form-control select "
                                         data-placeholder="Pilih Sub Kelompok...">
                                         <option></option>
-                                        {{-- @foreach ($subCategories as $subCategory)
-                                            <option value="{{ $subCategory->id }}">
-                                                [{{ rtrim($subCategory->code, '.') }}]
-                                                {{ $subCategory->description }}</option>
-                                        @endforeach --}}
                                     </select>
                                     <div class="form-text text-danger text-error" id="sub_category_error"
                                         style="display: none;">
@@ -155,13 +150,24 @@
                                         @foreach ($departments as $key => $department)
                                             <option></option>
                                             <option value="{{ $department->id }}"x>
-                                                {{ $department->code }}
+                                                [{{ $department->code }}]
                                                 {{ $department->name }}
                                             </option>
                                         @endforeach
                                     </select>
                                     <div class="form-text text-danger text-error" id="department_id_error"
                                         style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3 row">
+                                <label class="form-label col-12 col-md-3">Nama Asset: <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-12 col-md-9">
+                                    <input type="text" name="name" id="name" class="form-control">
+                                    <div class="form-text text-danger text-error" id="name_error" style="display: none;">
                                         <i class="ph-x-circle me-1"></i>
                                         <span></span>
                                     </div>
@@ -257,7 +263,7 @@
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
-                                <label class="form-label col-12 col-md-2">Keterangan: <span class="text-danger">*</span>
+                                <label class="form-label col-12 col-md-3">Keterangan: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-lg-9">
                                     <textarea name="description" id="description" class="form-control" rows="3">{{ old('description') }}</textarea>
@@ -300,6 +306,7 @@
             $('#scope').prop('disabled', true);
             $('#category').prop('disabled', true);
             $('#sub_category').prop('disabled', true);
+
             $('#group').on('change', function() {
                 const id = $(this).val();
 

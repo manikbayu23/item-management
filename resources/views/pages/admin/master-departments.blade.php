@@ -12,7 +12,7 @@
             <table class="table table-striped datatable-pagination">
                 <thead>
                     <tr>
-                        <th class="text-center">No.</th>
+                        <th class="text-center" style="width : 10%">No.</th>
                         <th class="text-center">Kode</th>
                         <th>Nama</th>
                         <th class="text-center">Aksi</th>
@@ -23,7 +23,7 @@
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
                             <td class="text-center">
-                                {{ $row->code }}
+                                <span class="badge text-reset bg-dark bg-opacity-20">{{ $row->code }}</span>
                             </td>
                             <td>{{ $row->name }}</td>
                             <td class="text-center">
@@ -76,7 +76,7 @@
                             <div class="col-md-4 col-sm-12 mb-3">
                                 <label class="form-label">Kode :</label>
                                 <input type="text" name="code" id="inputCode" value="{{ old('code') }}"
-                                    class="form-control" placeholder="Example : ITD">
+                                    class="form-control" placeholder="1">
                                 @if ($errors->has('code'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('code') }}</div>

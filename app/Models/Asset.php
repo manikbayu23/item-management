@@ -14,6 +14,8 @@ class Asset extends Model
         'location_code',
         'procurement',
         'acquisition',
+        'name',
+        'sub_category_id',
         'department_id',
         'status',
         'type',
@@ -27,5 +29,9 @@ class Asset extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+    public function sub_category()
+    {
+        return $this->belongsTo(SubCategory::class);
     }
 }

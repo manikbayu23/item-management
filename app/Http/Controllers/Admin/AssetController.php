@@ -28,7 +28,7 @@ class AssetController extends Controller
     public function data(Request $request)
     {
         try {
-            $columns = ['created_at', 'id', 'asset_code', 'procurement'];
+            $columns = ['created_at', 'id', 'asset_code', 'name', 'procurement'];
 
             $query = Asset::query();
 
@@ -42,7 +42,8 @@ class AssetController extends Controller
             // Search filter
             if ($search = $request->input('search.value')) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('asset_code', 'like', "%{$search}%");
+                    $q->where('asset_code', 'like', "%{$search}%")
+                        ->orWhere('name', 'like', "%{$search}%");
                 });
             }
 
@@ -139,7 +140,6 @@ class AssetController extends Controller
                 ->first();
 
             if ($codeAsset) {
-                // Ambil dua angka terakhir setelah titik terakhir
                 preg_match('/\.(\d+)$/', $codeAsset, $matches);
 
                 // Ambil angka terakhir, jika ada
@@ -226,7 +226,9 @@ class AssetController extends Controller
             'acquisition' => 'required|date', // Format tanggal (YYYY-MM-DD)
             'type' => 'required|string|max:100', // VARCHAR dengan maksimal 255 karakter
 
+            'sub_category' => 'required', // TEXT
             'department_id' => 'required', // TEXT
+            'name' => 'required|string', // TEXT
             'asset_identity' => 'required|string', // TEXT
             'qty' => 'required|integer|min:0', // Integer minimal 1
             'unit' => 'required|string|max:50', // VARCHAR dengan maksimal 50 karakter
@@ -248,6 +250,11 @@ class AssetController extends Controller
             'type.max' => 'Jenis aset maksimal 100 karakter.',
 
             'department_id.required' => 'Departemen wajib dipilih.',
+
+            'sub_category.required' => 'Sub kelompok wajib dipilih.',
+
+            'name.required' => 'Nama aset wajib diisi.',
+            'name.string' => 'Nama aset harus berupa teks.',
 
             'asset_identity.required' => 'Identitas aset wajib diisi.',
             'asset_identity.string' => 'Identitas aset harus berupa teks.',
@@ -303,12 +310,13 @@ class AssetController extends Controller
                 ], 422);
             }
 
-
             $location = Location::findOrFail(1)->code;
             $locationCode = $location . '.1.' . $validated['procurement'];
             Asset::create([
                 'asset_code' => $validated['asset_code'],
                 'location_code' => $locationCode,
+                'name' => $validated['name'],
+                'sub_category_id' => $validated['sub_category'],
                 'procurement' => $validated['procurement'],
                 'acquisition' => Carbon::parse($validated['acquisition']),
                 'department_id' => $validated['department_id'],
@@ -398,6 +406,8 @@ class AssetController extends Controller
             'acquisition' => 'required|date', // Format tanggal (YYYY-MM-DD)
             'type' => 'required|string|max:100', // VARCHAR dengan maksimal 255 karakter
 
+            // 'sub_category' => 'required', // TEXT
+            'name' => 'required|string', // TEXT
             'asset_identity' => 'required|string', // TEXT
             'qty' => 'required|integer|min:0', // Integer minimal 1
             'unit' => 'required|string|max:50', // VARCHAR dengan maksimal 50 karakter
@@ -417,6 +427,11 @@ class AssetController extends Controller
             'type.required' => 'Jenis aset wajib diisi.',
             'type.string' => 'Jenis aset harus berupa teks.',
             'type.max' => 'Jenis aset maksimal 100 karakter.',
+
+            // 'sub_category.required' => 'Sub kelompok wajib dipilih.',
+
+            'name.required' => 'Nama aset wajib diisi.',
+            'name.string' => 'Nama aset harus berupa teks.',
 
             'asset_identity.required' => 'Identitas aset wajib diisi.',
             'asset_identity.string' => 'Identitas aset harus berupa teks.',
@@ -466,6 +481,7 @@ class AssetController extends Controller
             $updateData = [
                 'asset_code' => $validated['asset_code'],
                 'location_code' => $locationCode,
+                'name' => $validated['name'],
                 'procurement' => $validated['procurement'],
                 'acquisition' => Carbon::parse($validated['acquisition']),
                 'type' => $validated['type'],
@@ -476,6 +492,9 @@ class AssetController extends Controller
                 'updated_at' => Carbon::now(),
             ];
 
+            if ($subCategory = $request->input('sub_category')) {
+                $updateData['sub_category_id'] = $subCategory;
+            }
             if ($request->hasFile('file_name')) {
                 // Delete old picture if exists
                 if ($asset->file_name) {

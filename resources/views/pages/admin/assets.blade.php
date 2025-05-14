@@ -67,7 +67,7 @@
                         render: function(data, type, row, meta) {
                             return `<div class="form-check">
                                         <input type="checkbox" class="form-check-input check-asset "
-                                            id="check-asset-${meta.row}" data-name="${row.description}" data-code="${row.asset_code}">
+                                            id="check-asset-${meta.row}" data-name="${row.name}" data-code="${row.asset_code}">
                                     </div>`;
                         }
                     },
@@ -84,7 +84,16 @@
                     {
                         title: 'Kode Aset',
                         data: 'asset_code',
-                        name: 'asset_code'
+                        render: function(data) {
+                            return `<span class="badge bg-dark bg-opacity-20 text-reset">${data}</span>`;
+                        }
+                    }, {
+                        title: 'Nama Aset',
+                        data: 'name',
+                        name: 'name',
+                        orderable: true,
+                        searchable: true,
+                        width: '20%'
                     }, {
                         title: 'Tahun Pengadaan',
                         data: 'procurement',
@@ -99,6 +108,8 @@
                         title: 'Status',
                         data: 'status',
                         className: 'text-center',
+                        orderable: false,
+                        searchable: false,
                         render: function(data) {
                             let text = 'Aktif';
                             let color = 'bg-success';
@@ -114,6 +125,8 @@
                     {
                         title: 'Aksi',
                         data: 'id',
+                        orderable: false,
+                        searchable: false,
                         className: 'text-center',
                         render: (data, type, row, meta) => {
 
@@ -128,7 +141,7 @@
                                                 Edit
                                             </button>
                                             <button type="button" class="dropdown-item printAsset"
-                                                data-index="${meta.row}" data-name="${row.description}" data-code="${row.asset_code}">
+                                                data-index="${meta.row}" data-name="${row.name}" data-code="${row.asset_code}">
                                                 <i class="ph-printer me-2"></i>
                                                 Print
                                             </button>`;
@@ -136,7 +149,7 @@
                             if (row.status == '0') {
                                 html += `
                                                 <button type="button" class="option-status dropdown-item"
-                                                    data-id="${data}" data-name="${row.description}"
+                                                    data-id="${data}" data-name="${row.name}"
                                                     data-status="1">
                                                     <i class="ph-check-circle me-2"></i>
                                                     Aktifkan
@@ -145,7 +158,7 @@
                             } else {
                                 html += `
                                                 <button type="button" class="option-status dropdown-item"
-                                                    data-id="${data}" data-name="${row.description}"
+                                                    data-id="${data}" data-name="${row.name}"
                                                     data-status="0">
                                                     <i class="ph-x-circle me-2"></i>
                                                     Nonaktifkan

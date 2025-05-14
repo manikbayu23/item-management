@@ -12,10 +12,10 @@
             <table class="table table-striped datatable-pagination">
                 <thead>
                     <tr>
-                        <th class="text-center">No.</th>
-                        <th class="text-center">Kode Departemen</th>
-                        <th class="text-center">Kode</th>
-                        <th>Nama</th>
+                        <th class="text-center" style="width: 10%">No.</th>
+                        <th class="text-center" style="width: 20%">Kode Departemen</th>
+                        <th class="text-center" style="width: 20%">Kode</th>
+                        <th style="width: 60%">Nama</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -24,10 +24,10 @@
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
                             <td class="text-center">
-                                {{ $row->department->code }}
+                                <span class="badge text-reset bg-info bg-opacity-20">{{ $row->department->code }}</span>
                             </td>
                             <td class="text-center">
-                                {{ $row->code }}
+                                <span class="badge text-reset bg-dark bg-opacity-20">{{ $row->code }}</span>
                             </td>
                             <td>{{ $row->name }}</td>
                             <td class="text-center">

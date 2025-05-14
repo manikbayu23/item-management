@@ -21,7 +21,7 @@ return new class extends Migration {
 
             $table->char('status', length: 1)->comment('Status Aset');
 
-            $table->foreignId('department_id');
+            $table->foreignId('program_id');
 
             $table->string('type', length: 100)->comment('Jenis Barang');
             $table->text('asset_identity')->comment('Identitas Barang');

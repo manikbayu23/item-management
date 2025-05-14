@@ -176,6 +176,18 @@
                                 </div>
                             </div>
                             <div class="col-12 mb-3 row">
+                                <label class="form-label col-12 col-md-3">Nama Asset: <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-12 col-md-9">
+                                    <input type="text" name="name" id="name" class="form-control"
+                                        value="{{ $asset->name }}">
+                                    <div class="form-text text-danger text-error" id="name_error" style="display: none;">
+                                        <i class="ph-x-circle me-1"></i>
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3 row">
                                 <label class="form-label col-12 col-md-3">Jenis Barang: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-9">
@@ -223,7 +235,7 @@
                                 <label class="form-label col-12 col-md-3">Jumlah: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-12 col-md-9 row">
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-7 col-md-4">
                                         <div class="input-group">
                                             <button type="button" class="btn btn-light btn-icon"
                                                 onclick="this.parentNode.querySelector('#qty').stepDown()">
@@ -242,9 +254,9 @@
                                             <span></span>
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-6 row">
-                                        <label class="col-form-label col-12 col-lg-3 text-end">Satuan</label>
-                                        <div class="col-12 col-lg-9">
+                                    <div class="col-5 col-md-6 row">
+                                        <label class="col-form-label col-5 col-lg-3 text-end">Satuan</label>
+                                        <div class="col-7 col-lg-9">
                                             <select class="form-control select" name="unit" id="unit"
                                                 data-minimum-results-for-search="Infinity">
                                                 @foreach ($units as $key => $unit)
@@ -308,7 +320,8 @@
     <script>
         $(document).ready(function() {
 
-            let oldAssetCode = @json($asset->asset_code ?? '');
+            let oldAssetCode = @json($asset->asset_code);
+            let oldSubcategory = @json($asset->sub_category_id);
 
             $('#scope').prop('disabled', true);
             $('#category').prop('disabled', true);
@@ -441,6 +454,11 @@
                 const id = $(this).val();
 
                 if (!id) return;
+
+                if (id == oldSubcategory) {
+                    $('#asset_code').val(oldAssetCode);
+                    return;
+                }
 
                 $.ajax({
                     method: 'GET',
