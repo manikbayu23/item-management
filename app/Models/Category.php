@@ -9,15 +9,6 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['scope_id', 'code', 'description', 'period'];
+    protected $fillable = ['name', 'description'];
 
-    public function scope()
-    {
-        return $this->belongsTo(Scope::class);
-    }
-
-    public function subCategories()
-    {
-        return $this->hasMany(SubCategory::class);
-    }
 }

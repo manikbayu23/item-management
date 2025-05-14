@@ -9,10 +9,6 @@ class Division extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['department_id', 'code', 'name'];
+    protected $fillable = ['name', 'description'];
 
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
 }

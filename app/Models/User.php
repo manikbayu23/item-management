@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'username',
+        'level',
+        'role',
+        'division_id'
     ];
 
     /**
@@ -46,8 +50,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function account()
+    public function division()
     {
-        return $this->hasOne(Account::class);
+        return $this->hasOne(Division::class);
     }
 }
