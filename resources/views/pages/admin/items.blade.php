@@ -1,13 +1,13 @@
 @extends('layouts.main')
 
-@section('title_admin', 'Daftar Asset')
+@section('page_name2', 'Daftar Barang')
 
 @section('content_admin')
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end gap-2">
                 <button type="button" id="printAssets" class="btn btn-success"><i class="ph-printer"></i></button>
-                <a href="{{ route('admin.asset.create') }}" class="btn btn-primary"><i class="ph-plus-circle"></i></a>
+                <a href="{{ route('admin.item.create') }}" class="btn btn-primary"><i class="ph-plus-circle"></i></a>
             </div>
 
             <table id="asset-table" class="table table-striped datatable-select-checkbox">
@@ -38,7 +38,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: '{{ route('admin.asset.data') }}',
+                    url: '{{ route('admin.item.data') }}',
                     data: function(d) {
                         d.name = $('#filterName').val();
                         d.status = $('#filterStatus').val();
@@ -82,27 +82,27 @@
                         }
                     },
                     {
-                        title: 'Kode Aset',
+                        title: 'Kode Barang',
                         data: 'asset_code',
                         render: function(data) {
                             return `<span class="badge bg-dark bg-opacity-20 text-reset">${data}</span>`;
                         }
                     }, {
-                        title: 'Nama Aset',
+                        title: 'Nama Barang',
                         data: 'name',
                         name: 'name',
                         orderable: true,
                         searchable: true,
                         width: '20%'
                     }, {
-                        title: 'Tahun Pengadaan',
-                        data: 'procurement',
-                        name: 'procurement',
+                        title: 'Kategori',
+                        data: 'category.name',
+                        name: 'category.name',
                         className: 'text-center',
                     }, {
-                        title: 'Departemen',
-                        data: 'department.name',
-                        name: 'department.name',
+                        title: 'Ruangan',
+                        data: 'room.name',
+                        name: 'room.name',
                         className: 'text-center',
                     }, {
                         title: 'Status',
@@ -198,7 +198,7 @@
 
             $('#asset-table').on('click', '.edit-asset', function() {
                 const id = $(this).data('id')
-                window.location.href = '{{ route('admin.asset.edit', ':id') }}'.replace(':id', id);
+                window.location.href = '{{ route('admin.item.edit', ':id') }}'.replace(':id', id);
             })
 
 
@@ -214,7 +214,7 @@
                 }
 
                 removeAsset = (code, name) => {
-                    this.assets = this.assets.filter(asset => asset.code !== code || asset.name !== name);
+                    this.assets = this.assets.filter(asset => item.code !== code || item.name !== name);
                     console.log(this.assets);
                 }
             }
@@ -227,22 +227,22 @@
                 const name = $(this).data('name');
                 const code = $(this).data('code');
                 if ($(this).is(':checked')) {
-                    asset.addAsset(code, name);
+                    item.addAsset(code, name);
                 } else {
-                    asset.removeAsset(code, name);
+                    item.removeAsset(code, name);
                 }
 
-                $('#printAssets').prop('disabled', asset.assets.length <= 0);
+                $('#printAssets').prop('disabled', item.assets.length <= 0);
             });
 
             $('#asset-table').on('click', '.printAsset', function() {
                 const index = $(this).data('index');
                 $('.check-asset').prop('checked', false);
                 $('#printAssets').prop('disabled', true);
-                if (asset.assets = []) {
+                if (item.assets = []) {
                     const name = $(this).data('name');
                     const code = $(this).data('code');
-                    asset.addAsset(code, name);
+                    item.addAsset(code, name);
                     printAsset(1);
                 }
                 // $('#check-asset-' + index).prop('checked', true);
@@ -262,10 +262,10 @@
                     }
                 });
                 $.ajax({
-                    url: '{{ route('admin.asset.print') }}', // URL untuk mengakses controller
+                    url: '{{ route('admin.item.print') }}', // URL untuk mengakses controller
                     type: 'POST',
                     data: {
-                        assets: asset.assets, // Kirim data assets
+                        assets: item.assets, // Kirim data assets
                         _token: $('meta[name="csrf-token"]').attr(
                             'content') // CSRF Token untuk keamanan
                     },
@@ -278,7 +278,7 @@
                         });
                         const url = window.URL.createObjectURL(blob);
                         if (type == 1) {
-                            asset.assets = [];
+                            item.assets = [];
                         }
                         window.open(url); // buka tab baru untuk cetak
                     },
@@ -313,7 +313,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
 
-                        const url = '{{ route('admin.asset.update-status', ['id' => ':id']) }}'
+                        const url = '{{ route('admin.item.update-status', ['id' => ':id']) }}'
                             .replace(':id', id);
 
                         $.ajax({

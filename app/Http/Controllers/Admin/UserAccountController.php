@@ -2,64 +2,62 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Room;
 use App\Models\User;
-use App\Models\Account;
 use App\Models\Division;
+use App\Models\Position;
+use App\Models\UserRoom;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use PhpParser\Node\Expr\Cast\String_;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class UserAccountController extends Controller
 {
     public function index()
     {
-        $data = User::orderBy('id', 'desc')->get();
+        $auth = Auth::user();
+        $data = User::where(function ($query) use ($auth) {
+            $query->where('created_by', $auth->username)
+                ->orWhereHas('userrooms', function ($query2) use ($auth) {
+                    $query2->whereIn('room_id', $auth->userrooms->pluck('room_id'));
+                })->orWhere('id', $auth->id);
+        });
+
+        if ($auth->role !== 'superadmin') {
+            $data->whereIn('role', ['user', 'admin']);
+        }
+        $data = $data->orderBy('id', 'desc')
+            ->get();
+
         return view('pages.admin.user-accounts', compact('data'));
     }
     public function create()
     {
         $divisions = Division::all();
-        return view('pages.admin.create-user-account', compact('divisions'));
+        $positions = Position::all();
+        return view('pages.admin.create-user-account', compact(['divisions', 'positions']));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            // Validasi Foto Profil
-            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-
-            // Validasi Nama
             'name' => 'required|string|max:255',
-
-            // Validasi Divisi
+            'username' => 'required|string|min:4|unique:users,username',
             'division' => 'required', // Sesuaikan dengan nama tabel divisions
-            // 'division' => 'required|exists:divisions,id', // Sesuaikan dengan nama tabel divisions
-
-            // Validasi Role (saya perhatikan ada duplikasi name="division", seharusnya name="role")
-            'role' => 'required|in:admin,user', // Asumsi value role 1 dan 2
-
-            // Validasi No Telepon
+            'position' => 'required', // Sesuaikan dengan nama tabel divisions
+            'role' => 'required|in:superadmin,admin,user', // Asumsi value role 1 dan 2
             'phone' => 'required|numeric|digits_between:10,15|regex:/^[0-9]+$/',
-
-            // Validasi Email
             'email' => 'required|email|unique:users,email|max:255', // Sesuaikan dengan tabel users
-
-            // Validasi Password
             'password' => 'required|string|min:8|max:255',
 
-            // Validasi Alamat
-            'address' => 'required|string|max:1000'
         ], [
-            // Pesan error kustom
-            'profile_picture.required' => 'Foto profil wajib diupload',
-            'profile_picture.image' => 'File harus berupa gambar',
-            'profile_picture.max' => 'Ukuran gambar maksimal 2MB',
             'name.required' => 'Nama wajib diisi',
+            'username.required' => 'Username wajib diisi',
+            'username.min' => 'Username minimal 3 karrakter',
+            'username.unique' => 'Username sudah digunakan',
             'division.required' => 'Divisi wajib dipilih',
-            'division.exists' => 'Divisi yang dipilih tidak valid',
+            'position.required' => 'Posisi wajib dipilih',
             'role.required' => 'Role wajib dipilih',
             'role.in' => 'Role yang dipilih tidak valid',
             'phone.required' => 'Nomor telepon wajib diisi',
@@ -70,57 +68,30 @@ class UserAccountController extends Controller
             'email.unique' => 'Email sudah digunakan',
             'password.required' => 'Password wajib diisi',
             'password.min' => 'Password minimal 8 karakter',
-            'address.required' => 'Alamat wajib diisi'
         ]);
-
-        if ($request->hasFile('profile_picture')) {
-            $file = $request->file('profile_picture');
-
-            // Format nama file: [nama]-[random].ext
-            $filename = Str::slug($validated['name']) // Ambil dari input name
-                . '-' . Str::random(5) // Tambahkan random string untuk unik
-                . '.' . $file->getClientOriginalExtension(); // Pertahankan ekstensi
-
-            $path = $file->storeAs('profile_pictures', $filename); // Simpan di storage
-
-            $validated['profile_picture'] = $path; // Simpan path di database
-        }
 
         $validated['password'] = bcrypt($validated['password']);
 
-        try {
-            DB::beginTransaction();
+        $user = new User;
+        $user->name = $validated['name'];
+        $user->username = Str::upper($validated['username']);
+        $user->phone_number = $validated['phone'];
+        $user->division_id = $validated['division'];
+        $user->position_id = $validated['position'];
+        $user->role = $validated['role'];
+        $user->email = $validated['email'];
+        $user->password = $validated['password'];
+        $user->save();
+        return redirect()->route('admin.user-account')->with('success', 'Berhasil membuat akun pengguna.');
 
-            $user = new User;
-            $user->name = $validated['name'];
-            $user->email = $validated['email'];
-            $user->password = $validated['password'];
-            $user->save();
-
-            $account = new Account;
-            $account->user_id = $user->id;
-            $account->division_id = $validated['division'];
-            $account->name = $validated['name'];
-            $account->role = $validated['role'];
-            $account->phone = $validated['phone'];
-            $account->address = $validated['address'];
-            $account->profile_picture = $validated['profile_picture'];
-            $account->save();
-
-            DB::commit();
-            return redirect()->route('admin.user-accounts.index')->with('success', 'Berhasil membuat akun pengguna.');
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return back()->with('error', 'Gagal menbuat akun pengguna :' . $th->getMessage());
-        }
     }
 
     public function edit(string $id)
     {
         $user = User::find($id);
         $divisions = Division::all();
-
-        return view('pages.admin.edit-user-account', compact(['divisions', 'user']));
+        $positions = Position::all();
+        return view('pages.admin.edit-user-account', compact(['divisions', 'positions', 'user']));
     }
 
     public function update(Request $request, string $id)
@@ -128,104 +99,111 @@ class UserAccountController extends Controller
         $user = User::findOrFail($id);
 
         $validated = $request->validate([
-            'profile_picture' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'required|string|max:255',
+            'username' => 'required|string|min:4|unique:users,username,' . $user->id,
             'division' => 'required',
-            'role' => 'required|in:admin,user',
+            'position' => 'required',
+            'role' => 'required|in:superadmin,admin,user',
             'phone' => 'required|numeric|digits_between:10,15',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|max:255',
-            'address' => 'required|string|max:1000'
         ], [
-            'profile_picture.required' => 'Foto profil wajib diupload',
-            'profile_picture.image' => 'File harus berupa gambar',
-            'profile_picture.max' => 'Ukuran gambar maksimal 2MB',
             'name.required' => 'Nama wajib diisi',
+            'username.required' => 'Username wajib diisi',
+            'username.min' => 'Username minimal 3 karrakter',
+            'username.unique' => 'Username sudah digunakan',
             'division.required' => 'Divisi wajib dipilih',
+            'position.required' => 'Posisi wajib dipilih',
             'role.required' => 'Role wajib dipilih',
+            'role.in' => 'Role yang dipilih tidak valid',
             'phone.required' => 'Nomor telepon wajib diisi',
             'phone.numeric' => 'Hanya boleh berisi angka',
             'phone.digits_between' => 'Panjang nomor 10-15 digit',
+            'phone.regex' => 'Format nomor tidak valid',
             'email.required' => 'Email wajib diisi',
             'email.unique' => 'Email sudah digunakan',
             'password.min' => 'Password minimal 8 karakter',
-            'address.required' => 'Alamat wajib diisi'
         ]);
 
-        DB::beginTransaction();
-        try {
-            // Handle profile picture upload
-            if ($request->hasFile('profile_picture')) {
-                // Delete old picture if exists
-                if ($user->account && $user->account->profile_picture) {
-                    Storage::delete($user->account->profile_picture);
-                }
 
-                $file = $request->file('profile_picture');
-                $filename = Str::slug($validated['name']) . '-' . Str::random(5) . '.' . $file->extension();
-                $path = $file->storeAs('profile_pictures', $filename);
-                $validated['profile_picture'] = $path;
-            }
+        $user->name = $validated['name'];
+        $user->username = Str::upper($validated['username']);
+        $user->phone_number = $validated['phone'];
+        $user->division_id = $validated['division'];
+        $user->position_id = $validated['position'];
+        $user->role = $validated['role'];
+        $user->email = $validated['email'];
 
-            // Update user data
-            $user->name = $validated['name'];
-            $user->email = $validated['email'];
-
-            if (!empty($validated['password'])) {
-                $user->password = bcrypt($validated['password']);
-            }
-
-            $user->save();
-
-            // Update or create account
-            $accountData = [
-                'division_id' => $validated['division'],
-                'name' => $validated['name'],
-                'role' => $validated['role'],
-                'phone' => $validated['phone'],
-                'address' => $validated['address']
-            ];
-
-            if (isset($validated['profile_picture'])) {
-                $accountData['profile_picture'] = $validated['profile_picture'];
-            }
-
-            $user->account()->updateOrCreate(['user_id' => $user->id], $accountData);
-
-            DB::commit();
-
-            return redirect()->route('admin.user-accounts.index')
-                ->with('success', 'Berhasil memperbarui akun pengguna.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+        if (!empty($validated['password'])) {
+            $user->password = bcrypt($validated['password']);
         }
+
+        $user->save();
+        return redirect()->route('admin.user-account')
+            ->with('success', 'Berhasil memperbarui akun pengguna.');
+
     }
 
     public function destroy(string $id)
     {
+        $user = User::findOrFail($id);
+        $user->delete();
+        return redirect()->back()->with('success', 'Akun berhasil dihapus');
+    }
 
-        $user = User::with('account')->findOrFail($id);
-
-        DB::beginTransaction();
+    public function rooms($id)
+    {
         try {
-            // Hapus file gambar jika ada
-            if ($user->account && $user->account->profile_picture) {
-                Storage::delete($user->account->profile_picture);
+            $auth = Auth::user();
+            if ($auth->role == 'superadmin') {
+                $rooms = Room::all();
+            } else {
+                $rooms = Room::whereHas('userrooms', function ($query) use ($auth) {
+                    $query->whereIn('room_id', $auth->userrooms->pluck('room_id'));
+                })->get();
             }
-
-            // Hapus relasi account terlebih dahulu
-            $user->account()->delete();
-
-            // Hapus user
-            $user->delete();
-
-            DB::commit();
-
-            return redirect()->back()->with('success', 'Akun berhasil dihapus');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Gagal menghapus akun: ' . $e->getMessage());
+            $userRooms = UserRoom::where('user_id', $id)
+                ->pluck('room_id');
+            return response()->json([
+                'success' => true,
+                'rooms' => $rooms,
+                'user_rooms' => $userRooms
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mendapatkan data ruangan.',
+                'errors' => $th->getMessage()
+            ]);
         }
+    }
+
+    public function updateRooms(Request $request, string $id)
+    {
+        $userId = $id;
+        $roomIds = $request->input('rooms', []);
+
+        if (!empty($roomIds)) {
+            $dataToUpsert = array_map(function ($roomId) use ($userId) {
+                return [
+                    'user_id' => $userId,
+                    'room_id' => $roomId,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+            }, $roomIds);
+
+            UserRoom::upsert(
+                $dataToUpsert,
+                ['user_id', 'room_id'],
+                ['updated_at']
+            );
+        }
+
+        UserRoom::where('user_id', $userId)
+            ->whereNotIn('room_id', $roomIds ?: [0]) // Hindari SQL error jika $roomIds kosong
+            ->delete();
+
+        return redirect()->back()->with('success', 'Akses ruangan berhasil diupdate.');
     }
 }

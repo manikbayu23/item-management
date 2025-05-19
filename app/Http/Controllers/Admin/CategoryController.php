@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
 use Carbon\Carbon;
 use App\Models\Group;
+use App\Models\Scope;
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Models\Scope;
 
 class CategoryController extends Controller
 { /**
@@ -16,50 +17,11 @@ class CategoryController extends Controller
   */
     public function index()
     {
-        $data = Category::orderBy('code', 'asc')->get();
-        $scopes = Scope::orderBy('code', 'asc')->get();
+        $categories = Category::all();
         return view(
-            'pages.admin.master-category',
-            [
-                'data' => $data,
-                'scopes' => $scopes
-            ]
+            'pages.admin.master-categories',
+            compact(['categories'])
         );
-    }
-
-    public function lastCode(Request $request)
-    {
-        try {
-            $id = $request->input('idScope');
-            $codeGroup = Scope::where('id', $id)->pluck('code')->first();
-
-            // Ambil kode terakhir dari Scope yang memiliki prefix sesuai dengan codeGroup
-            $codeScope = Category::where('code', 'like', "{$codeGroup}%")
-                ->where('scope_id', $id)
-                ->latest('code')
-                ->pluck('code')
-                ->first();
-
-
-            if ($codeScope) {
-                // Ambil dua angka terakhir setelah titik terakhir
-                preg_match('/\.(\d+)\.$/', $codeScope, $matches);
-
-                // Ambil angka terakhir, jika ada
-                $lastNumber = isset($matches[1]) ? intval($matches[1]) : 0;
-
-                // Tambahkan 1 dan pastikan format tetap '00', '01', '02', ...
-                $newNumber = str_pad($lastNumber + 1, 2, '0', STR_PAD_LEFT);
-
-                $code = "{$codeGroup}{$newNumber}";
-            } else {
-                $code = "{$codeGroup}00";
-            }
-
-            return response()->json(['success' => 'true', 'code' => $code]);
-        } catch (\Throwable $th) {
-            return response()->json(['success' => 'false', 'message' => $th->getMessage()], 500);
-        }
     }
 
     /**
@@ -67,34 +29,23 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->merge([
-            'code' => rtrim($request->input('code'), '.') . '.'
-        ]);
-        $request->validate([
-            'code' => [
+        $data = $request->validate([
+            'name' => [
                 'required',
-                'regex:/^\d+(\.\d+)*\.$/',
-                'unique:categories,code'
+                'unique:categories,name'
             ],
             'description' => 'required',
-            'period' => 'required',
-            'idScope' => 'required'
         ], [
-            'code.required' => 'Kode wajib diisi.',
-            'code.unique' => 'Kode ini sudah terdaftar di sistem.',
+            'name.required' => 'Nama kategori wajib diisi.',
+            'name.unique' => 'Kode ini sudah terdaftar di sistem.',
             'description' => 'Deskripsi wajib diisi.',
-            'period' => 'Periode wajib diisi.',
-            'idScope' => 'Bidang wajib dipilih.'
         ]);
-
 
         Category::create([
-            'code' => $request->input('code'),
-            'description' => strtoupper($request->input('description')),
-            'period' => $request->input('period'),
-            'scope_id' => $request->input('idScope')
+            'name' => Str::upper($data['name']),
+            'description' => $data['description']
         ]);
-        return redirect()->back()->with('success', 'Berhasil menambah kelompok.');
+        return redirect()->back()->with('success', 'Berhasil menambah kategori.');
     }
 
     /**
@@ -102,36 +53,25 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->merge([
-            'code' => rtrim($request->input('code'), '.') . '.'
-        ]);
-        $request->validate([
-            'code' => [
+        $data = $request->validate([
+            'name' => [
                 'required',
-                'regex:/^\d+(\.\d+)*\.$/',
-                Rule::unique('categories', 'code')->ignore($id)
+                Rule::unique('categories', 'name')->ignore($id)
             ],
             'description' => 'required',
-            'period' => 'required',
-            'idScope' => 'required'
         ], [
-            'code.required' => 'Kode wajib diisi.',
-            'code.regex' => 'Format kode tidak valid.',
-            'code.unique' => 'Kode ini sudah terdaftar di sistem.',
+            'name.required' => 'Nama kategori wajib diisi.',
+            'name.unique' => 'Kode ini sudah terdaftar di sistem.',
             'description' => 'Deskripsi wajib diisi.',
-            'period' => 'Periode wajib diisi.',
-            'idScope' => 'Bidang wajib dipilih.'
         ]);
 
-        $group = Category::findOrFail($id);
-        $group->scope_id = $request->input('idScope');
-        $group->code = $request->input('code');
-        $group->description = strtoupper($request->input('description'));
-        $group->period = $request->input('period');
-        $group->updated_at = Carbon::now();
-        $group->save();
+        $category = Category::findOrFail($id);
+        $category->name = Str::upper($data['name']);
+        $category->description = $data['description'];
+        $category->updated_at = Carbon::now();
+        $category->save();
 
-        return redirect()->back()->with('success', 'Berhasil memperbarui kelompok.');
+        return redirect()->back()->with('success', 'Berhasil memperbarui kategori.');
     }
 
     /**
@@ -139,8 +79,8 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        $group = Category::findOrFail($id);
-        $group->delete();
-        return redirect()->back()->with('success', 'Berhasil menghapus kelompok');
+        $category = Category::findOrFail($id);
+        $category->delete();
+        return redirect()->back()->with('success', 'Berhasil menghapus kategori ' . $category->name);
     }
 }

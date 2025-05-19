@@ -17,23 +17,17 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         try {
-            DB::beginTransaction();
-            $user = User::create([
-                'name' => 'Admin User',
+            User::create([
+                'name' => 'Admin Inventory',
+                'username' => 'admin',
                 'email' => 'johndoe@example.com',
                 'password' => Hash::make('12345678'), // Bcrypt hashing
-            ]);
-
-            Account::create([
-                'user_id' => $user->id,  // Menggunakan ID user yang baru dibuat
-                'name' => $user->name,
+                'level' => 'staf',
                 'role' => 'admin',
-                'division_id' => 1   // Sesuaikan dengan kebutuhan
+                'division_id' => 1
             ]);
-            DB::commit();
         } catch (\Throwable $th) {
-            DB::rollBack();
-            //throw $th;
+            throw $th;
         }
     }
 }

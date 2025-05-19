@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use App\Models\Division;
 use App\Models\Department;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
@@ -13,62 +14,50 @@ class DivisionController extends Controller
 {
     public function index()
     {
-        $data = Division::orderBy('code', 'asc')->get();
-        $departments = Department::orderBy('code', 'asc')->get();
-        return view('pages.admin.master-divisions', compact(['data', 'departments']));
+        $divisions = Division::all();
+        return view('pages.admin.master-divisions', compact(['divisions']));
     }
 
     public function store(Request $request)
     {
-        $request->merge([
-            'code' => strtoupper(string: $request->input('code'))
-        ]);
-        $request->validate([
-            'code' => [
+        $data = $request->validate([
+            'name' => [
                 'required',
-                'unique:divisions,code'
+                'unique:divisions,name'
             ],
-            'name' => 'required',
-            'idDepartment' => 'required'
+            'description' => 'required',
         ], [
-            'code.required' => 'Kode wajib diisi.',
-            'code.unique' => 'Kode ini sudah terdaftar di sistem.',
-            'name' => 'Nama wajib diisi.',
-            'idDepartment' => 'Departemen wajib dipilih.',
+            'name.required' => 'Nama divisi wajib diisi.',
+            'name.unique' => 'Nama divisi ini sudah terdaftar di sistem.',
+            'description' => 'Deskripsi wajib diisi.',
         ]);
 
         Division::create([
-            'department_id' => $request->input('idDepartment'),
-            'code' => $request->input('code'),
-            'name' => strtoupper($request->input('name')),
+            'name' => Str::upper($data['name']),
+            'description' => $data['description'],
         ]);
-        return redirect()->back()->with('success', 'Berhasil menambah Divisi.');
+        return redirect()->back()->with('success', 'Berhasil menambah divisi.');
     }
 
     public function update(Request $request, string $id)
     {
-        $request->merge([
-            'code' => strtoupper(string: $request->input('code'))
-        ]);
-        $request->validate([
-            'code' => [
+
+        $data = $request->validate([
+            'name' => [
                 'required',
-                Rule::unique('divisions', 'code')->ignore($id)
+                Rule::unique('divisions', 'name')->ignore($id)
             ],
-            'name' => 'required',
-            'idDepartment' => 'required'
+            'description' => 'required'
 
         ], [
-            'code.required' => 'Kode wajib diisi.',
-            'code.unique' => 'Kode ini sudah terdaftar di sistem.',
-            'name' => 'Nama wajib diisi.',
-            'idDepartment' => 'Departemen wajib dipilih.',
+            'name.required' => 'Nama divisi wajib diisi.',
+            'name.unique' => 'Nama divisi ini sudah terdaftar di sistem.',
+            'description' => 'Deskripsi wajib dipilih.',
         ]);
 
         $division = Division::findOrFail($id);
-        $division->department_id = $request->input('idDepartment');
-        $division->code = $request->input('code');
-        $division->name = strtoupper($request->input('name'));
+        $division->name = Str::upper($data['name']);
+        $division->description = $data['description'];
         $division->updated_at = Carbon::now();
         $division->save();
 
@@ -79,6 +68,6 @@ class DivisionController extends Controller
     {
         $division = Division::findOrFail($id);
         $division->delete();
-        return redirect()->back()->with('success', 'Berhasil menghapus divisi.');
+        return redirect()->back()->with('success', 'Berhasil menghapus divisi ' . $division->name);
     }
 }

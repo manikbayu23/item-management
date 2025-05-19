@@ -7,6 +7,9 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\DepartmentController as AdminDepartment;
 use App\Http\Controllers\Admin\DivisionController as AdminDivision;
 use App\Http\Controllers\Admin\GroupController as AdminGroup;
+use App\Http\Controllers\Admin\ItemController as AdminItem;
+use App\Http\Controllers\Admin\PositionController as AdminPosition;
+use App\Http\Controllers\Admin\RoomController as AdminRoom;
 use App\Http\Controllers\Admin\ScopeController as AdminScope;
 use App\Http\Controllers\Admin\SubCategoryController as AdminSubCategory;
 use App\Http\Controllers\Admin\UserAccountController as AdminUserAccount;
@@ -29,73 +32,58 @@ Route::middleware(['role:admin,user'])->group(function () {
     });
 });
 
-Route::middleware(['role:admin'])->group(function () {
-    Route::prefix('/admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
-        Route::prefix('/master')->name('master.')->group(function () {
-            Route::prefix('/groups')->name('group.')->group(function () {
-                Route::get('/', [AdminGroup::class, 'index'])->name('index');
-                Route::get('/last-code', [AdminGroup::class, 'lastCode'])->name('last-code');
-                Route::post('/', [AdminGroup::class, 'store'])->name('store');
-                Route::put('/{id}', [AdminGroup::class, 'update'])->name('update');
-                Route::delete('/{id}', [AdminGroup::class, 'destroy'])->name('destroy');
+Route::middleware(['role:superadmin,admin'])->group(function () {
+    Route::prefix('/admin')->name('admin')->group(function () {
+        Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('.dashboard');
+
+        Route::prefix('/masters')->name('.master')->group(function () {
+            Route::prefix('/divisions')->name('.division')->group(function () {
+                Route::get('/', [AdminDivision::class, 'index']);
+                Route::post('/', [AdminDivision::class, 'store'])->name('.store');
+                Route::put('/{id}', [AdminDivision::class, 'update'])->name('.update');
+                Route::delete('/{id}', [AdminDivision::class, 'destroy'])->name('.destroy');
             });
-            Route::prefix('/scopes')->name('scope.')->group(function () {
-                Route::get('/', [AdminScope::class, 'index'])->name('index');
-                Route::get('/last-code', [AdminScope::class, 'lastCode'])->name('last-code');
-                Route::post('/', [AdminScope::class, 'store'])->name('store');
-                Route::put('/{id}', [AdminScope::class, 'update'])->name('update');
-                Route::delete('/{id}', [AdminScope::class, 'destroy'])->name('destroy');
+            Route::prefix('/positions')->name('.position')->group(function () {
+                Route::get('/', [AdminPosition::class, 'index']);
+                Route::post('/', [AdminPosition::class, 'store'])->name('.store');
+                Route::put('/{id}', [AdminPosition::class, 'update'])->name('.update');
+                Route::delete('/{id}', [AdminPosition::class, 'destroy'])->name('.destroy');
             });
-            Route::prefix('/categories')->name('category.')->group(function () {
-                Route::get('/', [AdminCategory::class, 'index'])->name('index');
-                Route::get('/last-code', [AdminCategory::class, 'lastCode'])->name('last-code');
-                Route::post('/', [AdminCategory::class, 'store'])->name('store');
-                Route::put('/{id}', [AdminCategory::class, 'update'])->name('update');
-                Route::delete('/{id}', [AdminCategory::class, 'destroy'])->name('destroy');
+            Route::prefix('/rooms')->name('.room')->group(function () {
+                Route::get('/', [AdminRoom::class, 'index']);
+                Route::post('/', [AdminRoom::class, 'store'])->name('.store');
+                Route::put('/{id}', [AdminRoom::class, 'update'])->name('.update');
+                Route::delete('/{id}', [AdminRoom::class, 'destroy'])->name('.destroy');
             });
-            Route::prefix('/sub-categories')->name('sub-category.')->group(function () {
-                Route::get('/', [AdminSubCategory::class, 'index'])->name('index');
-                Route::get('/last-code', [AdminSubCategory::class, 'lastCode'])->name('last-code');
-                Route::post('/', [AdminSubCategory::class, 'store'])->name('store');
-                Route::put('/{id}', [AdminSubCategory::class, 'update'])->name('update');
-                Route::delete('/{id}', [AdminSubCategory::class, 'destroy'])->name('destroy');
-            });
-            Route::prefix('/departments')->name('departments.')->group(function () {
-                Route::get('/', [AdminDepartment::class, 'index'])->name('index');
-                Route::post('/', [AdminDepartment::class, 'store'])->name('store');
-                Route::put('/{id}', [AdminDepartment::class, 'update'])->name('update');
-                Route::delete('/{id}', [AdminDepartment::class, 'destroy'])->name('destroy');
-            });
-            Route::prefix('/divisions')->name('divisions.')->group(function () {
-                Route::get('/', [AdminDivision::class, 'index'])->name('index');
-                Route::post('/', [AdminDivision::class, 'store'])->name('store');
-                Route::put('/{id}', [AdminDivision::class, 'update'])->name('update');
-                Route::delete('/{id}', [AdminDivision::class, 'destroy'])->name('destroy');
+            Route::prefix('/categories')->name('.category')->group(function () {
+                Route::get('/', [AdminCategory::class, 'index']);
+                Route::post('/', [AdminCategory::class, 'store'])->name('.store');
+                Route::put('/{id}', [AdminCategory::class, 'update'])->name('.update');
+                Route::delete('/{id}', [AdminCategory::class, 'destroy'])->name('.destroy');
             });
         });
-        Route::prefix('/user-accounts')->name('user-accounts.')->group(function () {
-            Route::get('/', [AdminUserAccount::class, 'index'])->name('index');
-            Route::get('/create', [AdminUserAccount::class, 'create'])->name('create');
-            Route::post('/', [AdminUserAccount::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [AdminUserAccount::class, 'edit'])->name('edit');
-            Route::put('/{id}', [AdminUserAccount::class, 'update'])->name('update');
-            Route::delete('/{id}', [AdminUserAccount::class, 'destroy'])->name('destroy');
-            Route::get('/profile-picture/{folder}/{filename}', [AdminUserAccount::class, 'profile_picture'])->name('profile-picture');
+        Route::prefix('/user-accounts')->name('.user-account')->group(function () {
+            Route::get('/', [AdminUserAccount::class, 'index']);
+            Route::get('/create', [AdminUserAccount::class, 'create'])->name('.create');
+            Route::post('/', [AdminUserAccount::class, 'store'])->name('.store');
+            Route::get('/{id}/edit', [AdminUserAccount::class, 'edit'])->name('.edit');
+            Route::put('/{id}', [AdminUserAccount::class, 'update'])->name('.update');
+            Route::delete('/{id}', [AdminUserAccount::class, 'destroy'])->name('.destroy');
+            Route::get('/{id}/rooms', [AdminUserAccount::class, 'rooms'])->name('.rooms');
+            Route::put('/{id}/rooms', [AdminUserAccount::class, 'updateRooms'])->name('.update-rooms');
+            // Route::get('/profile-picture/{folder}/{filename}', [AdminUserAccount::class, 'profile_picture'])->name('profile-picture');
         });
-        Route::prefix('/assets')->name('asset.')->group(function () {
-            Route::get('/', [AdminAsset::class, 'index'])->name('index');
-            Route::get('/data', [AdminAsset::class, 'data'])->name('data');
-            Route::get('/get-categories', [AdminAsset::class, 'getCategories'])->name('get-categories');
-            Route::get('/get-scopes', [AdminAsset::class, 'getScopes'])->name('get-scopes');
-            Route::get('/get-sub-categories', [AdminAsset::class, 'getSubCategories'])->name('get-sub-categories');
-            Route::get('/last-code', [AdminAsset::class, 'lastCode'])->name('last-code');
-            Route::get('/create', [AdminAsset::class, 'create'])->name('create');
-            Route::post('/', [AdminAsset::class, 'store'])->name('store');
-            Route::get('/{id}', [AdminAsset::class, 'edit'])->name('edit');
-            Route::put('/{id}', [AdminAsset::class, 'update'])->name('update');
-            Route::put('/{id}/update-status', [AdminAsset::class, 'updateStatus'])->name('update-status');
-            Route::post('/print', [AdminAsset::class, 'printPdf'])->name('print');
+        Route::prefix('/items')->name('.item')->group(function () {
+            Route::get('/', [AdminItem::class, 'index']);
+            Route::get('/data', action: [AdminItem::class, 'data'])->name('.data');
+            Route::get('/get-categories', [AdminItem::class, '.getCategories'])->name('.get-categories');
+            Route::get('/last-code', [AdminItem::class, 'lastCode'])->name('.last-code');
+            Route::get('/create', [AdminItem::class, 'create'])->name('.create');
+            Route::post('/', [AdminItem::class, 'store'])->name('.store');
+            Route::get('/{id}', [AdminItem::class, 'edit'])->name('.edit');
+            Route::put('/{id}', [AdminItem::class, 'update'])->name('.update');
+            Route::put('/{id}/update-status', [AdminItem::class, 'updateStatus'])->name('.update-status');
+            Route::post('/print', [AdminItem::class, 'printPdf'])->name('.print');
         });
         Route::get('/picture/{folder}/{filename}', function ($folder, $filename) {
             $path = storage_path("app/private/$folder/$filename");

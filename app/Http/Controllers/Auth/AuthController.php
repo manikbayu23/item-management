@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use GuzzleHttp\Psr7\Response;
 use App\Http\Controllers\Controller;
@@ -13,37 +14,31 @@ class AuthController extends Controller
     public function login()
     {
         if (Auth::check()) {
-
-            return Auth::user()->account->role == 'admin' ? redirect()->route('admin.dashboard') : redirect('/'); // Ubah ke route tujuan
+            return Auth::user()->role == 'admin' ? redirect()->route('admin.dashboard') : redirect('/'); // Ubah ke route tujuan
         }
         return view('pages.auth.login');
-    }
-    public function loginWithNik()
-    {
-        if (Auth::check()) {
-            return Auth::user()->account->role == 'admin' ? redirect()->route('admin.dashboard') : redirect('/'); // Ubah ke route tujuan
-        }
-        return view('pages.auth.login-with-nik');
     }
     public function do_login(Request $request)
     {
         $validate = $request->validate([
-            'email' => 'required',
+            'login' => 'required',
             'password' => 'required',
         ], [
-            'email.required' => 'Kode wajib diisi.',
+            'login.required' => 'Email/Username wajib diisi.',
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        // Cek apakah pengguna login dengan email atau username
+        $loginType = filter_var($validate['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if (Auth::attempt(['email' => $validate['email'], 'password' => $validate['password']])) {
-            return Auth::user()->account->role === 'admin'
+        if (Auth::attempt([$loginType => ($loginType == 'username' ? Str::upper($validate['login']) : $validate['login']), 'password' => $validate['password']])) {
+            return in_array(Auth::user()->role, ['superadmin', 'admin'])
                 ? redirect()->route('admin.dashboard')
                 : redirect('/');
         }
 
-        return back()->withErrors(['failed' => 'Email / Password Salah.'])->withInput();
+        return back()->withErrors([
+            'login' => 'Email/Username atau password salah.',
+        ]);
     }
 
     public function logout()

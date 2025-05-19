@@ -10,4 +10,9 @@ class Room extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'slug', 'capacity', 'description'];
+
+    public function userrooms()
+    {
+        return $this->hasMany(UserRoom::class);
+    }
 }

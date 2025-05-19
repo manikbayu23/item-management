@@ -19,12 +19,13 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'username',
-        'level',
         'role',
-        'division_id'
+        'division_id',
+        'position_id'
     ];
 
     /**
@@ -52,6 +53,14 @@ class User extends Authenticatable
 
     public function division()
     {
-        return $this->hasOne(Division::class);
+        return $this->belongsTo(Division::class, 'division_id');
+    }
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id');
+    }
+    public function userrooms()
+    {
+        return $this->hasMany(UserRoom::class);
     }
 }

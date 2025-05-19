@@ -1,12 +1,12 @@
 @extends('layouts.main')
 
-@section('title_admin', 'Master Divisi')
+@section('title_admin', 'Master Jabatan')
 
 @section('content_admin')
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end">
-                <button type="button" id="addDivision" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
+                <button type="button" id="addPosition" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
             </div>
 
             <table class="table table-striped datatable-pagination">
@@ -19,18 +19,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($divisions as $index => $division)
+                    @foreach ($positions as $index => $position)
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
-                            <td>{{ $division->name }}</td>
-                            <td>{{ $division->description }}</td>
+                            <td>{{ $position->name }}</td>
+                            <td>{{ $position->description }}</td>
                             <td class="text-center">
-                                <button type="button" data-id="{{ $division->id }}" data-name="{{ $division->name }}"
-                                    data-description="{{ $division->description }}"
-                                    class="edit-division btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
+                                <button type="button" data-id="{{ $position->id }}" data-name="{{ $position->name }}"
+                                    data-description="{{ $position->description }}"
+                                    class="edit-position btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
                                 </button>
-                                <button type="button" data-id="{{ $division->id }}" data-name="{{ $division->name }}"
-                                    class="delete-division btn btn-flat-danger btn-icon"><i class="ph-trash"></i>
+                                <button type="button" data-id="{{ $position->id }}" data-name="{{ $position->name }}"
+                                    class="delete-position btn btn-flat-danger btn-icon"><i class="ph-trash"></i>
                                 </button>
                                 <form class="delete-form" method="POST">
                                     @csrf
@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <div id="divisionModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
+    <div id="positionModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -53,15 +53,15 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="formDivision" method="POST">
+                <form id="formPosition" method="POST">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="id" id="idDivision" value="{{ old('id', null) }}">
+                        <input type="hidden" name="id" id="idPosition" value="{{ old('id', null) }}">
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Nama :</label>
                                 <input type="text" id="inputName" name="name" value="{{ old('name') }}"
-                                    class="form-control" placeholder="Information Technology">
+                                    class="form-control" placeholder="Kepala Sub Bagian">
                                 @if ($errors->has('name'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('name') }}</div>
@@ -108,7 +108,7 @@
         $(document).ready(function() {
 
             let form = {
-                id: $('#idDivision'),
+                id: $('#idPosition'),
                 name: $('#inputName'),
                 description: $('#inputDescription'),
             }
@@ -123,23 +123,23 @@
             @if ($errors->any())
                 @if (old('id'))
                     $('.modal-title').html(
-                        '<i class="ph-pencil-line"></i> Edit Divisi : {{ old('name') }}');
+                        '<i class="ph-pencil-line"></i> Edit Jabatan : {{ old('name') }}');
 
-                    $('#formDivision').attr('action',
-                        '{{ route('admin.master.division.update', ['id' => ':id']) }}'
+                    $('#formPosition').attr('action',
+                        '{{ route('admin.master.position.update', ['id' => ':id']) }}'
                         .replace(
                             ':id', "{{ old('id') }}"));
-                    $('#formDivision').append('<input type="hidden" name="_method" value="PUT">');
+                    $('#formPosition').append('<input type="hidden" name="_method" value="PUT">');
                 @else
-                    $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Divisi');
-                    $('#formDivision').attr('action',
-                        '{{ route('admin.master.division.store') }}');
+                    $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Jabatan');
+                    $('#formPosition').attr('action',
+                        '{{ route('admin.master.position.store') }}');
                 @endif
-                $('#divisionModal').modal('show');
+                $('#positionModal').modal('show');
             @endif
 
 
-            $(document).on('click', '.edit-division', function() {
+            $(document).on('click', '.edit-position', function() {
                 const id = $(this).data('id');
                 const name = $(this).data('name');
                 const description = $(this).data('description');
@@ -150,39 +150,39 @@
 
                 $('.form-text').empty();
 
-                $('.modal-title').html(`<i class="ph-pencil-line"></i> Edit Divisi : ${name}`);
-                $('#formDivision').attr('action',
-                    '{{ route('admin.master.division.update', ['id' => ':id']) }}'
+                $('.modal-title').html(`<i class="ph-pencil-line"></i> Edit Jabatan : ${name}`);
+                $('#formPosition').attr('action',
+                    '{{ route('admin.master.position.update', ['id' => ':id']) }}'
                     .replace(
                         ':id', id));
-                $('#formDivision').append('<input type="hidden" name="_method" value="PUT">');
-                $('#divisionModal').modal('show');
+                $('#formPosition').append('<input type="hidden" name="_method" value="PUT">');
+                $('#positionModal').modal('show');
             });
 
-            $('#addDivision').on('click', function() {
+            $('#addPosition').on('click', function() {
                 form.id.val('');
                 form.name.val('');
                 form.description.val('');
 
                 $('.form-text').empty();
 
-                $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Divisi');
+                $('.modal-title').html('<i class="ph-plus-circle"></i> Tambah Jabatan');
 
-                $('#formDivision').attr('action',
-                    '{{ route('admin.master.division.store') }}');
-                $('#formDivision').append('<input type="hidden" name="_method" value="POST">');
+                $('#formPosition').attr('action',
+                    '{{ route('admin.master.position.store') }}');
+                $('#formPosition').append('<input type="hidden" name="_method" value="POST">');
 
-                $('#divisionModal').modal('show');
+                $('#positionModal').modal('show');
             })
 
-            $(document).on('click', '.delete-division', function() {
+            $(document).on('click', '.delete-position', function() {
                 const id = $(this).data('id');
                 const name = $(this).data('name');
                 const description = $(this).data('description');
 
                 Swal.fire({
                     title: 'Perhatian!',
-                    text: `Hapus divisi ${name}?`,
+                    text: `Hapus jabatan ${name}?`,
                     icon: 'info',
                     showCancelButton: true,
                     customClass: {
@@ -192,7 +192,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $('.delete-form').attr('action',
-                            '{{ route('admin.master.division.destroy', ['id' => ':id']) }}'
+                            '{{ route('admin.master.position.destroy', ['id' => ':id']) }}'
                             .replace(
                                 ':id', id));
                         $('.delete-form').submit();

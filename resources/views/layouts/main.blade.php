@@ -42,7 +42,7 @@
 
 <body>
 
-    @include('components.navbar')
+    {{-- @include('components.navbar') --}}
 
     <!-- Page content -->
     <div class="page-content">
@@ -55,17 +55,8 @@
             <!-- Inner content -->
             <div class="content-inner">
 
-                <!-- Page header -->
-                <div class="page-header page-header-light shadow">
-                    <div class="page-header-content d-lg-flex">
-                        <div class="d-flex">
-                            <h4 class="page-title mb-0">
-                                @yield('title_admin')
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-                <!-- /page header -->
+                @include('components.navbar')
+
 
                 @yield('content_admin')
 

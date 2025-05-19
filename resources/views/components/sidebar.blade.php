@@ -1,5 +1,5 @@
 <!-- Main sidebar -->
-<div class="sidebar sidebar-dark sidebar-main sidebar-expand-lg">
+<div class="sidebar sidebar-dark bg-primary sidebar-main sidebar-expand-lg">
 
     <!-- Sidebar content -->
     <div class="sidebar-content">
@@ -7,7 +7,7 @@
         <!-- Sidebar header -->
         <div class="sidebar-section">
             <div class="sidebar-section-body d-flex justify-content-center">
-                <h5 class="sidebar-resize-hide flex-grow-1 my-auto">ADMIN SILAGAS</h5>
+                <h5 class="sidebar-resize-hide flex-grow-1 my-auto">ADMINISTRATOR</h5>
 
                 <div>
                     <button type="button"
@@ -30,10 +30,10 @@
             <ul class="nav nav-sidebar" data-nav-type="accordion">
 
                 <!-- Main -->
-                {{-- <li class="nav-item-header pt-0">
+                <li class="nav-item-header pt-0">
                     <div class="text-uppercase fs-sm lh-sm sidebar-resize-hide opacity-50">Main</div>
                     <i class="ph-dots-three sidebar-resize-show"></i>
-                </li> --}}
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}"
                         class="nav-link {{ Route::is('admin.dashboard') ? 'active' : '' }}">
@@ -44,17 +44,16 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.asset.index') }}"
-                        class="nav-link {{ Route::is('admin.asset.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.item') }}" class="nav-link {{ Route::is('admin.item*') ? 'active' : '' }}">
                         <i class="ph-package"></i>
                         <span>
-                            Daftar Aset
+                            Daftar Barang
                         </span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.user-accounts.index') }}"
-                        class="nav-link {{ Route::is('admin.user-accounts.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.user-account') }}"
+                        class="nav-link {{ Route::is('admin.user-account*') ? 'active' : '' }}">
                         <i class="ph-users"></i>
                         <span>
                             Akun Pengguna
@@ -62,24 +61,24 @@
                     </a>
                 </li>
                 <li class="nav-item nav-item-submenu">
-                    <a href="#" class="nav-link  {{ Route::is('admin.master.*') ? 'active' : '' }}">
+                    <a href="#" class="nav-link  {{ Route::is('admin.master*') ? 'active' : '' }}">
                         <i class="ph-database"></i>
                         <span>Master</span>
                     </a>
                     <ul class="nav-group-sub collapse">
-                        <li class="nav-item"><a href="{{ route('admin.master.group.index') }}"
-                                class="nav-link {{ Route::is('admin.master.group.*') ? 'active' : '' }}">Golongan</a>
-                        <li class="nav-item"><a href="{{ route('admin.master.scope.index') }}"
-                                class="nav-link {{ Route::is('admin.master.scope.*') ? 'active' : '' }}">Bidang</a>
-                        <li class="nav-item"><a href="{{ route('admin.master.category.index') }}"
-                                class="nav-link {{ Route::is('admin.master.category.*') ? 'active' : '' }}">Kelompok</a>
-                        <li class="nav-item"><a href="{{ route('admin.master.sub-category.index') }}"
-                                class="nav-link {{ Route::is('admin.master.sub-category.*') ? 'active' : '' }}">Sub
-                                Kelompok</a>
-                        <li class="nav-item"><a href="{{ route('admin.master.departments.index') }}"
-                                class="nav-link {{ Route::is('admin.master.departments.*') ? 'active' : '' }}">Departemen</a>
-                        <li class="nav-item"><a href="{{ route('admin.master.divisions.index') }}"
-                                class="nav-link {{ Route::is('admin.master.divisions.*') ? 'active' : '' }}">Divisi</a>
+                        <li class="nav-item"><a href="{{ route('admin.master.division') }}"
+                                class="nav-link {{ Route::is('admin.master.division*') ? 'active' : '' }}">Divisi</a>
+                        </li>
+                        <li class="nav-item"><a href="{{ route('admin.master.position') }}"
+                                class="nav-link {{ Route::is('admin.master.position*') ? 'active' : '' }}">Jabatan</a>
+                        </li>
+                        <li class="nav-item"><a href="{{ route('admin.master.category') }}"
+                                class="nav-link {{ Route::is('admin.master.category*') ? 'active' : '' }}">Kategori</a>
+                        </li>
+                        <li class="nav-item"><a href="{{ route('admin.master.room') }}"
+                                class="nav-link {{ Route::is('admin.master.room*') ? 'active' : '' }}">Ruangan</a>
+                        </li>
+
                     </ul>
                 </li>
             </ul>

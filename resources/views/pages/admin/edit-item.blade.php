@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title_admin', 'Edit Asset : ' . $asset->asset_code ?? '')
+@section('title_admin', 'Edit Asset : ' . $asset->name ?? '')
 
 @section('content_admin')
     <div class="content">

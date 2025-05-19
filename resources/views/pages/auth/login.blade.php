@@ -31,17 +31,18 @@
             <div class="card mb-0">
                 <div class="card-body">
                     <div class="text-center mb-3">
-                        <div class="d-inline-flex text-primary align-items-center justify-content-center mb-4 mt-2">
-                            <i class="ph-user-circle ph-3x"></i>
+                        <div class="d-inline-flex text-primary align-items-center justify-content-center mt-2">
+                            <img src="{{ asset('assets/img/panca-mahottama.png') }}" width="50%"
+                                alt="logo panca mahottama">
                         </div>
                         <h5 class="mb-0">Masuk ke akun</h5>
-                        <span class="d-block text-muted">Masukan kredensial</span>
+                        {{-- <span class="d-block text-muted">Masukan kredensial</span> --}}
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Email</label>
                         <div class="form-control-feedback form-control-feedback-start">
-                            <input type="email" name="email" value="{{ old('email', 'johndoe@example.com') }}"
+                            <input type="text" name="login" value="{{ old('login', 'johndoe@example.com') }}"
                                 class="form-control" placeholder="john@doe.com" required>
                             <div class="form-control-feedback-icon">
                                 <i class="ph-user-circle text-muted"></i>
@@ -66,21 +67,6 @@
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary w-100">Sign in</button>
                     </div>
-
-                    <div class="text-center text-muted content-divider mb-3">
-                        <span class="px-2">or sign in with</span>
-                    </div>
-
-                    <div class="text-center mb-3">
-                        <a href="{{ route('login-with-nik') }}"
-                            class="btn btn-flat-secondary btn-labeled btn-labeled-start rounded-pill">
-                            <span class="btn-labeled-icon bg-secondary text-white rounded-pill">
-                                <i class="ph-identification-card"></i>
-                            </span>
-                            NIK
-                        </a>
-                    </div>
-
                 </div>
             </div>
         </form>
