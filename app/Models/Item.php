@@ -9,12 +9,8 @@ class Item extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'code', 'status', 'room_id', 'category_id'];
+    protected $fillable = ['name', 'code', 'status', 'category_id', 'unit', 'brand', 'notes', 'created_by', 'updated_by'];
 
-    public function room()
-    {
-        return $this->belongsTo(Room::class, 'room_id');
-    }
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');

@@ -10,7 +10,7 @@
                 <a href="{{ route('admin.item.create') }}" class="btn btn-primary"><i class="ph-plus-circle"></i></a>
             </div>
 
-            <table id="asset-table" class="table table-striped datatable-select-checkbox">
+            <table id="itemTable" class="table table-striped datatable-select-checkbox">
             </table>
         </div>
     </div>
@@ -34,7 +34,7 @@
     <script>
         $(document).ready(function() {
 
-            let table = $('#asset-table').DataTable({
+            let table = $('#itemTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
@@ -83,7 +83,7 @@
                     },
                     {
                         title: 'Kode Barang',
-                        data: 'asset_code',
+                        data: 'code',
                         render: function(data) {
                             return `<span class="badge bg-dark bg-opacity-20 text-reset">${data}</span>`;
                         }
@@ -100,11 +100,6 @@
                         name: 'category.name',
                         className: 'text-center',
                     }, {
-                        title: 'Ruangan',
-                        data: 'room.name',
-                        name: 'room.name',
-                        className: 'text-center',
-                    }, {
                         title: 'Status',
                         data: 'status',
                         className: 'text-center',
@@ -114,7 +109,7 @@
                             let text = 'Aktif';
                             let color = 'bg-success';
                             let icon = 'ph-check-circle';
-                            if (data == '0') {
+                            if (data != 'active') {
                                 text = 'NonAktif';
                                 color = 'bg-danger';
                                 icon = 'ph-x-circle';
@@ -136,7 +131,7 @@
                                             <i class="ph-list"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
-                                            <button type="button" class="edit-asset dropdown-item" data-id="${data}">
+                                            <button type="button" class="edit-item dropdown-item" data-id="${data}">
                                                 <i class="ph-pencil-line me-2"></i>
                                                 Edit
                                             </button>
@@ -146,7 +141,7 @@
                                                 Print
                                             </button>`;
 
-                            if (row.status == '0') {
+                            if (row.status == 'notactive') {
                                 html += `
                                                 <button type="button" class="option-status dropdown-item"
                                                     data-id="${data}" data-name="${row.name}"
@@ -196,7 +191,7 @@
                 }
             });
 
-            $('#asset-table').on('click', '.edit-asset', function() {
+            $('#itemTable').on('click', '.edit-item', function() {
                 const id = $(this).data('id')
                 window.location.href = '{{ route('admin.item.edit', ':id') }}'.replace(':id', id);
             })
@@ -223,7 +218,7 @@
 
             $('#printAssets').prop('disabled', true);
 
-            $('#asset-table').on('change', '.check-asset', function() {
+            $('#itemTable').on('change', '.check-asset', function() {
                 const name = $(this).data('name');
                 const code = $(this).data('code');
                 if ($(this).is(':checked')) {
@@ -235,7 +230,7 @@
                 $('#printAssets').prop('disabled', item.assets.length <= 0);
             });
 
-            $('#asset-table').on('click', '.printAsset', function() {
+            $('#itemTable').on('click', '.printAsset', function() {
                 const index = $(this).data('index');
                 $('.check-asset').prop('checked', false);
                 $('#printAssets').prop('disabled', true);
@@ -291,7 +286,7 @@
                 });
             }
 
-            $('#asset-table').on('click', '.option-status', function() {
+            $('#itemTable').on('click', '.option-status', function() {
                 const id = $(this).data('id');
                 const name = $(this).data('name');
                 const status = $(this).data('status');
@@ -333,7 +328,7 @@
                                 table.ajax.reload()
                             },
                             error: function(xhr, status, error) {
-                                console.error('Gagal cetak PDF:', error);
+                                console.error(error);
                             }
                         });
                     }

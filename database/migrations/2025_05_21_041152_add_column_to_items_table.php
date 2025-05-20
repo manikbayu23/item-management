@@ -10,8 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('rooms', function (Blueprint $table) {
-            $table->foreignId(column: 'division_id')->after('id');
+        Schema::table('items', function (Blueprint $table) {
+            $table->string('created_by')->after('created_at');
+            $table->string('updated_by')->after('updated_at');
         });
     }
 
@@ -20,8 +21,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('rooms', function (Blueprint $table) {
-            $table->dropColumn(columns: 'division_id');
+        Schema::table('items', function (Blueprint $table) {
+            $table->dropColumn(columns: 'created_by');
+            $table->dropColumn(columns: 'updated_by');
         });
     }
 };

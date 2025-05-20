@@ -14,7 +14,8 @@
                     <tr>
                         <th class="text-center" style="width: 10%">No.</th>
                         <th style="width: 30%">Nama</th>
-                        <th style="width: 40%">Deskripsi</th>
+                        <th style="width: 30%">Deskripsi</th>
+                        <th class="text-center">Divisi</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -24,9 +25,10 @@
                             <td class="text-center">{{ $index + 1 }}</td>
                             <td>{{ $room->name }}</td>
                             <td>{{ $room->description }}</td>
+                            <td class="text-center">{{ $room->division->name }}</td>
                             <td class="text-center">
                                 <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
-                                    data-description="{{ $room->description }}"
+                                    data-division="{{ $room->division_id }}" data-description="{{ $room->description }}"
                                     class="edit-room btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
                                 </button>
                                 <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
@@ -70,6 +72,25 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 mb-3">
+                                <label class="form-label">Divisi :</label>
+                                <select name="division" id="inputDivision" class="form-control select"
+                                    data-placeholder="Pilih Divisi...">
+                                    <option></option>
+                                    @foreach ($divisions as $division)
+                                        <option value="{{ $division->id }}"
+                                            @if ($division->id == old('division')) selected @endif>
+                                            {{ $division->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('division'))
+                                    <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
+                                        {{ $errors->first('division') }}</div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
                                 <label class="form-label">Deskripsi :</label>
                                 <textarea name="description" id="inputDescription" class="form-control" rows="3">{{ old('description') }}</textarea>
                                 @if ($errors->has('description'))
@@ -100,7 +121,9 @@
 
     <script src="{{ asset('assets/demo/pages/datatables_basic.js') }}"></script>
     <script src="{{ asset('assets/js/vendor/notifications/sweet_alert.min.js') }}"></script>
-    <script src="{{ asset('assets/js/vendor/ui/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/js/vendor/forms/selects/select2.min.js') }}"></script>
+
+    <script src="{{ asset('assets/demo/pages/form_select2.js') }}"></script>
 @endpush
 
 @push('script_admin')
@@ -110,6 +133,7 @@
             let form = {
                 id: $('#idRoom'),
                 name: $('#inputName'),
+                division: $('#inputDivision'),
                 description: $('#inputDescription'),
             }
 
@@ -142,10 +166,12 @@
             $(document).on('click', '.edit-room', function() {
                 const id = $(this).data('id');
                 const name = $(this).data('name');
+                const division = $(this).data('division');
                 const description = $(this).data('description');
 
                 form.id.val(id);
                 form.name.val(name);
+                form.division.val(division).trigger('change');
                 form.description.val(description);
 
                 $('.form-text').empty();
@@ -162,6 +188,7 @@
             $('#addCategory').on('click', function() {
                 form.id.val('');
                 form.name.val('');
+                form.division.val('').trigger('change');
                 form.description.val('');
 
                 $('.form-text').empty();

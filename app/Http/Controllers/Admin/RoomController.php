@@ -8,13 +8,15 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Models\Division;
 
 class RoomController extends Controller
 {
     public function index()
     {
         $rooms = Room::all();
-        return view('pages.admin.master-rooms', compact(['rooms']));
+        $divisions = Division::all();
+        return view('pages.admin.master-rooms', compact(['rooms', 'divisions']));
     }
 
     public function store(Request $request)
@@ -24,15 +26,18 @@ class RoomController extends Controller
                 'required',
                 'unique:rooms,name'
             ],
+            'division' => 'required',
             'description' => 'required',
         ], [
             'name.required' => 'Nama ruangan wajib diisi.',
             'name.unique' => 'Nama ruangan ini sudah terdaftar di sistem.',
+            'division' => 'Divisi wajib dipilih.',
             'description' => 'Deskripsi wajib diisi.',
         ]);
 
         Room::create([
             'name' => Str::upper($data['name']),
+            'division_id' => $data['division'],
             'slug' => Str::slug(Str::lower(value: $data['name'])),
             'capacity' => 10,
             'description' => $data['description'],
@@ -48,16 +53,19 @@ class RoomController extends Controller
                 'required',
                 Rule::unique('divisions', 'name')->ignore($id)
             ],
+            'division' => 'required',
             'description' => 'required'
 
         ], [
             'name.required' => 'Nama ruangan wajib diisi.',
             'name.unique' => 'Nama ruangan ini sudah terdaftar di sistem.',
+            'division' => 'Divisi wajib dipilih.',
             'description' => 'Deskripsi wajib dipilih.',
         ]);
 
         $room = Room::findOrFail($id);
         $room->name = Str::upper($data['name']);
+        $room->division_id = $data['division'];
         $room->slug = Str::slug(title: Str::lower($data['name']));
         $room->description = $data['description'];
         $room->updated_at = Carbon::now();

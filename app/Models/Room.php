@@ -9,8 +9,12 @@ class Room extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'capacity', 'description'];
+    protected $fillable = ['name', 'division_id', 'slug', 'capacity', 'description'];
 
+    public function division()
+    {
+        return $this->belongsTo(Division::class, 'division_id');
+    }
     public function userrooms()
     {
         return $this->hasMany(UserRoom::class);

@@ -76,7 +76,6 @@ Route::middleware(['role:superadmin,admin'])->group(function () {
         Route::prefix('/items')->name('.item')->group(function () {
             Route::get('/', [AdminItem::class, 'index']);
             Route::get('/data', action: [AdminItem::class, 'data'])->name('.data');
-            Route::get('/get-categories', [AdminItem::class, '.getCategories'])->name('.get-categories');
             Route::get('/last-code', [AdminItem::class, 'lastCode'])->name('.last-code');
             Route::get('/create', [AdminItem::class, 'create'])->name('.create');
             Route::post('/', [AdminItem::class, 'store'])->name('.store');
