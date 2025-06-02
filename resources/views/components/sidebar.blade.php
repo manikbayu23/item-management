@@ -43,14 +43,39 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.item') }}" class="nav-link {{ Route::is('admin.item*') ? 'active' : '' }}">
+                <li class="nav-item nav-item-submenu">
+                    <a href="#" class="nav-link  ">
                         <i class="ph-package"></i>
-                        <span>
-                            Daftar Barang
-                        </span>
+                        <span>Manajemen Barang</span>
                     </a>
+                    <ul class="nav-group-sub collapse">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.item') }}"
+                                class="nav-link {{ Route::is('admin.item*') ? 'active' : '' }}">
+                                <span>
+                                    Daftar Barang
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.room-inventory') }}"
+                                class="nav-link {{ Route::is('admin.room-inventory*') ? 'active' : '' }}">
+                                <span>
+                                    Inventaris Ruangan
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.room-inventory') }}"
+                                class="nav-link {{ Route::is('admin.room-inventory*') ? 'active' : '' }}">
+                                <span>
+                                    Peminjaman Barang
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{ route('admin.user-account') }}"
                         class="nav-link {{ Route::is('admin.user-account*') ? 'active' : '' }}">
@@ -69,14 +94,14 @@
                         <li class="nav-item"><a href="{{ route('admin.master.division') }}"
                                 class="nav-link {{ Route::is('admin.master.division*') ? 'active' : '' }}">Divisi</a>
                         </li>
+                        <li class="nav-item"><a href="{{ route('admin.master.room') }}"
+                                class="nav-link {{ Route::is('admin.master.room*') ? 'active' : '' }}">Ruangan</a>
+                        </li>
                         <li class="nav-item"><a href="{{ route('admin.master.position') }}"
                                 class="nav-link {{ Route::is('admin.master.position*') ? 'active' : '' }}">Jabatan</a>
                         </li>
                         <li class="nav-item"><a href="{{ route('admin.master.category') }}"
                                 class="nav-link {{ Route::is('admin.master.category*') ? 'active' : '' }}">Kategori</a>
-                        </li>
-                        <li class="nav-item"><a href="{{ route('admin.master.room') }}"
-                                class="nav-link {{ Route::is('admin.master.room*') ? 'active' : '' }}">Ruangan</a>
                         </li>
 
                     </ul>

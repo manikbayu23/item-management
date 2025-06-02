@@ -13,9 +13,10 @@
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 10%">No.</th>
-                        <th style="width: 30%">Nama</th>
+                        <th style="width: 25%">Nama</th>
                         <th style="width: 30%">Deskripsi</th>
                         <th class="text-center">Divisi</th>
+                        <th class="text-center">Print QR</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -26,6 +27,11 @@
                             <td>{{ $room->name }}</td>
                             <td>{{ $room->description }}</td>
                             <td class="text-center">{{ $room->division->name }}</td>
+                            <td class="text-center">
+                                <button type="button" data-name="{{ $room->name }}" data-slug="{{ $room->slug }}"
+                                    class="print-room btn btn-flat-success btn-icon"><i class="ph-qr-code"></i>
+                                </button>
+                            </td>
                             <td class="text-center">
                                 <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
                                     data-division="{{ $room->division_id }}" data-description="{{ $room->description }}"
@@ -122,6 +128,7 @@
     <script src="{{ asset('assets/demo/pages/datatables_basic.js') }}"></script>
     <script src="{{ asset('assets/js/vendor/notifications/sweet_alert.min.js') }}"></script>
     <script src="{{ asset('assets/js/vendor/forms/selects/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/js/vendor/notifications/sweet_alert.min.js') }}"></script>
 
     <script src="{{ asset('assets/demo/pages/form_select2.js') }}"></script>
 @endpush
@@ -202,6 +209,51 @@
                 $('#roomModal').modal('show');
             })
 
+            $(document).on('click', '.print-room', function() {
+                const params = {
+                    name: $(this).data('name'),
+                    slug: $(this).data('slug'),
+                }
+                printRoom(params);
+            });
+
+            const printRoom = (params) => {
+                Swal.fire({
+                    title: 'Loading...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                $.ajax({
+                    url: '{{ route('admin.master.room.print') }}', // URL untuk mengakses controller
+                    type: 'POST',
+                    data: {
+                        params,
+                        _token: $('meta[name="csrf-token"]').attr(
+                            'content') // CSRF Token untuk keamanan
+                    },
+                    xhrFields: {
+                        responseType: 'blob' // penting agar respon dianggap sebagai file
+                    },
+                    success: function(response) {
+                        const blob = new Blob([response], {
+                            type: 'application/pdf'
+                        });
+                        const url = window.URL.createObjectURL(blob);
+
+                        window.open(url); // buka tab baru untuk cetak
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Gagal cetak PDF:', error);
+                    },
+                    complete: function() {
+                        Swal.close();
+                    }
+                });
+            }
+
             $(document).on('click', '.delete-room', function() {
                 const id = $(this).data('id');
                 const name = $(this).data('name');
@@ -226,6 +278,8 @@
                     }
                 });
             });
+
+
         })
     </script>
 @endpush

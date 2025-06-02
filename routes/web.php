@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\GroupController as AdminGroup;
 use App\Http\Controllers\Admin\ItemController as AdminItem;
 use App\Http\Controllers\Admin\PositionController as AdminPosition;
 use App\Http\Controllers\Admin\RoomController as AdminRoom;
+use App\Http\Controllers\Admin\RoomInventroyController as AdminRoomInventory;
 use App\Http\Controllers\Admin\ScopeController as AdminScope;
 use App\Http\Controllers\Admin\SubCategoryController as AdminSubCategory;
 use App\Http\Controllers\Admin\UserAccountController as AdminUserAccount;
@@ -19,10 +20,9 @@ use App\Http\Controllers\User\DashboardController as UserDashboard;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::get('/login-with-nik', [AuthController::class, 'loginWithNik'])->name('login-with-nik');
 Route::post('/login', [AuthController::class, 'do_login'])->name('do-login');
 
-Route::middleware(['role:admin,user'])->group(function () {
+Route::middleware(['role:superadmin,user'])->group(function () {
     Route::prefix('/')->name('user.')->group(function () {
         Route::get('/', [UserDashboard::class, 'index'])->name('dashboard');
         Route::prefix('/assets')->name('assets.')->group(function () {
@@ -54,6 +54,7 @@ Route::middleware(['role:superadmin,admin'])->group(function () {
                 Route::post('/', [AdminRoom::class, 'store'])->name('.store');
                 Route::put('/{id}', [AdminRoom::class, 'update'])->name('.update');
                 Route::delete('/{id}', [AdminRoom::class, 'destroy'])->name('.destroy');
+                Route::post('/print', [AdminRoom::class, 'print'])->name('.print');
             });
             Route::prefix('/categories')->name('.category')->group(function () {
                 Route::get('/', [AdminCategory::class, 'index']);
@@ -83,6 +84,12 @@ Route::middleware(['role:superadmin,admin'])->group(function () {
             Route::put('/{id}', [AdminItem::class, 'update'])->name('.update');
             Route::put('/{id}/update-status', [AdminItem::class, 'updateStatus'])->name('.update-status');
             Route::post('/print', [AdminItem::class, 'printPdf'])->name('.print');
+        });
+        Route::prefix('/room-inventory')->name('.room-inventory')->group(function () {
+            Route::get('/', [AdminRoomInventory::class, 'index']);
+            Route::get('/data', action: [AdminRoomInventory::class, 'data'])->name('.data');
+            Route::post('/', [AdminRoomInventory::class, 'store'])->name('.store');
+            Route::put('/{id}', [AdminRoomInventory::class, 'update'])->name('.update');
         });
         Route::get('/picture/{folder}/{filename}', function ($folder, $filename) {
             $path = storage_path("app/private/$folder/$filename");

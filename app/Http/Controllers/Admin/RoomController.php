@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Models\Room;
+use App\Models\Division;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Models\Division;
 
 class RoomController extends Controller
 {
@@ -78,5 +79,13 @@ class RoomController extends Controller
         $room = Room::findOrFail($id);
         $room->delete();
         return redirect()->back()->with('success', 'Berhasil menghapus ' . $room->name);
+    }
+
+    public function print(Request $request)
+    {
+        $pdf = PDF::loadView('export.pdf.room-qr', ['data' => $request->params])
+            ->setPaper('A4', 'potrait');
+
+        return $pdf->stream('export.pdf.barcode-assets'); // langsung tampilkan di browser
     }
 }

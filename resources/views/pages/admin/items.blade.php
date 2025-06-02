@@ -6,8 +6,8 @@
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end gap-2">
-                <button type="button" id="printAssets" class="btn btn-success"><i class="ph-printer"></i></button>
-                <a href="{{ route('admin.item.create') }}" class="btn btn-primary"><i class="ph-plus-circle"></i></a>
+                <a href="{{ route('admin.item.create') }}" class="btn btn-primary"><i class="ph-plus-circle me-1"></i>
+                    Barang</a>
             </div>
 
             <table id="itemTable" class="table table-striped datatable-select-checkbox">
@@ -134,11 +134,6 @@
                                             <button type="button" class="edit-item dropdown-item" data-id="${data}">
                                                 <i class="ph-pencil-line me-2"></i>
                                                 Edit
-                                            </button>
-                                            <button type="button" class="dropdown-item printAsset"
-                                                data-index="${meta.row}" data-name="${row.name}" data-code="${row.asset_code}">
-                                                <i class="ph-printer me-2"></i>
-                                                Print
                                             </button>`;
 
                             if (row.status == 'notactive') {

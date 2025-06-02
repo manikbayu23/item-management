@@ -1,5 +1,5 @@
 @extends('layouts.user-main')
-@section('title', content: 'Riwayat Peminjaman Aset')
+@section('title', content: 'Riwayat Peminjaman Barang')
 @section('content_user')
     {{-- <div class="row">
         <div class="col-12 col-md-6">

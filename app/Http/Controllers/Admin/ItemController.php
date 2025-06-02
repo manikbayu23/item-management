@@ -141,7 +141,7 @@ class ItemController extends Controller
             'category.required' => 'Kategori wajib dipilih.',
             'brand.required' => 'Merk wajib diisi.',
             'name.required' => 'Nama barang wajib diisi.',
-            'name.string' => 'Nama barnag harus berupa teks.',
+            'name.string' => 'Nama barang harus berupa teks.',
             'unit.required' => 'Satuan wajib diisi.',
             'unit.string' => 'Satuan harus berupa teks.',
             'unit.max' => 'Satuan maksimal 50 karakter.',
@@ -289,7 +289,7 @@ class ItemController extends Controller
                 ], 422);
             }
 
-            $item = Item::find($id)
+            Item::find($id)
                 ->update([
                     'code' => $validated['code'],
                     'name' => Str::upper($validated['name']),

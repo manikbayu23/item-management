@@ -22,7 +22,7 @@ class RoomItem extends Model
 
     public function conditions()
     {
-        return $this->hasMany(ItemCondition::class);
+        return $this->hasMany(ItemCondition::class, 'room_item_id');
     }
 
 }
