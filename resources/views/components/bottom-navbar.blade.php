@@ -14,11 +14,11 @@
                 </a>
             </li>
             <li class="nav-item ms-md-1">
-                <a href="{{ route('user.assets.form') }}"
-                    class="navbar-nav-link navbar-nav-link-icon rounded {{ Route::is('user.assets.form') ? $active : '' }}">
+                <a href="{{ route('user.item') }}"
+                    class="navbar-nav-link navbar-nav-link-icon rounded {{ Route::is('user.item.*') ? $active : '' }}">
                     <div class="d-flex align-items-center mx-md-1">
-                        <i class="ph-file-text"></i>
-                        <span class="d-none d-md-inline-block ms-2">Form</span>
+                        <i class="ph-package"></i>
+                        <span class="d-none d-md-inline-block ms-2">Daftar Barang</span>
                     </div>
                 </a>
             </li>

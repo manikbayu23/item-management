@@ -1,5 +1,5 @@
  <!-- Main navbar -->
- <div class="navbar navbar-dark navbar-expand-lg navbar-slide-top fixed-top px-lg-0">
+ <div class="navbar navbar-dark bg-primary navbar-expand-lg navbar-slide-top fixed-top px-lg-0">
      <div class="container-fluid container-boxed jusitfy-content-start">
          <div class="navbar-brand flex-1 flex-lg-0">
              <a href="index.html" class="d-inline-flex align-items-center">
@@ -25,7 +25,7 @@
                      data-bs-toggle="dropdown">
                      <div class="status-indicator-container">
                          <img src="{{ optional(Auth::user()->account)->profile_picture ? url('/admin/user-accounts/profile-picture/' . Auth::user()->account->profile_picture) : '' }}"
-                             class="w-32px h-32px rounded-pill" alt="{{ Auth::user()->name }}">
+                             class="w-32px h-32px rounded-pill" alt="foto">
                          <span class="status-indicator bg-success"></span>
                      </div>
                      <span class="d-none d-lg-inline-block mx-lg-2">{{ Auth::user()->name }}</span>

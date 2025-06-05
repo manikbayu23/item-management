@@ -44,7 +44,10 @@
                     </a>
                 </li>
                 <li class="nav-item nav-item-submenu">
-                    <a href="#" class="nav-link  ">
+                    <a href="#"
+                        class="nav-link {{ Route::is('admin.item*') || Route::is('admin.room-inventory*') || Route::is('admin.borrow-item*')
+                            ? 'active'
+                            : '' }}">
                         <i class="ph-package"></i>
                         <span>Manajemen Barang</span>
                     </a>
@@ -66,8 +69,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.room-inventory') }}"
-                                class="nav-link {{ Route::is('admin.room-inventory*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.borrow-item') }}"
+                                class="nav-link {{ Route::is('admin.borrow-item*') ? 'active' : '' }}">
                                 <span>
                                     Peminjaman Barang
                                 </span>

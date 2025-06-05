@@ -17,6 +17,6 @@ class Room extends Model
     }
     public function userrooms()
     {
-        return $this->hasMany(UserRoom::class);
+        return $this->hasMany(UserRoom::class, 'room_id');
     }
 }

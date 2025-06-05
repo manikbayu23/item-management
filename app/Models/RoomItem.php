@@ -24,5 +24,9 @@ class RoomItem extends Model
     {
         return $this->hasMany(ItemCondition::class, 'room_item_id');
     }
+    public function borrowings()
+    {
+        return $this->hasMany(Borrow::class, 'room_item_id');
+    }
 
 }

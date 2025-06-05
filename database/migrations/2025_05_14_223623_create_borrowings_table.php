@@ -12,11 +12,11 @@ return new class extends Migration {
     {
         Schema::create('borrowings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('item_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('admin_id')->constrained('users')->onDelete('cascade');
-            $table->enum('type', ['borrow', 'return', 'transfer']);
-            $table->enum('status', ['pending', 'approved', 'rejected', 'completed'])->default('pending');
+            $table->foreignId('room_item_id')->constrained('room_items')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('admin_id')->nullable()
+                ->constrained('users')->onDelete(action: 'cascade');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'completed', 'cancel'])->default('pending');
             $table->date('start_date');
             $table->date('end_date');
             $table->date('actual_return_date')->nullable();

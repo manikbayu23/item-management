@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AssetController as AdminAsset;
+use App\Http\Controllers\Admin\BorrowItemController as AdminBorrowItem;
 use App\Http\Controllers\Admin\CategoryController as AdminCategory;
 use App\Http\Controllers\Admin\ConditionContoller as AdminCondition;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
@@ -17,17 +18,25 @@ use App\Http\Controllers\Admin\UserAccountController as AdminUserAccount;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\User\AssetSubmissionController as UserAssetSubmission;
 use App\Http\Controllers\User\DashboardController as UserDashboard;
+use App\Http\Controllers\User\ItemController as UserItem;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'do_login'])->name('do-login');
 
 Route::middleware(['role:superadmin,user'])->group(function () {
-    Route::prefix('/')->name('user.')->group(function () {
-        Route::get('/', [UserDashboard::class, 'index'])->name('dashboard');
-        Route::prefix('/assets')->name('assets.')->group(function () {
-            Route::get('/history', [UserAssetSubmission::class, 'index'])->name('history');
-            Route::get('/form', [UserAssetSubmission::class, 'form'])->name('form');
+    Route::prefix('/')->name('user')->group(function () {
+        Route::get('/', [UserDashboard::class, 'index'])->name('.dashboard');
+        Route::prefix('/assets')->name('.assets')->group(function () {
+            Route::get('/history', [UserAssetSubmission::class, 'index'])->name('.history');
+        });
+        Route::prefix('/items')->name('.item')->group(function () {
+            Route::get('/', [UserItem::class, 'index']);
+            Route::get('/{id}/form', [UserItem::class, 'form'])->name('.form');
+            Route::post('/{id}/form', [UserItem::class, 'store'])->name('.store');
+        });
+        Route::prefix('/history')->name('.history')->group(function () {
+            Route::get('/history', [UserAssetSubmission::class, 'index']);
         });
     });
 });
@@ -87,6 +96,12 @@ Route::middleware(['role:superadmin,admin'])->group(function () {
         });
         Route::prefix('/room-inventory')->name('.room-inventory')->group(function () {
             Route::get('/', [AdminRoomInventory::class, 'index']);
+            Route::get('/data', action: [AdminRoomInventory::class, 'data'])->name('.data');
+            Route::post('/', [AdminRoomInventory::class, 'store'])->name('.store');
+            Route::put('/{id}', [AdminRoomInventory::class, 'update'])->name('.update');
+        });
+        Route::prefix('/borrow-items')->name('.borrow-item')->group(function () {
+            Route::get('/', [AdminBorrowItem::class, 'index']);
             Route::get('/data', action: [AdminRoomInventory::class, 'data'])->name('.data');
             Route::post('/', [AdminRoomInventory::class, 'store'])->name('.store');
             Route::put('/{id}', [AdminRoomInventory::class, 'update'])->name('.update');

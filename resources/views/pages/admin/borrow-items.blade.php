@@ -1,12 +1,12 @@
 @extends('layouts.main')
 
-@section('page_name2', 'Inventaris Ruangan')
+@section('page_name2', 'Peminjaman Barang')
 
 @section('content_admin')
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h5 class="mb-0">Inventaris Barang per Ruangan</h5>
+                <h5 class="mb-0">Daftar Peminjaman Barang</h5>
                 <div>
                     <button type="button" id="addRoomItem" class="btn btn-primary"><i class="ph-plus-circle me-1"></i>
                         Barang</button>

@@ -9,11 +9,12 @@ class Borrow extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['item_id', 'user_id', 'admin_id', 'type', 'status', 'start_date', 'end_date', 'actual_return_date', 'notes'];
+    protected $table = 'borrowings';
+    protected $fillable = ['room_item_id', 'user_id', 'admin_id', 'qty', 'status', 'start_date', 'end_date', 'actual_return_date', 'notes', 'created_by', 'updated_by'];
 
-    public function item()
+    public function roomitem()
     {
-        return $this->belongsTo(Item::class, 'item_id');
+        return $this->belongsTo(RoomItem::class, 'room_item_id');
     }
     public function user()
     {

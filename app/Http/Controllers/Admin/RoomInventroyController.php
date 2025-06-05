@@ -6,25 +6,36 @@ use App\Models\Item;
 use App\Models\Room;
 use App\Models\Borrow;
 use App\Models\RoomItem;
+use App\Models\UserRoom;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\ItemCondition;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Models\ItemCondition;
+use Illuminate\Support\Facades\Auth;
 
 class RoomInventroyController extends Controller
 {
     public function index()
     {
-        $rooms = Room::all();
-        $items = Item::all();
+        $auth = Auth::user();
+        if ($auth->role == 'superadmin') {
+            $rooms = Room::all();
+        } else {
+            $rooms = Room::whereHas('userrooms', function ($query) use ($auth) {
+                $query->where('user_id', $auth->id);
+            })->get();
+        }
+        $items = Item::where('status', 'active')->get();
+
         return view('pages.admin.room-inventory', compact(['rooms', 'items']));
     }
 
     public function data(Request $request)
     {
         try {
-            $columns = ['created_at', 'id', 'asset_code', 'name', 'procurement'];
+            $columns = ['id', 'room.name', 'item.code', 'item.name'];
 
             $query = RoomItem::query();
 
@@ -32,24 +43,46 @@ class RoomInventroyController extends Controller
                 'room:id,name', // Sintaks singkat untuk select id dan name
                 'item:id,name,category_id,code,unit', // Sertakan category_id untuk relasi
                 'item.category:id,name',   // Ambil nama kategori
-                'conditions:id,room_item_id,condition,qty' // Sertakan room_item_id
+                'conditions:id,room_item_id,condition,qty',// Sertakan room_item_id
+                'borrowings' => function ($q) {
+                    $q->where('status', 'approved')
+                        ->select('id', 'room_item_id', 'qty');
+                }
             ]);
 
-            // Search filter
-            // if ($search = $request->input('search.value')) {
-            //     $query->where(function ($q) use ($search) {
-            //         $q->where('code', 'like', "%{$search}%")
-            //             ->orWhere('name', 'like', "%{$search}%")
-            //             ->orWhere('brand', 'like', "%{$search}%")
-            //             ->orWhere('unit', 'like', "%{$search}%");
-            //     });
-            // }
+            if ($search = $request->input('search.value')) {
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('item', function ($r) use ($search) {
+                        $r->where('name', 'like', "%" . Str::upper($search) . "%")
+                            ->orWhere('code', 'like', "%{$search}%")
+                            ->orWhere(DB::raw('UPPER(unit)'), 'like', "%" . Str::upper($search) . "%");
+                    })
+                        ->orWhereHas('item.category', function ($r) use ($search) {
+                            $r->where('name', 'like', "%" . Str::upper($search) . "%");
+                        });
+                });
+            }
+
+            if ($request->input('room') !== 'ALL') {
+                $room = $request->input('room');
+                $query->whereHas('room', function ($q) use ($room) {
+                    $q->where('id', $room);
+                });
+            }
+
+            if ($request->input('item') !== 'ALL') {
+                $item = $request->input('item');
+                $query->whereHas('item', function ($q) use ($item) {
+                    $q->where('id', $item);
+                });
+            }
 
             $totalFiltered = $query->count();
 
             // Ordering
             // $orderCol = $columns[$request->input('order.0.column')];
             // $orderDir = $request->input('order.0.dir');
+
             // $query->orderBy($orderCol, $orderDir);
 
             // Pagination
@@ -167,16 +200,16 @@ class RoomInventroyController extends Controller
         try {
             $roomItem = RoomItem::find($id);
 
-            // $borrowings = Borrow::where('room_item_id', $id)->where('type', 'borrow')
-            //     ->where('status', 'approved')
-            //     ->sum('qty');
+            $borrowings = Borrow::where('room_item_id', $id)
+                ->where('status', 'approved')
+                ->sum('qty');
 
-            // if ($borrowings > 0 && $validated['qty_good'] < $borrowings) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Jumlah barang bagus (' . $validated['qty_good'] . ') tidak boleh kurang dari jumlah yang sedang dipinjam (' . $borrowings . ' item)'
-            //     ], 409);
-            // }
+            if ($borrowings > 0 && $validated['qty_good'] < $borrowings) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Jumlah barang bagus (' . $validated['qty_good'] . ') tidak boleh kurang dari jumlah yang sedang dipinjam (' . $borrowings . ' item)'
+                ], 409);
+            }
 
             $totalQty = (int) $validated['qty_good'] + (int) $validated['qty_demaged'] + (int) $validated['qty_missing'];
 

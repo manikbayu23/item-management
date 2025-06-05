@@ -1,40 +1,39 @@
 @extends('layouts.user-main')
-@section('title', 'Form Peminjaman Aset')
+@section('title', 'Form Peminjaman Barang')
 @section('content_user')
     <div class="d-flex justify-content-center">
-        <div class="card col-12 col-md-10 col-lg-8 rounded-0">
-            <form action="">
+        <div class="card col-12 col-md-10 col-lg-6 rounded-0">
+            <form action="{{ route('user.item.store', $roomItem->id) }}" method="POST">
+                @csrf
                 <div class="card-body">
-                    <fieldset>
-                        <legend class="fs-base fw-bold border-bottom pb-2 mb-3"><i class="ph-user-circle"></i> Data Diri
-                        </legend>
-                        <div class="row mb-3">
-                            <div class="col-12 col-md-6">
-                                <label class="form-label">Nama <span class="text-danger">*</span></label></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <label class="form-label">NIK <span class="text-danger">*</span></label></label>
-                                <input type="text" class="form-control">
-                            </div>
-                        </div>
-                    </fieldset>
                     <fieldset>
                         <legend class="fs-base fw-bold border-bottom pb-2 mb-3"><i class="ph-package"></i> Data Peminjaman
                         </legend>
-                        <div class="row mb-3">
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Detail Asset <span class="text-danger">*</span></label></label>
-                                <select data-placeholder="Pilih Asset..." class="form-control select">
-                                    <option></option>
-                                    @foreach ($assets as $asset)
-                                        <option value="{{ $asset->code }}">[{{ $asset->code }}] {{ $asset->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                        <div class="row">
+                            <div class="col-12 col-md-6 mb-3">
+                                <label class="form-label">Ruangan :</label>
+                                <input type="text" class="form-control-plaintext fw-semibold"
+                                    value="{{ $roomItem->room->name }}">
                             </div>
                             <div class="col-12 col-md-6 mb-3">
-                                <label class="form-label ">Tanggal Pinjam <span class="text-danger">*</span></label></label>
+                                <label class="form-label">Nama Barang :</label>
+                                <input type="text" class="form-control-plaintext fw-semibold"
+                                    value="{{ $roomItem->item->name }}">
+                            </div>
+                            <div class="col-12 col-md-12 mb-3">
+                                <label class="form-label">Jumlah <span class="text-danger">*</span> :</label>
+                                <div class="input-group">
+                                    <input type="number" name="qty" class="form-control" value="{{ old('qty') }}"
+                                        placeholder="Contoh : 1" min="0">
+                                    <span class="input-group-text">{{ $roomItem->item->unit }}</span>
+                                </div>
+                                @if ($errors->has('qty'))
+                                    <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
+                                        {{ $errors->first('qty') }}</div>
+                                @endif
+                            </div>
+                            <div class="col-6 col-md-6 mb-3">
+                                <label class="form-label">Tanggal Pinjam <span class="text-danger">*</span> :</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="ph-calendar"></i>
@@ -43,22 +42,34 @@
                                         placeholder="Pilih Tanggal Peminjaman"
                                         value="{{ old('start_date', now()->format('D/M/Y')) }}">
                                 </div>
+                                @if ($errors->has('start_date'))
+                                    <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
+                                        {{ $errors->first('start_date') }}</div>
+                                @endif
                             </div>
 
-                            <div class="col-12 col-md-6 mb-3">
-                                <label class="form-label">Tanggal Kembali <span class="text-danger">*</span></label></label>
+                            <div class="col-6 col-md-6 mb-3">
+                                <label class="form-label">Tanggal Kembali <span class="text-danger">*</span> :</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="ph-calendar"></i>
                                     </span>
                                     <input type="text" class="form-control datepicker-basic-return" name="end_date"
                                         placeholder="Pilih Tanggal Pengembalian"
-                                        value="{{ old('start_date', now()->addDay()->format('D/M/Y')) }}">
+                                        value="{{ old('end_date', now()->addDay()->format('D/M/Y')) }}">
                                 </div>
+                                @if ($errors->has('end_date'))
+                                    <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
+                                        {{ $errors->first('end_date') }}</div>
+                                @endif
                             </div>
                             <div class="col-12  mb-3">
-                                <label class="form-label">Keterangan <span class="text-danger">*</span></label></label>
-                                <textarea name="note" id="" class="form-control" rows="5"></textarea>
+                                <label class="form-label">Keterangan <span class="text-danger">*</span> :</label>
+                                <textarea name="notes" class="form-control" rows="5">{{ old('notes') }}</textarea>
+                                @if ($errors->has('notes'))
+                                    <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
+                                        {{ $errors->first('notes') }}</div>
+                                @endif
                             </div>
                         </div>
                     </fieldset>
@@ -77,4 +88,21 @@
     <script src="{{ asset('assets/js/vendor/pickers/datepicker.min.js') }}"></script>
     <script src="{{ asset('assets/demo/pages/form_select2.js') }}"></script>
     <script src="{{ asset('assets/demo/pages/picker_date.js') }}"></script>
+    <script src="{{ asset('assets/js/vendor/notifications/sweet_alert.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            @if (session('error'))
+                Swal.fire({
+                    title: 'Perhatian!',
+                    text: "{{ session('error') }}",
+                    icon: 'info',
+                    customClass: {
+                        confirmButton: 'btn btn-primary',
+                    },
+                });
+            @endif
+
+        });
+    </script>
 @endpush
