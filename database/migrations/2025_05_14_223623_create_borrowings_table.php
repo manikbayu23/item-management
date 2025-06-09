@@ -16,10 +16,10 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('admin_id')->nullable()
                 ->constrained('users')->onDelete(action: 'cascade');
-            $table->enum('status', ['pending', 'approved', 'rejected', 'completed', 'cancel'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'completed', 'cancel', 'in_progress'])->default('pending');
             $table->date('start_date');
             $table->date('end_date');
-            $table->date('actual_return_date')->nullable();
+            $table->dateTime('actual_return_date')->nullable();
             $table->text('notes')->nullable();
             $table->char('created_by', 50);
             $table->char('updated_by', 50);

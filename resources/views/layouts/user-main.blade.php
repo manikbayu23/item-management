@@ -32,8 +32,8 @@
     <div class="page-header page-header-light shadow">
         <div class="page-header-content container-boxed d-lg-flex">
             <div class="d-flex">
-                <h4 class="page-title mb-0 text-dark">@yield('title')
-                </h4>
+                <h5 class="page-title mb-0 text-dark">@yield('title')
+                </h5>
 
             </div>
 

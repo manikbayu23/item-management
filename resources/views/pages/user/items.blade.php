@@ -17,7 +17,8 @@
                         <label class="form-label">Ruangan : </label>
                         <select class="form-control select" name="room">
                             @foreach ($rooms as $room)
-                                <option value="{{ $room->id }}" @selected(old('room') == $room->id)>{{ $room->name }}
+                                <option value="{{ $room->id }}" {{ request('room') == $room->id ? 'selected' : '' }}>
+                                    {{ $room->name }}
                                 </option>
                             @endforeach
                         </select>

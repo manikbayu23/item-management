@@ -83,6 +83,7 @@
         </div>
     </div>
 @endsection
+
 @push('script_user')
     <script src="{{ asset('assets/js/vendor/forms/selects/select2.min.js') }}"></script>
     <script src="{{ asset('assets/js/vendor/pickers/datepicker.min.js') }}"></script>

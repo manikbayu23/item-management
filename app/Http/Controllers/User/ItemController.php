@@ -10,19 +10,38 @@ use Illuminate\Http\Request;
 use App\Models\ItemCondition;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\BorrowingLog;
 use Illuminate\Support\Facades\Auth;
 
 class ItemController extends Controller
 {
     public function index(Request $request)
     {
+        $room = $request->input('room');
+        $slug = $request->input('slug');
+
         $rooms = Room::all();
-        $roomItems = RoomItem::where('room_id', $request->input('room'))
-            ->with('borrowings', function ($query) {
-                $query->where('status', 'approved');
-            })
-            ->get();
-        $roomName = 'Ruangan 1';
+
+        $query = RoomItem::with([
+            'borrowings' => function ($query) {
+                $query->whereIn('status', ['approved', 'in_progress']);
+            }
+        ]);
+
+        if ($slug) {
+            $query->whereHas('room', function ($q) use ($slug) {
+                $q->where('slug', $slug);
+            });
+        } else {
+            $query->where('room_id', $room);
+        }
+
+        $roomItems = $query->get();
+
+        $roomName = !empty($roomItems[0]) ? $roomItems[0]->room->name : '';
+        if ($slug && ($roomName == '')) {
+            $roomName = Room::where('slug', $slug)->select('name')->value('name');
+        }
         return view('pages.user.items', compact(['roomName', 'rooms', 'roomItems']));
     }
 
@@ -55,7 +74,19 @@ class ItemController extends Controller
 
         try {
             DB::beginTransaction();
-            // 1. LOCK row item_conditions terlebih dahulu
+
+            $year = Carbon::now()->year;
+
+            $lastNumber = DB::table('borrowings')
+                ->whereYear('created_at', $year)
+                ->orderBy('sq_borrow_number', 'desc')
+                ->lockForUpdate()
+                ->value('sq_borrow_number');
+
+            $nextNumber = $lastNumber ? $lastNumber + 1 : 1;
+            // Format nomor: PJM/2025/00001
+            $borrowNumber = sprintf("PJM/%d/%05d", $year, $nextNumber);
+
             $itemCondition = DB::table('item_conditions')
                 ->where('room_item_id', $id)
                 ->where('condition', 'baik')
@@ -69,7 +100,7 @@ class ItemController extends Controller
             // 2. Hitung stok yang tersedia
             $borrowedQty = DB::table('borrowings')
                 ->where('room_item_id', $id)
-                ->where('status', 'approved')
+                ->whereIn('status', ['approved', 'in_progress'])
                 ->sum('qty');
 
             $qtyReady = $itemCondition->qty - ($borrowedQty ?? 0);
@@ -78,15 +109,24 @@ class ItemController extends Controller
                 throw new \Exception('Pengajuan gagal: Barang tersedia hanya [' . $qtyReady . ']. Jumlah pengajuan [' . $validated['qty'] . ']');
             }
 
-            Borrow::create([
+            $newBorrow = Borrow::create([
                 'room_item_id' => $roomItem->id,
                 'user_id' => Auth::user()->id,
+                'sq_borrow_number' => $nextNumber,
+                'borrow_number' => $borrowNumber,
                 'qty' => $validated['qty'],
                 'start_date' => $startDate,
                 'end_date' => $endDate,
                 'notes' => $validated['notes'],
                 'created_by' => Auth::user()->username,
                 'updated_by' => Auth::user()->username
+            ]);
+
+            BorrowingLog::create([
+                'borrowing_id' => $newBorrow->id,
+                'status' => 'pending',
+                'user_id' => Auth::user()->id,
+                'notes' => $validated['notes'],
             ]);
 
             DB::commit();

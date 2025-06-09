@@ -24,8 +24,9 @@
                  <a href="#" class="navbar-nav-link align-items-center rounded-pill p-1"
                      data-bs-toggle="dropdown">
                      <div class="status-indicator-container">
-                         <img src="{{ optional(Auth::user()->account)->profile_picture ? url('/admin/user-accounts/profile-picture/' . Auth::user()->account->profile_picture) : '' }}"
-                             class="w-32px h-32px rounded-pill" alt="foto">
+                         {{-- <img src="{{ optional(Auth::user()->account)->profile_picture ? url('/admin/user-accounts/profile-picture/' . Auth::user()->account->profile_picture) : '' }}"
+                             class="w-32px h-32px rounded-pill" alt="foto"> --}}
+                         <span class="ph-user" style="font-size: 24px"></span>
                          <span class="status-indicator bg-success"></span>
                      </div>
                      <span class="d-none d-lg-inline-block mx-lg-2">{{ Auth::user()->name }}</span>

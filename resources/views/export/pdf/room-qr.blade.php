@@ -32,7 +32,7 @@
 
 <body>
     @php
-        $qrCode = SimpleSoftwareIO\QrCode\Facades\QrCode::size(300)->generate('https://example.com');
+        $qrCode = SimpleSoftwareIO\QrCode\Facades\QrCode::size(300)->generate('https://example.com?slug=');
     @endphp
     <div class="qr-container">
         <img src="data:image/png;base64,{{ base64_encode($qrCode) }}">

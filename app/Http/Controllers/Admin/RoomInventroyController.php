@@ -45,7 +45,7 @@ class RoomInventroyController extends Controller
                 'item.category:id,name',   // Ambil nama kategori
                 'conditions:id,room_item_id,condition,qty',// Sertakan room_item_id
                 'borrowings' => function ($q) {
-                    $q->where('status', 'approved')
+                    $q->whereIn('status', ['approved', 'in_progress'])
                         ->select('id', 'room_item_id', 'qty');
                 }
             ]);
@@ -201,7 +201,7 @@ class RoomInventroyController extends Controller
             $roomItem = RoomItem::find($id);
 
             $borrowings = Borrow::where('room_item_id', $id)
-                ->where('status', 'approved')
+                ->whereIn('status', ['approved', 'in_progress'])
                 ->sum('qty');
 
             if ($borrowings > 0 && $validated['qty_good'] < $borrowings) {

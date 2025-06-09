@@ -23,8 +23,8 @@
                 </a>
             </li>
             <li class="nav-item ms-md-1">
-                <a href="{{ route('user.assets.history') }}"
-                    class="navbar-nav-link navbar-nav-link-icon rounded {{ Route::is('user.assets.history') ? $active : '' }}">
+                <a href="{{ route('user.history') }}"
+                    class="navbar-nav-link navbar-nav-link-icon rounded {{ Route::is('user.history') ? $active : '' }}">
                     <div class="d-flex align-items-center mx-md-1">
                         <i class="ph-list-dashes"></i>
                         <span class="d-none d-md-inline-block ms-2">Riwayat</span>

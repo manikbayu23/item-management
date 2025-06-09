@@ -7,10 +7,10 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h5 class="mb-0">Daftar Peminjaman Barang</h5>
-                <div>
+                {{-- <div>
                     <button type="button" id="addRoomItem" class="btn btn-primary"><i class="ph-plus-circle me-1"></i>
                         Barang</button>
-                </div>
+                </div> --}}
             </div>
             <div class="row mx-2 my-2">
                 <div class="col-12 col-md-3 mb-3">
@@ -33,6 +33,18 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="col-12 col-md-2 mb-3">
+                    <label class="form-label">Status :</label>
+                    <select id="filterStatus" class="form-control select" data-placeholder="Pilih Status...">
+                        <option value="ALL" selected>SEMUA STATUS</option>
+                        <option value="pending">PENDING</option>
+                        <option value="approved">APPROVED</option>
+                        <option value="in_progress">SEDANG DIPINJAM</option>
+                        <option value="completed">SELESAI</option>
+                        <option value="rejected">DITOLAK</option>
+                        <option value="cancel">BATAL</option>
+                    </select>
+                </div>
                 <div class="col-12 col-md-2 ">
                     <label class="form-label text-white d-none d-md-block"> :</label>
                     <div>
@@ -42,12 +54,12 @@
                     </div>
                 </div>
             </div>
-            <table id="itemRoomTable" class="table table-striped datatable-select-checkbox">
+            <table id="borrowItemsTable" class="table table-striped datatable-select-checkbox">
             </table>
         </div>
     </div>
 
-    <div id="roomItemModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
+    <div id="borrowDetailModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -59,69 +71,102 @@
                 <form id="formRoomItem" method="POST">
                     <div class="modal-body">
                         <input type="hidden" name="id" id="idRoomItem">
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">Ruangan :</label>
-                                <select name="room" id="inputRoom" class="form-control select"
-                                    data-placeholder="Pilih Ruangan...">
-                                    <option></option>
-                                    @foreach ($rooms as $room)
-                                        <option value="{{ $room->id }}">{{ $room->name }}</option>
-                                    @endforeach
-                                </select>
-                                @if ($errors->has('division'))
-                                    <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                        {{ $errors->first('division') }}</div>
-                                @endif
+                        <fieldset class="mb-3">
+                            <legend class="fs-base fw-bold border-bottom pb-2 mb-1"> Data
+                                Peminjaman
+                            </legend>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold">Tanggal Peminjaman:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-date"></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold">Kode Barang:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-item-code"></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold">Nama Barang:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-item-name"></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold">Kategori Barang:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-item-category">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold">Ruangan:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-room-name"></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold">Peminjam:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-user-name"></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold">Status:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-status"></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold">Catatan:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-user-notes"></div>
+                                </div>
+                                <div class="col-12 col-md-6" id="collection-date-col">
+                                    <label class="form-label fw-bold">Tanggal Pengambilan:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-collection-date">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6" id="return-date-col">
+                                    <label class="form-label fw-bold">Tanggal Pengembalian:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-return-date">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6" id="admin-name-col">
+                                    <label class="form-label fw-bold">Admin:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-admin-name"></div>
+                                </div>
+                                <div class="col-12 col-md-6" id="admin-notes-col">
+                                    <label class="form-label fw-bold">Catatan Admin:</label>
+                                    <div class="form-control-plaintext text-muted fw-medium" id="borrow-admin-notes">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">Barang :</label>
-                                <select name="item" id="inputItem" class="form-control select"
-                                    data-placeholder="Pilih Barang...">
-                                    <option></option>
-                                    @foreach ($items as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                                @if ($errors->has('division'))
-                                    <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                                        {{ $errors->first('division') }}</div>
-                                @endif
+                        </fieldset>
+                        <fieldset>
+                            <legend class="fs-base fw-bold border-bottom pb-1 mb-1">
+                                <a href="#log-container" class="collapsed btn btn-link" data-bs-toggle="collapse">
+                                    Lihat Aktivitas
+                                    Peminjaman <i class="ph-caret-down collapsible-indicator ms-2"></i>
+                                </a>
+                            </legend>
+
+                            <div class="container collapse" id="log-container">
+                                <div class="table-responsive">
+                                    <table id="borrowing-log-table" class="table table-bordered" style="width: 100%; ">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 5%;">No</th>
+                                                <th style="width: 20%;">Nama</th>
+                                                <th style="width: 15%;">Posisi</th>
+                                                <th style="width: 15%;">Status</th>
+                                                <th style="width: 30%;">Notes</th>
+                                                <th style="width: 15%;">Tanggal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Jumlah Baik :</label>
-                                <input type="number" class="form-control input-qty" id="qtyGood" name="qty_good"
-                                    min="0">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Jumlah Rusak :</label>
-                                <input type="number" class="form-control input-qty" id="qtyDemaged" name="qty_demaged"
-                                    value="0" min="0">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Jumlah Hilang :</label>
-                                <input type="number" class="form-control input-qty" id="qtyMissing" name="qty_missing"
-                                    value="0" min="0">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Jumlah Total :</label>
-                                <input type="number" class="form-control" id="qtyTotal" name="qty_total" readonly>
-                            </div>
-                        </div>
+                        </fieldset>
                     </div>
-                    <div class="modal-footer justify-content-end">
-                        <button type="button" data-bs-dismiss="modal" class="btn btn-light">
-                            <i class="ph-x me-1"></i>
-                            Tutup
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ph-floppy-disk me-1"></i>
-                            Simpan
-                        </button>
+                    <div class="modal-footer justify-content-between">
+                        <div>
+                            <button type="button" data-bs-dismiss="modal" class="btn btn-light">
+                                {{-- <i class="ph-x me-1"></i> --}}
+                                Tutup
+                            </button>
+                        </div>
+                        <div id="actions-button">
+                        </div>
                     </div>
                 </form>
             </div>
@@ -129,7 +174,11 @@
     </div>
 
 @endsection
+@push('style_admin')
+    <style>
 
+    </style>
+@endpush
 @push('script_admin')
     <script src="{{ asset('assets/js/vendor/tables/datatables/datatables.min.js') }}"></script>
 
@@ -140,30 +189,43 @@
     <script src="{{ asset('assets/js/vendor/forms/selects/select2.min.js') }}"></script>
 
     <script src="{{ asset('assets/demo/pages/form_select2.js') }}"></script>
+    <script src="{{ asset('assets/demo/pages/components_tooltips.js') }}"></script>
 @endpush
 
 @push('script_admin')
     <script>
         $(document).ready(function() {
 
-            $('.input-qty').on('input', function() {
-                const total = parseInt($('#qtyGood').val()) + parseInt($('#qtyDemaged').val()) + parseInt($(
-                    '#qtyMissing').val());
-                $('#qtyTotal').val(total);
-            });
-
-
-            let table = $('#itemRoomTable').DataTable({
+            let table = $('#borrowItemsTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('admin.room-inventory.data') }}',
+                    url: '{{ route('admin.borrow-item.data') }}',
                     data: function(d) {
                         d.room = $('#filterRoom').val();
                         d.item = $('#filterItem').val();
+                        d.status = $('#filterStatus').val();
                     },
                     dataSrc: 'data'
+                },
+                rowCallback: function(row, data, index) {
+                    const dateNow = new Date();
+                    const endDate = new Date(data.end_date);
+                    if (data.status == 'in_progress') {
+                        if (endDate.setHours(0, 0, 0, 0) < dateNow.setHours(0, 0, 0, 0)) {
+                            $(row).find('td')
+                                .addClass('text-danger'); // Reset warna cell
+                            $(row).attr('title', 'Barang sudah melewati tanggal pengembalian');
+                        } else if (endDate.setHours(0, 0, 0, 0) == dateNow.setHours(0, 0, 0, 0)) {
+                            $(row).find('td')
+                                .addClass('text-warning'); // Reset warna cell
+                            $(row).attr('data-bs-popup', 'tooltip');
+                            $(row).attr('title', 'Barang memasuki masa tenggang tanggal pengembalian');
+                        }
+                    }
+                    $(row).find('[data-bs-toggle="tooltip"]').tooltip();
+
                 },
                 columns: [{
                         title: 'No',
@@ -176,48 +238,69 @@
                         }
                     },
                     {
+                        title: 'No Peminjaman',
+                        data: 'borrow_number',
+                        name: 'borrow_number',
+                        orderable: true,
+                        searchable: true,
+                        className: 'text-center',
+                        width: '15%'
+                    },
+                    {
+                        title: 'Tanggal Peminjaman',
+                        data: null,
+                        className: 'text-center',
+                        orderable: true,
+                        searchable: true,
+                        width: '15%',
+                        render: function(data, type, row) {
+                            const startDate = new Date(row.start_date);
+                            const endDate = new Date(row.end_date);
+
+                            // Hitung selisih milisecond, lalu konversi ke hari
+                            const timeDiff = endDate - startDate;
+                            const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) +
+                                1; // +1 untuk inklusif
+
+                            let dateDisplay;
+                            if (startDate.toDateString() === endDate.toDateString()) {
+                                dateDisplay = `${startDate
+                                    .toLocaleDateString('id-ID')} (1 Hari)`; // Format tanggal sesuai locale
+                            } else {
+                                dateDisplay =
+                                    `${startDate.toLocaleDateString('id-ID')} s/d ${endDate.toLocaleDateString('id-ID')} (${dayDiff} hari)`;
+                            }
+                            return `<span>${dateDisplay}</span>`;
+                        }
+                    },
+                    // {
+                    //     title: 'Kode Barang',
+                    //     data: 'room_item.item.code',
+                    //     className: 'text-center',
+                    //     orderable: true,
+                    //     searchable: true,
+                    //     render: function(data) {
+                    //         return `<span class="badge bg-dark bg-opacity-20 text-reset">${data}</span>`;
+                    //     }
+                    // }, 
+                    {
+                        title: 'Nama Barang',
+                        data: 'room_item.item.name',
+                        name: 'item.name',
+                        orderable: true,
+                        searchable: true,
+                        width: '15%'
+                    },
+                    {
                         title: 'Ruangan',
-                        data: 'room.name',
+                        data: 'room_item.room.name',
                         name: 'room.name',
                         orderable: true,
                         searchable: true,
                         width: '10%'
                     },
                     {
-                        title: 'Kode Barang',
-                        data: 'item.code',
-                        className: 'text-center',
-                        orderable: true,
-                        searchable: true,
-                        render: function(data) {
-                            return `<span class="badge bg-dark bg-opacity-20 text-reset">${data}</span>`;
-                        }
-                    }, {
-                        title: 'Nama Barang',
-                        data: 'item.name',
-                        name: 'item.name',
-                        orderable: true,
-                        searchable: true,
-                        width: '15%'
-                    }, {
-                        title: 'Kategori',
-                        data: 'item.category.name',
-                        name: 'item.category.name',
-                        orderable: false,
-                        searchable: false,
-                        className: 'text-center',
-                    },
-                    {
-                        title: 'Unit',
-                        data: 'item.unit',
-                        name: 'item.unit',
-                        className: 'text-center',
-                        orderable: false,
-                        searchable: false,
-                        className: 'text-center',
-                    },
-                    {
-                        title: 'Jumlah Total',
+                        title: 'Jumlah',
                         data: 'qty',
                         className: 'text-center',
                         orderable: false,
@@ -227,62 +310,19 @@
                         }
                     },
                     {
-                        title: 'Kondisi',
+                        title: 'Status',
                         data: 'status',
                         className: 'text-center',
                         orderable: false,
                         searchable: false,
-                        render: function(data, type, row, meta) {
-                            const totalBaik = row.conditions
-                                .filter(c => c.condition === 'baik')
-                                .reduce((sum, item) => sum + item.qty, 0);
-                            const totalRusak = row.conditions
-                                .filter(c => c.condition === 'rusak')
-                                .reduce((sum, item) => sum + item.qty, 0);
-                            const totalHilang = row.conditions
-                                .filter(c => c.condition === 'hilang')
-                                .reduce((sum, item) => sum + item.qty, 0);
-
-                            let html = `<div class="d-flex flex-column gap-1">
-                            <span class="badge bg-success bg-opacity-75 rounded-4">Baik <b>${totalBaik}</b></span>
-                            <span class="badge bg-warning bg-opacity-75 rounded-4">Rusak <b>${totalRusak}</b></span>
-                            <span class="badge bg-danger bg-opacity-75 rounded-4">Hilang <b>${totalHilang}</b></span>
-                            </div>`;
-                            return html
+                        render: function(data) {
+                            return statusBadge(data);
                         }
                     },
                     {
-                        title: 'Dipinjam',
-                        data: 'borrowings',
-                        className: 'text-center',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data, type, row, meta) {
-                            const totalPinjam = data
-                                .reduce((sum, item) => sum + item.qty, 0)
-                            return `<span class="fw-semibold">${totalPinjam}</span>`
-                        }
-                    },
-                    {
-                        title: 'Jumlah Tersedia',
-                        data: 'status',
-                        className: 'text-center',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data, type, row, meta) {
-                            const totalBaik = row.conditions
-                                .filter(c => c.condition === 'baik')
-                                .reduce((sum, item) => sum + item.qty, 0);
-
-                            const totalPinjam = row.borrowings
-                                .reduce((sum, item) => sum + item.qty, 0);
-                            const tersedia = totalBaik - totalPinjam;
-
-                            let html = `<div class="">
-                            <span class="fw-semibold"> ${tersedia}</span>
-                            </div>`;
-                            return html
-                        }
+                        title: 'Peminjam',
+                        data: 'user.name',
+                        name: 'user.name',
                     },
                     {
                         title: 'Aksi',
@@ -297,12 +337,47 @@
                                         <a href="#" class="text-body" data-bs-toggle="dropdown">
                                             <i class="ph-list"></i>
                                         </a>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            <button type="button" class="edit-room-item dropdown-item" data-id="${data}" 
-                                                data-room="${data.room}" data-item="${data.item}" data-all='${JSON.stringify(row)}'>
-                                                <i class="ph-pencil-line me-2"></i>
-                                                Edit
-                                            </button>`;
+                                        <div class="dropdown-menu dropdown-menu-end">`;
+
+                            html += `<button type="button" class="borrow-option dropdown-item" data-option="detail" data-id="${data}" 
+                                        data-no="${data}" data-item="${data.item}" data-all='${JSON.stringify(row)}'>
+                                        <i class="ph-eye me-2"></i>
+                                        Detail
+                                    </button>`;
+
+                            // if (row.status == 'pending') {
+                            //     html += `<button type="button" class="borrow-option dropdown-item" data-option="reject" data-id="${data}" 
+                        //                 data-no="${data}" >
+                        //                 <i class="ph-x-circle me-2"></i>
+                        //                 Tolak
+                        //             </button>
+                        //             <button type="button" class="borrow-option dropdown-item" data-option="approved" data-id="${data}" 
+                        //                 data-no="${data}">
+                        //                 <i class="ph-check-circle me-2"></i>
+                        //                 Approved
+                        //             </button>`;
+                            // }
+
+                            // if (row.status == 'approved') {
+                            //     html += `<button type="button" class="borrow-option dropdown-item" data-option="unapproved" data-id="${data}" 
+                        //                 data-no="${data}" >
+                        //                 <i class="ph-arrow-u-left-up me-2"></i>
+                        //                 UnApproved
+                        //             </button>
+                        //             <button type="button" class="borrow-option dropdown-item" data-option="in_progress" data-id="${data}" 
+                        //                 data-no="${data}" >
+                        //                 <i class="ph-package me-2"></i>
+                        //                 Ambil Barang
+                        //             </button>`;
+                            // }
+
+                            // if (row.status == 'in_progress') {
+                            //     html += `<button type="button" class="borrow-option dropdown-item" data-option="completed" data-id="${data}" 
+                        //                 data-no="${data}">
+                        //                 <i class="ph-arrow-counter-clockwise me-2"></i>
+                        //                 Selesaikan
+                        //             </button>`;
+                            // }
 
                             html += `
                                         </div>
@@ -339,96 +414,359 @@
                 table.ajax.reload(null, false);
             });
 
-            $('#addRoomItem').on('click', function() {
-                $('#roomItemModal .modal-title span').text('Tambah Barang per Ruangan');
-                $('#idRoomItem').val(null);
-                $('#inputRoom').val('').trigger('change').prop('disabled', false);
-                $('#inputItem').val('').trigger('change').prop('disabled', false);
-                $('#qtyGood').val(0);
-                $('#qtyDemaged').val(0);
-                $('#qtyMissing').val(0);
-                $('#qtyTotal').val(0);
-                $('#roomItemModal').modal('show');
+            $('#borrowItemsTable').on('click', '.borrow-option', function() {
+                const option = $(this).data('option');
+                const id = $(this).data('id');
+                if (option == 'detail') {
+                    const data = $(this).data('all');
+                    borrowDetail(data);
+                } else {
+                    borrowOption(id);
+                }
             });
 
-            $('#itemRoomTable').on('click', '.edit-room-item', function() {
-                const data = $(this).data('all');
+            const borrowOption = (id) => {
+                console.log(data);
+            }
 
-                const totalBaik = data.conditions
-                    .filter(c => c.condition === 'baik')
-                    .reduce((sum, item) => sum + item.qty, 0);
-                const totalRusak = data.conditions
-                    .filter(c => c.condition === 'rusak')
-                    .reduce((sum, item) => sum + item.qty, 0);
-                const totalHilang = data.conditions
-                    .filter(c => c.condition === 'hilang')
-                    .reduce((sum, item) => sum + item.qty, 0);
+            const borrowDetail = (data) => {
+                $('#borrowDetailModal .modal-title span').html(
+                    `Pengajuan Peminjaman No : <b> ${data.borrow_number} </b>`);
 
-                $('#roomItemModal .modal-title span').text('Edit Barang per Ruangan: ');
-                $('#idRoomItem').val(data.id);
-                $('#inputRoom').val(data.room.id).trigger('change').prop('disabled', true);
-                $('#inputItem').val(data.item.id).trigger('change').prop('disabled', true);
-                $('#qtyGood').val(totalBaik);
-                $('#qtyDemaged').val(totalRusak);
-                $('#qtyMissing').val(totalHilang);
-                $('#qtyTotal').val((totalBaik + totalHilang + totalHilang));
-                $('#roomItemModal').modal('show');
-            });
+                const startDate = new Date(data.start_date);
+                const endDate = new Date(data.end_date);
 
-            $('#formRoomItem').on('submit', function(e) {
-                e.preventDefault();
+                // Hitung selisih milisecond, lalu konversi ke hari
+                const timeDiff = endDate - startDate;
+                const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) +
+                    1; // +1 untuk inklusif
 
-                let method = 'POST';
-                let url = '{{ route('admin.room-inventory.store') }}';
-                const id = $('#idRoomItem').val()
-                if (id) {
-                    method = 'PUT';
-                    url = '{{ route('admin.room-inventory.update', ':id') }}'.replace(':id', id);
+                let dateDisplay;
+                if (startDate.toDateString() === endDate.toDateString()) {
+                    dateDisplay = `${startDate
+                                    .toLocaleDateString('id-ID')} (1 Hari)`; // Format tanggal sesuai locale
+                } else {
+                    dateDisplay =
+                        `${startDate.toLocaleDateString('id-ID')} s/d ${endDate.toLocaleDateString('id-ID')} (${dayDiff} hari)`;
+                }
+                $('#borrow-date').html(dateDisplay);
+                $('#borrow-item-code').html(data.room_item.item.code);
+                $('#borrow-item-name').html(data.room_item.item.name);
+                $('#borrow-item-category').html(data.room_item.item.category.name);
+                $('#borrow-room-name').html(data.room_item.room.name);
+                $('#borrow-user-name').html(data.user.name);
+
+                if (data.borrowing_logs.length > 0) {
+                    $('#borrowing-log-table tbody').html(borrowingLogsTable(data.borrowing_logs));
                 }
 
-                $.ajax({
-                    method: method,
-                    url: url,
-                    data: $(this).serialize(),
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                const status = data.status;
+                $('#borrow-status').html(statusBadge(status));
+                $('#borrow-user-notes').html(data.notes);
+
+                $('#collection-date-col').hide();
+                if (data.actual_collection_date) {
+                    $('#borrow-collection-date').html(formatedIDDate(data.actual_collection_date));
+                    $('#collection-date-col').show();
+                }
+
+                $('#return-date-col').hide();
+                if (data.actual_return_date) {
+                    $('#borrow-return-date').html(formatedIDDate(data.actual_return_date));
+                    $('#return-date-col').show();
+                }
+
+                $('#admin-notes-col').hide();
+                $('#admin-name-col').hide();
+                if (data.admin_id) {
+                    $('#admin-notes-col').show();
+                    $('#admin-name-col').show();
+                    $('#borrow-admin-name').html(data.admin.name);
+                    $('#borrow-admin-notes').html(data.admin_notes);
+                }
+
+                let actionsButton;
+                if (status == 'pending') {
+                    actionsButton = `<button type="button" class="btn btn-danger action-detail-button" data-id="${data.id}" data-no="${data.borrow_number}"  data-action="rejected">
+                                        <i class="ph-x-circle me-2"></i>
+                                        Tolak
+                                    </button>
+                                    <button type="button" class="btn btn-success action-detail-button" data-id="${data.id}" data-no="${data.borrow_number}" data-action="approved">
+                                        <i class="ph-check-circle me-2"></i>
+                                        Approved
+                                    </button>
+                                   `;
+                } else if (status == 'approved') {
+                    actionsButton = `<button type="button" class="btn btn-warning action-detail-button" data-id="${data.id}" data-no="${data.borrow_number}" data-action="cancel">
+                                        <i class="ph-prohibit me-2"></i>
+                                        Batalkan
+                                    </button>
+                                    <button type="button" class="btn btn-info action-detail-button" data-id="${data.id}" data-no="${data.borrow_number}" data-start="${data.start_date}" data-end="${data.end_date}" data-action="in_progress">
+                                        <i class="ph-package me-2"></i>
+                                        Ambil Barang
+                                    </button>`;
+                } else if (status == 'in_progress') {
+                    actionsButton = `<button type="button" class="btn btn-primary action-detail-button" data-id="${data.id}" data-no="${data.borrow_number}" data-start="${data.start_date}" data-end="${data.end_date}" data-action="completed">
+                                        <i class="ph-arrow-counter-clockwise me-2"></i>
+                                        Selesaikan
+                                    </button>`;
+                }
+                $('#actions-button').empty();
+                $('#actions-button').append(actionsButton);
+                $('#borrowDetailModal').modal('show');
+            }
+
+            const borrowingLogsTable = (data) => {
+                let table;
+                data.forEach((row, index) => {
+                    const role = row.admin_id ? 'Admin' : 'Peminjam';
+                    const name = row.admin_id ? row.admin.name : row.user.name;
+                    const date = new Date(row.created_at);
+
+                    const options = {
+                        weekday: 'short', // e.g., "Sunday"
+                        year: 'numeric',
+                        month: 'numeric', // bisa juga 'short' atau '2-digit'
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false // pakai 24 jam
+                    };
+
+                    const formattedDate = date.toLocaleString('id-ID', options);
+                    table += ` <tr>
+                                <td>${index +1}</td>
+                                <td>${name}</td>
+                                <td>${role}</td>
+                                <td>${statusBadge(row.status)}</td>
+                                <td>${row.notes}</td>
+                                <td>${formattedDate}</td>
+                            </tr>`;
+                });
+
+                return table;
+            }
+
+            const statusBadge = (status) => {
+                const statusMap = {
+                    approved: {
+                        text: 'Approved',
+                        color: 'success',
+                        icon: 'check-circle',
                     },
-                    success: function(response) {
+                    in_progress: {
+                        text: 'Sedang Dipinjam',
+                        color: 'info',
+                        icon: 'package',
+                    },
+                    completed: {
+                        text: 'Selesai',
+                        color: 'primary',
+                        icon: 'arrow-counter-clockwise',
+                    },
+                    rejected: {
+                        text: 'Ditolak',
+                        color: 'danger',
+                        icon: 'x-circle',
+                    },
+                    cancel: {
+                        text: 'Batal',
+                        color: 'grey',
+                        icon: 'prohibit',
+                    },
+                    pending: {
+                        text: 'Pending',
+                        color: 'warning',
+                        icon: 'clock',
+                    }
+                };
+
+                const {
+                    text,
+                    color,
+                    icon
+                } = statusMap[status] || statusMap['pending'];
+                return `<span class="badge bg-${color} bg-opacity-75 rounded-4"><i class="ph-${icon}"></i> ${text}</span>`;
+            };
+
+            const formatedIDDate = (date, options = {}) => {
+                const formatDate = new Date(date);
+                return formatDate.toLocaleString('id-ID', options);
+            }
+
+
+            $('#actions-button').on('click', '.action-detail-button', function() {
+                const id = $(this).data('id');
+                const action = $(this).data('action');
+                const no = $(this).data('no');
+
+                let title;
+                if (action == 'reject') {
+                    title = 'tolak';
+                } else if (action == 'in_progress') {
+                    title = 'konfirmasi ambil barang';
+                } else if (action == 'completed') {
+                    title = 'selesaikan';
+                } else {
+                    title = action;
+                }
+
+                const titleText = title.charAt(0).toUpperCase() + title.slice(1);
+                $('#borrowDetailModal').modal('hide');
+
+                let html =
+                    '<p class="text-center text-danger my-3 ">Silahkan isi catatan sebelum melanjutkan</p>';
+                if (action == 'completed' || action == 'in_progress') {
+                    const actionText = action == 'completed' ? 'pengembalian' : 'pengambilan';
+                    html =
+                        `<p class="text-center text-danger mb-3">Silahkan isi tanggal ${actionText} dan catatan sebelum melanjutkan!</p>`;
+
+                    const startDateRaw = $(this).data('start'); // contoh: 2025-06-04
+                    const endDateRaw = $(this).data('end'); // contoh: 2025-06-10
+
+
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const hour = String(now.getHours()).padStart(2, '0');
+                    const minute = String(now.getMinutes()).padStart(2, '0');
+                    const defaultNow = `${year}-${month}-${day}T${hour}:${minute}`;
+
+                    const startDate = `${startDateRaw}T00:00`;
+                    const endDate = `${endDateRaw}T${hour}:${minute}`;
+
+                    html += `<div class="mb-2">
+                            <label class="form-label ">Tanggal ${actionText} :</label>
+                            <input type="datetime-local" class="form-control"  id="swal-datetime" value="${defaultNow}" min="${startDate}" max="${action == 'in_progress' ? endDate : defaultNow}">
+                            <div class="form-text text-danger" style="display: none;" id="error-datetime"></div>
+                            </div> `;
+                }
+
+                html += `<div> 
+                        <label class="form-label text-start" >Catatan :</label>
+                        <textarea 
+                                id="swal-notes" 
+                                class="form-control" 
+                                placeholder="Masukkan alasan..." 
+                                rows="3"
+                                required
+                                
+                            ></textarea>
+                            <div class="form-text text-danger" style="display: none;"  id="error-notes"> </div>
+                        </div>`;
+                Swal.fire({
+                    title: `${titleText} pengajuan peminjaman nomor : ${no}`,
+                    icon: 'info',
+                    html: html,
+                    showCancelButton: true,
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Batal',
+                    customClass: {
+                        confirmButton: 'btn btn-primary',
+                        cancelButton: 'btn btn-light',
+                    },
+                    didOpen: () => {
+                        // Fokus ke textarea saat modal dibuka
+                        document.getElementById('swal-notes').focus()
+                    },
+                    preConfirm: () => {
+                        const notes = $('#swal-notes').val().trim();
+                        $('#error-notes').text('');
+
+                        let datetime;
+                        if (action == 'completed' || action == 'in_progress') {
+                            datetime = $('#swal-datetime').val().trim();
+                            $('#error-datetime').text('');
+                        };
+
+                        let isValid = true;
+
+                        if (!notes) {
+                            $('#error-notes').text('Catatan wajib diisi');
+                            $('#error-notes').show();
+                            isValid = false;
+                        }
+                        if (action == 'completed' || action == 'in_progress') {
+                            if (!datetime) {
+                                $('#error-datetime').text('Tanggal wajib diisi');
+                                $('#error-datetime').show();
+                                isValid = false;
+                            }
+                        }
+
+                        const wordCount = notes.split(/\s+/).length;
+                        if (wordCount < 4) {
+                            $('#error-notes').text('Catatan minimal harus terdiri dari 4 kata');
+                            $('#error-notes').show();
+                            isValid = false;
+                        }
+
+                        if (!isValid) {
+                            return false;
+                        }
+                        Swal.showLoading();
+                        const url = '{{ route('admin.borrow-item.update', ':id') }}'
+                            .replace(
+                                ':id', id);
+                        return $.ajax({
+                            url: url, // ganti sesuai API kamu
+                            method: 'PUT',
+                            data: {
+                                status: action,
+                                notes: notes,
+                                datetime: datetime
+                            },
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                    'content')
+                            },
+                            dataType: 'json'
+                        }).then(response => {
+                            // optional: validasi respon jika perlu
+                            if (!response.success) {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    icon: 'error',
+                                    text: response.message,
+                                    customClass: {
+                                        confirmButton: 'btn btn-primary',
+                                    },
+                                });
+                                return false;
+                            }
+
+                            return response; // dikirim ke then(result)
+
+                        }).catch(error => {
+                            const response = error.responseJSON;
+                            Swal.fire({
+                                title: 'Gagal',
+                                icon: 'error',
+                                text: response.message,
+                                customClass: {
+                                    confirmButton: 'btn btn-primary',
+                                },
+                            });
+                            return false;
+                        });
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         Swal.fire({
-                            title: 'Berhasil!',
-                            text: response.message,
+                            title: 'Berhasil',
                             icon: 'success',
+                            text: result.value.message,
                             customClass: {
                                 confirmButton: 'btn btn-primary',
                             },
                         })
                         table.ajax.reload(null, false);
-                        $('#roomItemModal').modal('hide');
-                    },
-                    error: function(xhr) {
-                        const response = xhr.responseJSON;
-                        if (xhr.status == 409) {
-                            Swal.fire({
-                                title: 'Gagal!',
-                                text: response.message,
-                                icon: 'error',
-                                customClass: {
-                                    confirmButton: 'btn btn-primary',
-                                },
-                            })
-                        } else {
-                            Swal.fire({
-                                title: 'Gagal!',
-                                text: 'Terjadi masalah jaringan, mohon diulangi.',
-                                icon: 'error',
-                                customClass: {
-                                    confirmButton: 'btn btn-primary',
-                                },
-                            })
-                        }
+                    } else {
+                        $('#borrowDetailModal').modal('show');
                     }
-                })
-            });
+                });
+            })
         })
     </script>
 @endpush

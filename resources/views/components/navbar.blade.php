@@ -21,6 +21,7 @@
                     <div class="status-indicator-container">
                         <img src="{{ asset('assets/img/user-icon.svg') }}" class="w-32px h-32px rounded-pill"
                             alt="{{ Auth::user()->name }}">
+                        {{-- <span class="ph-user"></span> --}}
                         <span class="status-indicator bg-success"></span>
                     </div>
                     <span class="d-none d-lg-inline-block mx-lg-2">{{ Auth::user()->name }}</span>

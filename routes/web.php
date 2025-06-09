@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\UserAccountController as AdminUserAccount;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\User\AssetSubmissionController as UserAssetSubmission;
 use App\Http\Controllers\User\DashboardController as UserDashboard;
+use App\Http\Controllers\User\HistoryController as UserHistory;
 use App\Http\Controllers\User\ItemController as UserItem;
 use Illuminate\Support\Facades\Route;
 
@@ -27,16 +28,14 @@ Route::post('/login', [AuthController::class, 'do_login'])->name('do-login');
 Route::middleware(['role:superadmin,user'])->group(function () {
     Route::prefix('/')->name('user')->group(function () {
         Route::get('/', [UserDashboard::class, 'index'])->name('.dashboard');
-        Route::prefix('/assets')->name('.assets')->group(function () {
-            Route::get('/history', [UserAssetSubmission::class, 'index'])->name('.history');
-        });
         Route::prefix('/items')->name('.item')->group(function () {
             Route::get('/', [UserItem::class, 'index']);
             Route::get('/{id}/form', [UserItem::class, 'form'])->name('.form');
             Route::post('/{id}/form', [UserItem::class, 'store'])->name('.store');
         });
         Route::prefix('/history')->name('.history')->group(function () {
-            Route::get('/history', [UserAssetSubmission::class, 'index']);
+            Route::get('/', [UserHistory::class, 'index']);
+            Route::put('/{id}/cancel-form', [UserHistory::class, 'cancelForm'])->name('.cancel-form');
         });
     });
 });
@@ -102,9 +101,8 @@ Route::middleware(['role:superadmin,admin'])->group(function () {
         });
         Route::prefix('/borrow-items')->name('.borrow-item')->group(function () {
             Route::get('/', [AdminBorrowItem::class, 'index']);
-            Route::get('/data', action: [AdminRoomInventory::class, 'data'])->name('.data');
-            Route::post('/', [AdminRoomInventory::class, 'store'])->name('.store');
-            Route::put('/{id}', [AdminRoomInventory::class, 'update'])->name('.update');
+            Route::get('/data', action: [AdminBorrowItem::class, 'data'])->name('.data');
+            Route::put('/{id}', [AdminBorrowItem::class, 'update'])->name('.update');
         });
         Route::get('/picture/{folder}/{filename}', function ($folder, $filename) {
             $path = storage_path("app/private/$folder/$filename");

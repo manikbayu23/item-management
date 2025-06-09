@@ -16,7 +16,6 @@ class UserRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        // dd($roles);
         if (!Auth::check() || (!in_array(Auth::user()->role, $roles))) {
             return redirect()->route('login');
         }
