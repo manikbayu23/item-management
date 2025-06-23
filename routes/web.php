@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'do_login'])->name('do-login');
 
-Route::middleware(['role:superadmin,user'])->group(function () {
+Route::middleware(['role:admin,user'])->group(function () {
     Route::prefix('/')->name('user')->group(function () {
         Route::get('/', [UserDashboard::class, 'index'])->name('.dashboard');
         Route::prefix('/items')->name('.item')->group(function () {

@@ -10,6 +10,7 @@ use App\Models\UserRoom;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class UserAccountController extends Controller
@@ -24,8 +25,8 @@ class UserAccountController extends Controller
                 })->orWhere('id', $auth->id);
         });
 
-        if ($auth->role !== 'superadmin') {
-            $data->whereIn('role', ['user', 'admin']);
+        if ($auth->role !== 'admin') {
+            $data->whereIn('role', ['user', 'pic']);
         }
         $data = $data->orderBy('id', 'desc')
             ->get();
@@ -46,7 +47,7 @@ class UserAccountController extends Controller
             'username' => 'required|string|min:4|unique:users,username',
             'division' => 'required', // Sesuaikan dengan nama tabel divisions
             'position' => 'required', // Sesuaikan dengan nama tabel divisions
-            'role' => 'required|in:superadmin,admin,user', // Asumsi value role 1 dan 2
+            'role' => 'required|in:admin,pic,user', // Asumsi value role 1 dan 2
             'phone' => 'required|numeric|digits_between:10,15|regex:/^[0-9]+$/',
             'email' => 'required|email|unique:users,email|max:255', // Sesuaikan dengan tabel users
             'password' => 'required|string|min:8|max:255',
@@ -81,6 +82,10 @@ class UserAccountController extends Controller
         $user->role = $validated['role'];
         $user->email = $validated['email'];
         $user->password = $validated['password'];
+        $user->created_at = Carbon::now();
+        $user->created_by = Auth::user()->username;
+        $user->updated_at = Carbon::now();
+        $user->updated_by = Auth::user()->username;
         $user->save();
         return redirect()->route('admin.user-account')->with('success', 'Berhasil membuat akun pengguna.');
 
@@ -103,7 +108,7 @@ class UserAccountController extends Controller
             'username' => 'required|string|min:4|unique:users,username,' . $user->id,
             'division' => 'required',
             'position' => 'required',
-            'role' => 'required|in:superadmin,admin,user',
+            'role' => 'required|in:admin,pic,user',
             'phone' => 'required|numeric|digits_between:10,15',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|max:255',
@@ -133,6 +138,8 @@ class UserAccountController extends Controller
         $user->position_id = $validated['position'];
         $user->role = $validated['role'];
         $user->email = $validated['email'];
+        $user->updated_at = Carbon::now();
+        $user->updated_by = Auth::user()->username;
 
         if (!empty($validated['password'])) {
             $user->password = bcrypt($validated['password']);
@@ -155,7 +162,7 @@ class UserAccountController extends Controller
     {
         try {
             $auth = Auth::user();
-            if ($auth->role == 'superadmin') {
+            if ($auth->role == 'admin') {
                 $rooms = Room::all();
             } else {
                 $rooms = Room::whereHas('userrooms', function ($query) use ($auth) {

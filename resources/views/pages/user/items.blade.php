@@ -4,20 +4,20 @@
     <div class="card rounded-0">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
-                <h1 class="h5 mb-0 title-room"> {{ $roomName }}</h1>
+                <h1 class="h6 mb-0 title-room"> {{ $roomName }}</h1>
                 <a href="#filter" class="collapsed btn btn-secondary" data-bs-toggle="collapse">
                     <i class="ph-faders-horizontal"></i>
                 </a>
             </div>
         </div>
-        <div class="collapse" id="filter">
+        <div class="collapse {{ $roomName ? '' : 'show' }}" id="filter">
             <form action="{{ route('user.item') }}" method="GET">
                 <div class="row m-3">
                     <div class="col-12 col-md-3 mb-3">
                         <label class="form-label">Ruangan : </label>
-                        <select class="form-control select" name="room">
+                        <select class="form-control select" name="slug">
                             @foreach ($rooms as $room)
-                                <option value="{{ $room->id }}" {{ request('room') == $room->id ? 'selected' : '' }}>
+                                <option value="{{ $room->slug }}" {{ request('room') == $room->slug ? 'selected' : '' }}>
                                     {{ $room->name }}
                                 </option>
                             @endforeach
@@ -36,8 +36,11 @@
             @php
                 $totalQty = 0;
 
+                // dd($row->conditions);
                 foreach ($row->conditions as $key => $condition) {
-                    $totalQty = $totalQty + $condition->qty;
+                    if ($condition->condition == 'baik') {
+                        $totalQty = $totalQty + $condition->qty;
+                    }
                 }
 
                 foreach ($row->borrowings as $key => $borrow) {

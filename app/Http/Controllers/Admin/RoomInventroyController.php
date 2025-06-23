@@ -20,7 +20,7 @@ class RoomInventroyController extends Controller
     public function index()
     {
         $auth = Auth::user();
-        if ($auth->role == 'superadmin') {
+        if ($auth->role == 'admin') {
             $rooms = Room::all();
         } else {
             $rooms = Room::whereHas('userrooms', function ($query) use ($auth) {

@@ -4,14 +4,17 @@ namespace App\Http\Controllers\User;
 
 use Carbon\Carbon;
 use App\Models\Room;
+use App\Models\User;
 use App\Models\Borrow;
 use App\Models\RoomItem;
+use App\Models\BorrowingLog;
 use Illuminate\Http\Request;
 use App\Models\ItemCondition;
+use App\Mail\BorrowingSubmission;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\BorrowingLog;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class ItemController extends Controller
 {
@@ -36,6 +39,7 @@ class ItemController extends Controller
             $query->where('room_id', $room);
         }
 
+        // buat email pengajuan
         $roomItems = $query->get();
 
         $roomName = !empty($roomItems[0]) ? $roomItems[0]->room->name : '';
@@ -47,7 +51,15 @@ class ItemController extends Controller
 
     public function form($id)
     {
-        $roomItem = RoomItem::find($id);
+        $roomItem = RoomItem::with([
+            'borrowings' => function ($q) {
+                $q->whereIn('status', ['approved', 'in_progress']);
+            },
+            'conditions' => function ($q) {
+                $q->where('condition', 'baik');
+            }
+        ])->find($id);
+
         return view('pages.user.form-submission', compact(['roomItem']));
     }
 
@@ -70,7 +82,12 @@ class ItemController extends Controller
 
         $startDate = Carbon::parse($validated['start_date']);
         $endDate = Carbon::parse($validated['end_date']);
-        $roomItem = RoomItem::find($id);
+
+        $roomItem = RoomItem::with([
+            'room.userrooms.user' => function ($q) {
+                $q->where('role', 'pic');
+            }
+        ])->find($id);
 
         try {
             DB::beginTransaction();
@@ -128,6 +145,38 @@ class ItemController extends Controller
                 'user_id' => Auth::user()->id,
                 'notes' => $validated['notes'],
             ]);
+
+            $emailTo = null;
+            $emailsCc = [];
+            foreach ($roomItem->room->userrooms as $key => $userrooms) {
+                if ($userrooms->user && $userrooms->user->email) {
+                    if (!$emailTo) {
+                        $emailTo = $userrooms->user->email;
+                    }
+                    $emailsCc[] = $userrooms->user->email ?? '';
+                }
+            }
+
+            $emailAdmin = User::where('role', 'admin')
+                ->value('email');
+
+            if (!$emailTo) {
+                $emailTo = $emailAdmin;
+            } else {
+                $emailsCc[] = $emailAdmin;
+            }
+
+            if (!$emailTo) {
+                throw new \Exception('Pengajuan gagal: email approval belum di set.');
+            }
+
+            try {
+                Mail::to($emailTo)
+                    ->cc($emailsCc)
+                    ->send(new BorrowingSubmission($newBorrow, $roomItem));
+            } catch (\Throwable $th) {
+                throw $th;
+            }
 
             DB::commit();
             return redirect()->route('user.history')->with('success', 'Berhasil membuat pengajuan peminjaman barang.');

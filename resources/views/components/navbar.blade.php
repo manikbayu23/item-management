@@ -19,7 +19,7 @@
             <li class="nav-item nav-item-dropdown-lg dropdown ms-lg-2">
                 <a href="#" class="navbar-nav-link align-items-center rounded-pill p-1" data-bs-toggle="dropdown">
                     <div class="status-indicator-container">
-                        <img src="{{ asset('assets/img/user-icon.svg') }}" class="w-32px h-32px rounded-pill"
+                        <img src="{{ asset('assets/img/user.png') }}" class="w-32px h-32px rounded-pill"
                             alt="{{ Auth::user()->name }}">
                         {{-- <span class="ph-user"></span> --}}
                         <span class="status-indicator bg-success"></span>

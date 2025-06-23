@@ -19,7 +19,7 @@ class BorrowItemController extends Controller
     public function index()
     {
         $auth = Auth::user();
-        if ($auth->role == 'superadmin') {
+        if ($auth->role == 'admin') {
             $rooms = Room::all();
         } else {
             $rooms = Room::whereHas('userrooms', function ($query) use ($auth) {
@@ -137,7 +137,7 @@ class BorrowItemController extends Controller
                 $dateNow = Carbon::now();
                 $endDate = Carbon::parse($borrow->end_date);
                 $text = $status == 'in_progress' ? 'ambil barang' : $status;
-                if ($dateNow > $endDate) {
+                if ($dateNow->format('Y-m-d') > $endDate->format('Y-m-d')) {
                     return response()->json([
                         'success' => false,
                         'message' => "Tidak dapat melakukan {$text}, tanggal kembali sudah lewat tanggal hari ini."

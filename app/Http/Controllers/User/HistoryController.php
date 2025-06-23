@@ -17,8 +17,9 @@ class HistoryController extends Controller
     {
         $status = $request->input('status', 'ALL');
         $periode = $request->input('periode', Carbon::now()->day(-7)->toDateString() . ' - ' . Carbon::now()->toDateString());
-        [$startDateRaw, $endDateRaw] = explode('-', $periode);
+        [$startDateRaw, $endDateRaw] = explode(' - ', $periode);
 
+        // dd($periode);
         $auth = Auth::user();
         $rooms = Room::all();
         $query = Borrow::with([
@@ -47,8 +48,7 @@ class HistoryController extends Controller
             ->orderBy('created_at', 'asc')
             ->paginate(25);
 
-        $roomName = 'Ruangan 1';
-        return view('pages.user.history', compact(['roomName', 'rooms', 'borrowings', 'startDateRaw', 'endDateRaw']));
+        return view('pages.user.history', compact(['rooms', 'borrowings', 'startDateRaw', 'endDateRaw']));
     }
 
     public function cancelForm(Request $request, $id)

@@ -14,7 +14,7 @@ class AuthController extends Controller
     public function login()
     {
         if (Auth::check()) {
-            return Auth::user()->role == 'admin' ? redirect()->route('admin.dashboard') : redirect('/'); // Ubah ke route tujuan
+            return in_array(Auth::user()->role, ['admin', 'pic']) ? redirect()->route('admin.dashboard') : redirect('/'); // Ubah ke route tujuan
         }
         return view('pages.auth.login');
     }
@@ -31,7 +31,7 @@ class AuthController extends Controller
         $loginType = filter_var($validate['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         if (Auth::attempt([$loginType => ($loginType == 'username' ? Str::upper($validate['login']) : $validate['login']), 'password' => $validate['password']])) {
-            return in_array(Auth::user()->role, ['superadmin', 'admin'])
+            return in_array(Auth::user()->role, ['admin', 'pic'])
                 ? redirect()->route('admin.dashboard')
                 : redirect('/');
         }

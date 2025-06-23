@@ -15,7 +15,7 @@
                     <div class="card-body">
                         @csrf
                         @method('POST')
-                        @include(view: 'components.form-user-account')
+                        @include('components.form-user-account')
                     </div>
                     <div class="card-footer">
                         <div class="text-end">

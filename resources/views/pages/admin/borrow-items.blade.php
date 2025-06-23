@@ -571,7 +571,7 @@
                     },
                     cancel: {
                         text: 'Batal',
-                        color: 'grey',
+                        color: 'light text-body',
                         icon: 'prohibit',
                     },
                     pending: {

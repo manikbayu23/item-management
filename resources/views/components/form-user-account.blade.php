@@ -87,10 +87,10 @@
         <div class="col-12 col-md-4">
             <select name="role" id="role" class="form-control select" data-placeholder="Pilih Role...">
                 <option></option>
-                <option value="superadmin" @if ('superadmin' == old('role', isset($user->role) ? $user->role : '')) selected @endif>
-                    Superadmin
+                <option value="admin" @if ('admin' == old('role', isset($user->role) ? $user->role : '')) selected @endif>
+                    Admin
                 </option>
-                <option value="admin" @if ('admin' == old('role', isset($user->role) ? $user->role : '')) selected @endif>Admin
+                <option value="pic" @if ('pic' == old('role', isset($user->role) ? $user->role : '')) selected @endif>PIC
                 </option>
                 <option value="user" @if ('user' == old('role', isset($user->role) ? $user->role : '')) selected @endif>User
                 </option>

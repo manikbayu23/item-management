@@ -41,12 +41,16 @@
 
             return $data;
         }
+
+        $startDateRaw = Carbon\Carbon::parse($startDateRaw)->format('m/d/Y');
+        $endDateRaw = Carbon\Carbon::parse($endDateRaw)->format('m/d/Y');
+
     @endphp
     <div class="card rounded-0">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
-                <h1 class="h5 mb-0"><i class="ph-list-dashes"></i> Riwayat Periode :
-                    {{ $startDateRaw == $endDateRaw ? $startDateRaw : $startDateRaw . '-' . $endDateRaw }}</h1>
+                <h1 class="h6 mb-0"><i class="ph-list-dashes"></i> Riwayat Periode :
+                    {{ $startDateRaw == $endDateRaw ? $startDateRaw : $startDateRaw . ' - ' . $endDateRaw }}</h1>
                 <a href="#filter" class="collapsed btn btn-secondary" data-bs-toggle="collapse">
                     <i class="ph-faders-horizontal"></i>
                 </a>
@@ -78,7 +82,7 @@
                             <input type="text" class="form-control daterange-basic-filter" name="periode">
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 mb-3 d-flex align-items-end">
+                    <div class="col-12 col-md-2 mb-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100"><i class="ph-magnifying-glass"></i></button>
                     </div>
                 </div>
@@ -225,8 +229,8 @@
             @endif
 
             $('.daterange-basic-filter').daterangepicker({
-                startDate: "{{ $startDateRaw }}",
-                endDate: "{{ $endDateRaw }}",
+                startDate: '{{ $startDateRaw }}',
+                endDate: '{{ $endDateRaw }}',
                 parentEl: '.content-inner'
             });
 

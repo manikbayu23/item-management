@@ -1,6 +1,18 @@
 @extends('layouts.user-main')
 @section('title', 'Form Peminjaman Barang')
 @section('content_user')
+    @php
+        $totalQty = 0;
+
+        // dd($row->conditions);
+        foreach ($roomItem->conditions as $key => $condition) {
+            $totalQty = $totalQty + $condition->qty;
+        }
+
+        foreach ($roomItem->borrowings as $key => $borrow) {
+            $totalQty = $totalQty - $borrow->qty;
+        }
+    @endphp
     <div class="d-flex justify-content-center">
         <div class="card col-12 col-md-10 col-lg-6 rounded-0">
             <form action="{{ route('user.item.store', $roomItem->id) }}" method="POST">
@@ -24,13 +36,18 @@
                                 <label class="form-label">Jumlah <span class="text-danger">*</span> :</label>
                                 <div class="input-group">
                                     <input type="number" name="qty" class="form-control" value="{{ old('qty') }}"
-                                        placeholder="Contoh : 1" min="0">
+                                        placeholder="Contoh : 1" min="0" max="{{ $totalQty }}"
+                                        oninput="validateQty(this)">
                                     <span class="input-group-text">{{ $roomItem->item->unit }}</span>
                                 </div>
                                 @if ($errors->has('qty'))
                                     <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
                                         {{ $errors->first('qty') }}</div>
                                 @endif
+                                <div class="form-text text-warning text-end">Jumlah tersedia : <b>
+                                        {{ $totalQty }}
+                                    </b>{{ $roomItem->item->unit }}</div>
+
                             </div>
                             <div class="col-6 col-md-6 mb-3">
                                 <label class="form-label">Tanggal Pinjam <span class="text-danger">*</span> :</label>
@@ -104,6 +121,24 @@
                 });
             @endif
 
+
         });
+
+        function validateQty(input) {
+            const min = parseInt(input.min);
+            const max = parseInt(input.max);
+            let value = parseInt(input.value);
+
+            if (isNaN(value)) {
+                input.value = '';
+                return;
+            }
+
+            if (value < min) {
+                input.value = min;
+            } else if (value > max) {
+                input.value = max;
+            }
+        }
     </script>
 @endpush

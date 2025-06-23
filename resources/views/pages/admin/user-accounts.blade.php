@@ -35,8 +35,8 @@
                                 @endphp
                                 <span
                                     class="badge 
-                                    @if ($role == 'superadmin') bg-teal 
-                                    @elseif ($role == 'admin')
+                                    @if ($role == 'admin') bg-teal 
+                                    @elseif ($role == 'pic')
                                     bg-warning
                                     @else
                                     bg-secondary @endif">{{ $role }}
