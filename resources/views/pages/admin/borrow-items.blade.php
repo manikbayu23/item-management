@@ -16,7 +16,7 @@
                 <div class="col-12 col-md-3 mb-3">
                     <label class="form-label">Ruangan :</label>
                     <select id="filterRoom" class="form-control select" data-placeholder="Pilih Ruangan...">
-                        @if (Auth::user()->role == 'superadmin')
+                        @if (Auth::user()->role == 'admin')
                             <option value="ALL" selected>SEMUA RUANGAN</option>
                         @endif
                         @foreach ($rooms as $room)
@@ -273,16 +273,6 @@
                             return `<span>${dateDisplay}</span>`;
                         }
                     },
-                    // {
-                    //     title: 'Kode Barang',
-                    //     data: 'room_item.item.code',
-                    //     className: 'text-center',
-                    //     orderable: true,
-                    //     searchable: true,
-                    //     render: function(data) {
-                    //         return `<span class="badge bg-dark bg-opacity-20 text-reset">${data}</span>`;
-                    //     }
-                    // }, 
                     {
                         title: 'Nama Barang',
                         data: 'room_item.item.name',
@@ -345,40 +335,16 @@
                                         Detail
                                     </button>`;
 
-                            // if (row.status == 'pending') {
-                            //     html += `<button type="button" class="borrow-option dropdown-item" data-option="reject" data-id="${data}" 
-                        //                 data-no="${data}" >
-                        //                 <i class="ph-x-circle me-2"></i>
-                        //                 Tolak
-                        //             </button>
-                        //             <button type="button" class="borrow-option dropdown-item" data-option="approved" data-id="${data}" 
-                        //                 data-no="${data}">
-                        //                 <i class="ph-check-circle me-2"></i>
-                        //                 Approved
-                        //             </button>`;
-                            // }
-
-                            // if (row.status == 'approved') {
-                            //     html += `<button type="button" class="borrow-option dropdown-item" data-option="unapproved" data-id="${data}" 
-                        //                 data-no="${data}" >
-                        //                 <i class="ph-arrow-u-left-up me-2"></i>
-                        //                 UnApproved
-                        //             </button>
-                        //             <button type="button" class="borrow-option dropdown-item" data-option="in_progress" data-id="${data}" 
-                        //                 data-no="${data}" >
-                        //                 <i class="ph-package me-2"></i>
-                        //                 Ambil Barang
-                        //             </button>`;
-                            // }
-
-                            // if (row.status == 'in_progress') {
-                            //     html += `<button type="button" class="borrow-option dropdown-item" data-option="completed" data-id="${data}" 
-                        //                 data-no="${data}">
-                        //                 <i class="ph-arrow-counter-clockwise me-2"></i>
-                        //                 Selesaikan
-                        //             </button>`;
-                            // }
-
+                            const dateNow = new Date();
+                            const endDate = new Date(row.end_date);
+                            if (row.status == 'in_progress') {
+                                if (endDate.setHours(0, 0, 0, 0) < dateNow.setHours(0, 0, 0, 0)) {
+                                    html += `<button type="button" class="borrow-option dropdown-item" data-option="reminder" data-id="${data}" data-no="${row.borrow_number}">
+                                        <i class="ph-bell-ringing me-2"></i>
+                                        Pengingat Pengembalian
+                                    </button>`;
+                                }
+                            }
                             html += `
                                         </div>
                                     </div>`;
@@ -421,13 +387,83 @@
                     const data = $(this).data('all');
                     borrowDetail(data);
                 } else {
-                    borrowOption(id);
+                    const no = $(this).data('no');
+                    borrowingReminder(id, no);
                 }
             });
 
-            const borrowOption = (id) => {
-                console.log(data);
+            const borrowingReminder = (id, no) => {
+                Swal.fire({
+                    title: 'Perhatian!',
+                    icon: 'info',
+                    text: `Kirim notifikasi pengingat pengembalian peminjaman barang nomor : ${no}`,
+                    showCancelButton: true,
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Batal',
+                    allowOutsideClick: false,
+                    customClass: {
+                        confirmButton: 'btn btn-primary',
+                        cancelButton: 'btn btn-light',
+                    },
+                    preConfirm: () => {
+                        Swal.showLoading();
+                        const url = '{{ route('admin.borrow-item.reminder', ':id') }}'
+                            .replace(
+                                ':id', id);
+                        return $.ajax({
+                            url: url, // ganti sesuai API kamu
+                            method: 'PUT',
+                            data: {
+                                no: no,
+                            },
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                    'content')
+                            },
+                            dataType: 'json'
+                        }).then(response => {
+                            // optional: validasi respon jika perlu
+                            if (!response.success) {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    icon: 'error',
+                                    text: response.message,
+                                    customClass: {
+                                        confirmButton: 'btn btn-primary',
+                                    },
+                                });
+                                return false;
+                            }
+
+                            return response; // dikirim ke then(result)
+
+                        }).catch(error => {
+                            const response = error.responseJSON;
+                            Swal.fire({
+                                title: 'Gagal',
+                                icon: 'error',
+                                text: response.message,
+                                customClass: {
+                                    confirmButton: 'btn btn-primary',
+                                },
+                            });
+                            return false;
+                        });
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            icon: 'success',
+                            text: result.value.message,
+                            customClass: {
+                                confirmButton: 'btn btn-primary',
+                            },
+                        })
+                    }
+                });
             }
+
 
             const borrowDetail = (data) => {
                 $('#borrowDetailModal .modal-title span').html(
@@ -662,6 +698,7 @@
                     showCancelButton: true,
                     confirmButtonText: 'OK',
                     cancelButtonText: 'Batal',
+                    allowOutsideClick: false,
                     customClass: {
                         confirmButton: 'btn btn-primary',
                         cancelButton: 'btn btn-light',

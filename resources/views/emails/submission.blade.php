@@ -13,11 +13,13 @@
 
         <!-- Header -->
         <div style="text-align: center; padding: 20px; border-bottom: 2px solid #f1f1f1;">
-            {{-- <img src="http://127.0.0.1:8000/assets/img/panca-mahottama.png" alt="Logo Perusahaan"
-                style="max-width: 100px; margin-bottom: 10px;"> --}}
+            <img src="https://drive.google.com/uc?export=view&id=1BDCcJO0kMfIR35TUBXl2BppY0BVFNnok" alt="Logo Perusahaan"
+                style="max-width: 100px; margin-bottom: 10px;">
+
             <h2 style="margin: 0; font-size: 22px; color: #000;">Permintaan Peminjaman Barang</h2>
         </div>
 
+        {{-- @dd('sdfsdf') --}}
         <!-- Content -->
         <div style="padding: 25px 30px;">
             <p style="margin-bottom: 20px; font-size: 15px; color: #000;">Halo, berikut adalah detail permintaan

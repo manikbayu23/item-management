@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\Item;
 use App\Models\Room;
 use App\Models\Borrow;
@@ -11,9 +12,11 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ItemCondition;
 use Illuminate\Support\Facades\DB;
+use App\Exports\RoomInventoryExcel;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RoomInventroyController extends Controller
 {
@@ -35,7 +38,6 @@ class RoomInventroyController extends Controller
     public function data(Request $request)
     {
         try {
-            $columns = ['id', 'room.name', 'item.code', 'item.name'];
 
             $query = RoomItem::query();
 
@@ -78,12 +80,6 @@ class RoomInventroyController extends Controller
             }
 
             $totalFiltered = $query->count();
-
-            // Ordering
-            // $orderCol = $columns[$request->input('order.0.column')];
-            // $orderDir = $request->input('order.0.dir');
-
-            // $query->orderBy($orderCol, $orderDir);
 
             // Pagination
             $start = $request->input('start');
@@ -182,6 +178,7 @@ class RoomInventroyController extends Controller
             ], 500);
         }
     }
+
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -252,5 +249,50 @@ class RoomInventroyController extends Controller
                 'message' => 'Gagal memperbarui barang ' . $th->getMessage()
             ], 500);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $query = Room::query();
+
+        $query->with([
+            'roomitems:id,room_id,item_id', // Sintaks singkat untuk select id dan name
+            'roomitems.item:id,name,category_id,code,unit,brand,notes', // Sertakan category_id untuk relasi
+            'roomitems.item.category:id,name',   // Ambil nama kategori
+            'roomitems.conditions:id,room_item_id,condition,qty',// Sertakan room_item_id
+            'roomitems.borrowings' => function ($q) {
+                $q->whereIn('status', ['approved', 'in_progress'])
+                    ->select('id', 'room_item_id', 'qty');
+            }
+        ]);
+
+        if ($search = $request->input('search.value')) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('roomitems.item', function ($r) use ($search) {
+                    $r->where('name', 'like', "%" . Str::upper($search) . "%")
+                        ->orWhere('code', 'like', "%{$search}%")
+                        ->orWhere(DB::raw('UPPER(unit)'), 'like', "%" . Str::upper($search) . "%");
+                })
+                    ->orWhereHas('roomitems.item.category', function ($r) use ($search) {
+                        $r->where('name', 'like', "%" . Str::upper($search) . "%");
+                    });
+            });
+        }
+
+        if ($request->input('room') !== 'ALL') {
+            $room = $request->input('room');
+            $query->where('id', $room);
+        }
+
+        if ($request->input('item') !== 'ALL') {
+            $item = $request->input('item');
+            $query->whereHas('roomitems.item', function ($q) use ($item) {
+                $q->where('id', $item);
+            });
+        }
+        $data = $query->get();
+
+        $fileName = "Laporan-inventaris-ruangan[" . Carbon::now()->format('Y-m-d') . "]";
+        return Excel::download(new RoomInventoryExcel($data), "{$fileName}.xlsx");
     }
 }

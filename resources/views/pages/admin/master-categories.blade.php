@@ -6,7 +6,9 @@
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end">
-                <button type="button" id="addCategory" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
+                @if (Auth::user()->role == 'admin')
+                    <button type="button" id="addCategory" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
+                @endif
             </div>
 
             <table class="table table-striped datatable-pagination">
@@ -15,7 +17,9 @@
                         <th class="text-center" style="width: 10%">No.</th>
                         <th style="width: 30%">Nama</th>
                         <th style="width: 40%">Deskripsi</th>
-                        <th class="text-center">Aksi</th>
+                        @if (Auth::user()->role == 'admin')
+                            <th class="text-center">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -24,19 +28,21 @@
                             <td class="text-center">{{ $index + 1 }}</td>
                             <td>{{ $category->name }}</td>
                             <td>{{ $category->description }}</td>
-                            <td class="text-center">
-                                <button type="button" data-id="{{ $category->id }}" data-name="{{ $category->name }}"
-                                    data-description="{{ $category->description }}"
-                                    class="edit-category btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
-                                </button>
-                                <button type="button" data-id="{{ $category->id }}" data-name="{{ $category->name }}"
-                                    class="delete-category btn btn-flat-danger btn-icon"><i class="ph-trash"></i>
-                                </button>
-                                <form class="delete-form" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                            </td>
+                            @if (Auth::user()->role == 'admin')
+                                <td class="text-center">
+                                    <button type="button" data-id="{{ $category->id }}" data-name="{{ $category->name }}"
+                                        data-description="{{ $category->description }}"
+                                        class="edit-category btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
+                                    </button>
+                                    <button type="button" data-id="{{ $category->id }}" data-name="{{ $category->name }}"
+                                        class="delete-category btn btn-flat-danger btn-icon"><i class="ph-trash"></i>
+                                    </button>
+                                    <form class="delete-form" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

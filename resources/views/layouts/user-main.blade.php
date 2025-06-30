@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
+    <link rel="icon" href="{{ asset('assets/img/panca-mahottama.png') }}" type="image/png">
 
     <!-- Global stylesheets -->
     <link href="{{ asset('assets/fonts/inter/inter.css') }}" rel="stylesheet" type="text/css">
@@ -55,7 +56,6 @@
         </div>
     </div>
 
-
     <!-- Core JS files -->
     <script src="{{ asset('assets/js/bootstrap/bootstrap.bundle.min.js') }}"></script>
     <!-- /core JS files -->
@@ -64,7 +64,6 @@
     <script src="{{ asset('assets/js/jquery/jquery.min.js') }}"></script>
 
     <script src="{{ asset('assets/js/vendor/notifications/noty.min.js') }}"></script>
-
     <script src="{{ asset('assets/demo/pages/extra_noty.js') }}"></script>
     <!-- /theme JS files -->
 

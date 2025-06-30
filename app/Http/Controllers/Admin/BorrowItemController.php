@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\Item;
 use App\Models\Room;
+use App\Models\User;
+use App\Models\Borrow;
 use App\Models\RoomItem;
 use Illuminate\Support\Str;
+use App\Models\BorrowingLog;
 use Illuminate\Http\Request;
+use App\Mail\ResponseSubmission;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Borrow;
-use App\Models\BorrowingLog;
-use Carbon\Carbon;
+use App\Mail\ReminderSubmission;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class BorrowItemController extends Controller
 {
@@ -190,10 +194,22 @@ class BorrowItemController extends Controller
                 'notes' => $notes,
             ]);
 
+            try {
+                $user = User::find($borrow->user_id);
+                if ($user) {
+                    Mail::to($user->user)
+                        ->bcc(Auth::user()->email)
+                        ->send(new ResponseSubmission($borrow));
+                }
+            } catch (\Throwable $th) {
+                // throw $th;
+            }
+
+
             DB::commit();
 
             if ($status == 'cancel') {
-                $text = 'batalkan';
+                $text = 'membatalkan';
             } elseif ($status == 'in_progress') {
                 $text = 'konfirmasi ambil barang,';
             } elseif ($status == 'rejected') {
@@ -201,6 +217,7 @@ class BorrowItemController extends Controller
             } else {
                 $text = $status;
             }
+
             return response()->json([
                 'success' => true,
                 'message' => "Berhasil {$text} pengajuan peminjaman barang nomor : {$borrow->borrow_number}"
@@ -208,6 +225,50 @@ class BorrowItemController extends Controller
 
         } catch (\Throwable $th) {
             DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function reminder(Request $request, $id)
+    {
+        try {
+
+            try {
+                $borrow = Borrow::find($id);
+                $user = User::find($borrow->user_id);
+
+                $lastDate = $borrow->last_reminder ? Carbon::parse($borrow->last_reminder) : null;
+                if ($lastDate && $lastDate->diffInHours(now()) < 6) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Pengingat hanya boleh dikirim setiap 6 jam. Pengingat terakhir dikirim pada: " . $lastDate->format('d-m-Y H:i')
+                    ], 422);
+                }
+                if ($user) {
+                    Mail::to($user->user)
+                        ->bcc(Auth::user()->email)
+                        ->send(new ReminderSubmission($borrow, $user));
+                }
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+
+            $borrow->last_reminder = Carbon::now();
+            $borrow->reminder_to = $borrow->reminder_to ? ($borrow->reminder_to + 1) : 1;
+            $borrow->updated_at = Carbon::now();
+            $borrow->updated_by = Str::upper(Auth::user()->username);
+            $borrow->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Berhasil mengirim notifikasi pengembalian peminjaman barang nomor : {$borrow->borrow_number}"
+            ], 200);
+
+
+        } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage()

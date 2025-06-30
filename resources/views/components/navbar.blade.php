@@ -28,10 +28,10 @@
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a href="" class="dropdown-item">
+                    {{-- <a href="" class="dropdown-item">
                         <i class="ph-user-circle me-2"></i>
                         My profile
-                    </a>
+                    </a> --}}
                     <div class="dropdown-divider"></div>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf

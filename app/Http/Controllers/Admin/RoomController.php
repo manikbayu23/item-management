@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use App\Models\Room;
 use App\Models\Division;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Endroid\QrCode\Color\Color;
 use Illuminate\Validation\Rule;
+use Endroid\QrCode\Builder\Builder;
 use App\Http\Controllers\Controller;
+use Endroid\QrCode\Writer\PngWriter;
+
 
 class RoomController extends Controller
 {
@@ -83,7 +87,17 @@ class RoomController extends Controller
 
     public function print(Request $request)
     {
-        $pdf = PDF::loadView('export.pdf.room-qr', ['data' => $request->params])
+        $result = Builder::create()
+            ->writer(new PngWriter())
+            ->data(route('user.item') . '&slug=' . $request->params['slug'])
+            ->size(500)
+            ->margin(10)
+            ->logoPath(public_path('assets/img/panca-mahottama2.png')) // ← Ganti sesuai lokasi logo
+            ->logoResizeToWidth(100)
+            ->build();
+
+        $qrCode = base64_encode($result->getString());
+        $pdf = PDF::loadView('export.pdf.room-qr', ['qrCode' => $qrCode, 'name' => $request->params['name']])
             ->setPaper('A4', 'potrait');
 
         return $pdf->stream('export.pdf.barcode-assets'); // langsung tampilkan di browser

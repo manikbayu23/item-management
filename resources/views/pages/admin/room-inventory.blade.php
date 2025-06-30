@@ -5,18 +5,21 @@
 @section('content_admin')
     <div class="content">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 class="mb-0">Inventaris Barang per Ruangan</h5>
                 <div>
                     <button type="button" id="addRoomItem" class="btn btn-primary"><i class="ph-plus-circle me-1"></i>
                         Barang</button>
+                    <button type="button" class="btn btn-success" id="btnExport" style="display: none;"><span
+                            class="ph-microsoft-excel-logo me-1"></span>
+                        Excel</button>
                 </div>
             </div>
             <div class="row mx-2 my-2">
                 <div class="col-12 col-md-3 mb-3">
                     <label class="form-label">Ruangan :</label>
                     <select id="filterRoom" class="form-control select" data-placeholder="Pilih Ruangan...">
-                        @if (Auth::user()->role == 'superadmin')
+                        @if (Auth::user()->role == 'admin')
                             <option value="ALL" selected>SEMUA RUANGAN</option>
                         @endif
                         @foreach ($rooms as $room)
@@ -335,6 +338,15 @@
                 }
             });
 
+            table.on('xhr', function() {
+                const json = table.ajax.json(); // data JSON dari server
+                if (json.data && json.data.length > 0) {
+                    $('#btnExport').show();
+                } else {
+                    $('#btnExport').hide();
+                }
+            });
+
             $('#filterButton').on('click', function() {
                 table.ajax.reload(null, false);
             });
@@ -374,6 +386,13 @@
                 $('#qtyTotal').val((totalBaik + totalHilang + totalHilang));
                 $('#roomItemModal').modal('show');
             });
+
+            $('#btnExport').click(function() {
+                const room = $('#filterRoom').val();
+                const item = $('#filterItem').val();
+                window.location.href =
+                    `{{ route('admin.room-inventory.export') }}?room=${room}&item=${item}`;
+            })
 
             $('#formRoomItem').on('submit', function(e) {
                 e.preventDefault();

@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ResponseSubmission extends Mailable
+class ReminderSubmission extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -18,9 +18,11 @@ class ResponseSubmission extends Mailable
      * Create a new message instance.
      */
     protected $data;
-    public function __construct($data)
+    protected $user;
+    public function __construct($data, $user)
     {
         $this->data = $data;
+        $this->user = $user;
     }
 
     /**
@@ -31,10 +33,10 @@ class ResponseSubmission extends Mailable
         return $this->subject('Permohonan Peminjaman Barang')
             ->from(Auth::user()->email, Auth::user()->username)
             ->view(
-                'emails.reminder-submission',
+                'emails.return-reminder',
                 [
                     'data' => $this->data,
-                    'user' => Auth::user(),
+                    'user' => $this->user,
                 ]
             );
     }

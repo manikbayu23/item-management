@@ -6,7 +6,9 @@
     <div class="content">
         <div class="card">
             <div class="card-header d-flex justify-content-end">
-                <button type="button" id="addCategory" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
+                @if (Auth::user()->role == 'admin')
+                    <button type="button" id="addCategory" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
+                @endif
             </div>
 
             <table class="table table-striped datatable-pagination">
@@ -17,7 +19,9 @@
                         <th style="width: 30%">Deskripsi</th>
                         <th class="text-center">Divisi</th>
                         <th class="text-center">Print QR</th>
-                        <th class="text-center">Aksi</th>
+                        @if (Auth::user()->role == 'admin')
+                            <th class="text-center">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -27,24 +31,26 @@
                             <td>{{ $room->name }}</td>
                             <td>{{ $room->description }}</td>
                             <td class="text-center">{{ $room->division->name }}</td>
-                            <td class="text-center">
-                                <button type="button" data-name="{{ $room->name }}" data-slug="{{ $room->slug }}"
-                                    class="print-room btn btn-flat-success btn-icon"><i class="ph-qr-code"></i>
-                                </button>
-                            </td>
-                            <td class="text-center">
-                                <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
-                                    data-division="{{ $room->division_id }}" data-description="{{ $room->description }}"
-                                    class="edit-room btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
-                                </button>
-                                <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
-                                    class="delete-room btn btn-flat-danger btn-icon"><i class="ph-trash"></i>
-                                </button>
-                                <form class="delete-form" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                            </td>
+                            @if (Auth::user()->role == 'admin')
+                                <td class="text-center">
+                                    <button type="button" data-name="{{ $room->name }}" data-slug="{{ $room->slug }}"
+                                        class="print-room btn btn-flat-success btn-icon"><i class="ph-qr-code"></i>
+                                    </button>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
+                                        data-division="{{ $room->division_id }}" data-description="{{ $room->description }}"
+                                        class="edit-room btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
+                                    </button>
+                                    <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
+                                        class="delete-room btn btn-flat-danger btn-icon"><i class="ph-trash"></i>
+                                    </button>
+                                    <form class="delete-form" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

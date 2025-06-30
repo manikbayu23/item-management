@@ -19,4 +19,9 @@ class Room extends Model
     {
         return $this->hasMany(UserRoom::class, 'room_id');
     }
+
+    public function roomitems()
+    {
+        return $this->hasMany(RoomItem::class, 'room_id');
+    }
 }

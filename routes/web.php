@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'do_login'])->name('do-login');
 
-Route::middleware(['role:admin,user'])->group(function () {
+Route::middleware(['role:admin,pic,user'])->group(function () {
     Route::prefix('/')->name('user')->group(function () {
         Route::get('/', [UserDashboard::class, 'index'])->name('.dashboard');
         Route::prefix('/items')->name('.item')->group(function () {
@@ -40,9 +40,15 @@ Route::middleware(['role:admin,user'])->group(function () {
     });
 });
 
-Route::middleware(['role:superadmin,admin'])->group(function () {
+Route::middleware(['role:pic,admin'])->group(function () {
     Route::prefix('/admin')->name('admin')->group(function () {
-        Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('.dashboard');
+        Route::prefix('/dashboard')->name('.dashboard')->group(function () {
+            Route::get('/', [AdminDashboard::class, 'index']);
+            Route::get('/borrowings', [AdminDashboard::class, 'borrowings'])->name('.borrowings');
+            Route::get('/borrowings-today', [AdminDashboard::class, 'borrowingsToday'])->name('.borrowings-today');
+            Route::get('/users', [AdminDashboard::class, 'users'])->name('.users');
+            Route::get('/online-users', [AdminDashboard::class, 'onlineUsers'])->name('.online-users');
+        });
 
         Route::prefix('/masters')->name('.master')->group(function () {
             Route::prefix('/divisions')->name('.division')->group(function () {
@@ -98,11 +104,13 @@ Route::middleware(['role:superadmin,admin'])->group(function () {
             Route::get('/data', action: [AdminRoomInventory::class, 'data'])->name('.data');
             Route::post('/', [AdminRoomInventory::class, 'store'])->name('.store');
             Route::put('/{id}', [AdminRoomInventory::class, 'update'])->name('.update');
+            Route::get('/export', [AdminRoomInventory::class, 'export'])->name('.export');
         });
         Route::prefix('/borrow-items')->name('.borrow-item')->group(function () {
             Route::get('/', [AdminBorrowItem::class, 'index']);
             Route::get('/data', action: [AdminBorrowItem::class, 'data'])->name('.data');
             Route::put('/{id}', [AdminBorrowItem::class, 'update'])->name('.update');
+            Route::put('/{id}/reminder', [AdminBorrowItem::class, 'reminder'])->name('.reminder');
         });
         Route::get('/picture/{folder}/{filename}', function ($folder, $filename) {
             $path = storage_path("app/private/$folder/$filename");
