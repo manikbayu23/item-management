@@ -89,7 +89,7 @@ class RoomController extends Controller
     {
         $result = Builder::create()
             ->writer(new PngWriter())
-            ->data(route('user.item') . '&slug=' . $request->params['slug'])
+            ->data(route('user.item') . '?slug=' . $request->params['slug'])
             ->size(500)
             ->margin(10)
             ->logoPath(public_path('assets/img/panca-mahottama2.png')) // ← Ganti sesuai lokasi logo

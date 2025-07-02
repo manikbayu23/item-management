@@ -24,13 +24,13 @@ class AuthController extends Controller
             'login' => 'required',
             'password' => 'required',
         ], [
-            'login.required' => 'Email/Username wajib diisi.',
+            'login.required' => 'Username/Email wajib diisi.',
             'password.required' => 'Password wajib diisi.',
         ]);
 
         $loginType = filter_var($validate['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if (Auth::attempt([$loginType => ($loginType == 'username' ? Str::upper($validate['login']) : $validate['login']), 'password' => $validate['password']])) {
+        if (Auth::attempt([$loginType => ($loginType == 'username' ? strtoupper($validate['login']) : $validate['login']), 'password' => $validate['password']])) {
             return in_array(Auth::user()->role, ['admin', 'pic'])
                 ? redirect()->route('admin.dashboard')
                 : redirect('/');

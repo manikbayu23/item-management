@@ -54,11 +54,13 @@
                                                 <i class="ph-pencil-line me-2"></i>
                                                 Edit
                                             </a>
-                                            <button type="button" class="rooms-user dropdown-item"
-                                                data-id={{ $row->id }}>
-                                                <i class="ph-door me-2"></i>
-                                                Akses Ruangan
-                                            </button>
+                                            @if (Auth::user()->role == 'admin')
+                                                <button type="button" class="rooms-user dropdown-item"
+                                                    data-id={{ $row->id }}>
+                                                    <i class="ph-door me-2"></i>
+                                                    Akses Ruangan
+                                                </button>
+                                            @endif
                                             <button type="button" class="delete-user dropdown-item"
                                                 data-id={{ $row->id }} data-name={{ $row->name }}>
                                                 <i class="ph-trash me-2"></i>
