@@ -12,7 +12,8 @@ return new class extends Migration {
     {
         Schema::table('borrowings', function (Blueprint $table) {
             $table->bigInteger(column: 'sq_borrow_number')->after('admin_id');
-            $table->string(column: 'borrow_number', length: 20)->after('sq_borrow_number');
+            $table->integer(column: 'qty')->after('sq_borrow_number');
+            $table->string(column: 'borrow_number', length: 20)->after('qty');
             $table->string(column: 'admin_notes')->nullable()->after('notes');
             $table->dateTime('actual_collection_date')->nullable()->after('end_date');
             $table->integer('last_reminder')->nullable()->after('admin_notes');
@@ -28,6 +29,7 @@ return new class extends Migration {
         Schema::table('borrowings', function (Blueprint $table) {
             $table->dropColumn('sq_borrow_number');
             $table->dropColumn('borrow_number');
+            $table->dropColumn('qty');
             $table->dropColumn('admin_notes');
             $table->dropColumn('actual_collection_date');
             $table->dropColumn('last_reminder');

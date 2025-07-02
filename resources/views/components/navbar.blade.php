@@ -28,10 +28,10 @@
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-end">
-                    {{-- <a href="" class="dropdown-item">
+                    <a href="{{ route('user.dashboard') }}" class="dropdown-item">
                         <i class="ph-user-circle me-2"></i>
-                        My profile
-                    </a> --}}
+                        Halaman User
+                    </a>
                     <div class="dropdown-divider"></div>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf

@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('items', function (Blueprint $table) {
-            $table->string(column: 'brand')->after('room_id');
+            $table->string(column: 'brand')->after('status');
             $table->string('unit', 50)->after('brand');
             $table->text('notes')->after('unit');
         });

@@ -16,8 +16,6 @@ return new class extends Migration {
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('code', 10)->unique();
             $table->enum('status', ['active', 'notactive'])->default('active');
-            // $table->enum('condition', ['good', 'damaged', 'broken'])->default('good');
-            $table->foreignId('room_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
