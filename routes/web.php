@@ -38,6 +38,7 @@ Route::middleware(['role:admin,pic,user'])->group(function () {
             Route::put('/{id}/cancel-form', [UserHistory::class, 'cancelForm'])->name('.cancel-form');
         });
     });
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::middleware(['role:pic,admin'])->group(function () {
@@ -120,5 +121,4 @@ Route::middleware(['role:pic,admin'])->group(function () {
             return response()->file($path);
         });
     });
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

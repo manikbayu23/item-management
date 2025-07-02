@@ -22,7 +22,6 @@ class UserSeeder extends Seeder
                 'username' => 'admin',
                 'email' => 'johndoe@example.com',
                 'password' => Hash::make('12345678'), // Bcrypt hashing
-                'level' => 'staf',
                 'role' => 'admin',
                 'division_id' => 1
             ]);
