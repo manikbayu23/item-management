@@ -5,9 +5,12 @@
 @section('content_admin')
     <div class="content">
         <div class="card">
-            <div class="card-header d-flex justify-content-end gap-2">
-                <a href="{{ route('admin.item.create') }}" class="btn btn-primary"><i class="ph-plus-circle me-1"></i>
-                    Barang</a>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Daftar Barang</h5>
+                <div>
+                    <a href="{{ route('admin.item.create') }}" class="btn btn-primary"><i class="ph-plus-circle me-1"></i>
+                        Barang</a>
+                </div>
             </div>
 
             <table id="itemTable" class="table table-striped datatable-select-checkbox">

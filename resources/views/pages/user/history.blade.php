@@ -49,14 +49,15 @@
     <div class="card rounded-0">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
-                <h1 class="h6 mb-0"><i class="ph-list-dashes"></i> Riwayat Periode :
-                    {{ $startDateRaw == $endDateRaw ? $startDateRaw : $startDateRaw . ' - ' . $endDateRaw }}</h1>
+                <h1 class="h6 mb-0"><i class="ph-list-dashes"></i> Riwayat Peminjaman
+                    {{-- {{ $startDateRaw == $endDateRaw ? $startDateRaw : $startDateRaw . ' - ' . $endDateRaw }} --}}
+                </h1>
                 <a href="#filter" class="collapsed btn btn-secondary" data-bs-toggle="collapse">
                     <i class="ph-faders-horizontal"></i>
                 </a>
             </div>
         </div>
-        <div class="collapse" id="filter">
+        <div class="collapse show" id="filter">
             <form action="{{ route('user.history') }}">
                 <div class="row m-3">
                     <div class="col-12 col-md-3 mb-3">
@@ -188,7 +189,7 @@
                                             @csrf
                                             @method('PUT')
                                         </form>
-                                        <button type="button" class="btn btn-danger btn btn-sm rounded-pill btn-cancel"
+                                        <button type="button" class="btn btn-outline-danger btn btn-sm btn-cancel"
                                             data-id="{{ $borrow->id }}" data-no="{{ $borrow->borrow_number }}"><i
                                                 class="ph-prohibit me-1"></i>
                                             Batalkan</button>

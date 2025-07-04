@@ -23,7 +23,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-12 col-md-3 mb-3 d-flex align-items-end">
+                    <div class="col-12 col-md-2 mb-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100"><i class="ph-magnifying-glass me-1"></i>
                             Cari</button>
                     </div>

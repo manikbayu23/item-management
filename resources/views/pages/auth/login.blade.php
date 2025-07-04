@@ -4,18 +4,27 @@
 
 @section('content_auth')
 
-    <section class="content">
+    <section class="content"
+        style="position: relative; background-image: url({{ asset('assets/img/kantor.jpeg') }}); background-repeat: no-repeat; background-size: cover; background-color: #000;">
+        <div
+            style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.4); /* Ubah nilai alpha (0.5) untuk mengatur kegelapan */
+    ">
+        </div>
         <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-4">
                 <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12 col-md-7 text-center d-flex justify-content-center">
-                            <img src="{{ asset('assets/img/panca-mahottama.png') }}" width="100"
-                                class="img-fluid d-block d-md-none" alt="Sample image">
-                            <img src="{{ asset('assets/img/panca-mahottama.png') }}" width="90%"
-                                class="img-fluid d-none d-md-block" alt="Sample image">
-                        </div>
-                        <div class="col-12 col-md-5 d-flex align-items-center justify-content-center ">
+                    <div class="card-body">
+                        <div class="">
+                            <div class="text-center">
+                                <img src="{{ asset('assets/img/panca-mahottama.png') }}" width="130" class="img-fluid "
+                                    alt="Sample image">
+                            </div>
                             <form class="login-form w-100" method="POST" action="{{ route('do-login') }}">
                                 @csrf
                                 @if ($errors->has('failed'))
@@ -27,7 +36,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                     </div>
                                 @endif
-                                <h3>Login</h3>
+                                <h3 class="text-center">Login</h3>
 
                                 <div class="mb-3">
                                     <label class="form-label">Username / Email</label>

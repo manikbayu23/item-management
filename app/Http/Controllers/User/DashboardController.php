@@ -15,10 +15,10 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         $stats = Borrow::selectRaw("
-        SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as last30,
-        SUM(CASE WHEN DATE(created_at) = ? THEN 1 ELSE 0 END) as today,
-        SUM(CASE WHEN status = 'in_progress' THEN 1 ELSE 0 END) as in_progress,
-        SUM(CASE WHEN status = 'in_progress' AND end_date < ? THEN 1 ELSE 0 END) as late
+         COALESCE(SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END), 0) as last30,
+    COALESCE(SUM(CASE WHEN DATE(created_at) = ? THEN 1 ELSE 0 END), 0) as today,
+    COALESCE(SUM(CASE WHEN status = 'in_progress' THEN 1 ELSE 0 END), 0) as in_progress,
+    COALESCE(SUM(CASE WHEN status = 'in_progress' AND end_date < ? THEN 1 ELSE 0 END), 0) as late
     ", [now()->subDays(30), now()->toDateString(), now()])
             ->where('user_id', $user->id)
             ->first();

@@ -7,7 +7,10 @@
         <!-- Sidebar header -->
         <div class="sidebar-section">
             <div class="sidebar-section-body d-flex justify-content-center">
-                <h5 class="sidebar-resize-hide flex-grow-1 my-auto">ADMINISTRATOR</h5>
+                <h5 class="sidebar-resize-hide flex-grow-1 my-auto text-center">
+                    <img src="{{ asset(path: 'assets/img/panca-mahottama2.png') }}" class="img-fluid rounded-circle"
+                        width="100" alt="logo">
+                </h5>
 
                 <div>
                     <button type="button"
@@ -31,7 +34,7 @@
 
                 <!-- Main -->
                 <li class="nav-item-header pt-0">
-                    <div class="text-uppercase fs-sm lh-sm sidebar-resize-hide opacity-50">Main</div>
+                    <div class="text-uppercase fs-sm lh-sm sidebar-resize-hide opacity-50">ADMINISTRATOR</div>
                     <i class="ph-dots-three sidebar-resize-show"></i>
                 </li>
                 <li class="nav-item">
@@ -104,7 +107,8 @@
                                 class="nav-link {{ Route::is('admin.master.position*') ? 'active' : '' }}">Jabatan</a>
                         </li>
                         <li class="nav-item"><a href="{{ route('admin.master.category') }}"
-                                class="nav-link {{ Route::is('admin.master.category*') ? 'active' : '' }}">Kategori</a>
+                                class="nav-link {{ Route::is('admin.master.category*') ? 'active' : '' }}">Kategori
+                                Barang</a>
                         </li>
 
                     </ul>

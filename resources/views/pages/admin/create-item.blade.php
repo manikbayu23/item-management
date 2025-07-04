@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12 mb-3 row">
-                            <label class="form-label col-12 col-md-3">Kategori: <span class="text-danger">*</span>
+                            <label class="form-label col-12 col-md-3">Kategori Barang: <span class="text-danger">*</span>
                             </label>
                             <div class="col-12 col-md-6">
                                 <select name="category" id="category" class="form-control select"

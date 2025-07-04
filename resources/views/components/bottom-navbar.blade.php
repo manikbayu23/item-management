@@ -9,7 +9,7 @@
                     class="navbar-nav-link navbar-nav-link-icon rounded {{ Route::is('user.dashboard') ? $active : '' }}">
                     <div class="d-flex align-items-center mx-md-1">
                         <i class="ph-house"></i>
-                        <span class="d-none d-md-inline-block ms-2">Home</span>
+                        <span class="d-none d-md-inline-block ms-2">Dashboard</span>
                     </div>
                 </a>
             </li>

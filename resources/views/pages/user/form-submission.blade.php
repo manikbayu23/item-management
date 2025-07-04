@@ -15,7 +15,7 @@
     @endphp
     <div class="d-flex justify-content-center">
         <div class="card col-12 col-md-10 col-lg-6 rounded-0">
-            <form action="{{ route('user.item.store', $roomItem->id) }}" method="POST">
+            <form id="form-submission" action="{{ route('user.item.store', $roomItem->id) }}" method="POST">
                 @csrf
                 <div class="card-body">
                     <fieldset>
@@ -93,7 +93,13 @@
                 </div>
                 <div class="card-footer">
                     <div class="d-flex justify-content-end gap-2">
-                        <button class="btn btn-primary"><i class="ph-paper-plane-tilt"></i> Submit</button>
+                        <button class="btn btn-primary" id="btn-submit">
+                            <div class="spinner-border me-2" id="spiner" role="status" style="display: none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <i class="ph-paper-plane-tilt me-2" id="icon-submit"></i>
+                            Submit
+                        </button>
                     </div>
                 </div>
             </form>
@@ -120,9 +126,13 @@
                     },
                 });
             @endif
-
-
         });
+
+        $('#form-submission').submit(function() {
+            $('#btn-submit').prop('disabled', true);
+            $('#spiner').show();
+            $('#icon-submit').hide();
+        })
 
         function validateQty(input) {
             const min = parseInt(input.min);

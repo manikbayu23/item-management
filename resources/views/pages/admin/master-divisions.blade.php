@@ -1,14 +1,17 @@
 @extends('layouts.main')
 
-@section('title_admin', 'Master Divisi')
+@section('page_name2', 'Master Divisi')
 
 @section('content_admin')
     <div class="content">
         <div class="card">
-            <div class="card-header d-flex justify-content-end">
-                @if (Auth::user()->role == 'admin')
-                    <button type="button" id="addDivision" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
-                @endif
+            <div class="card-header d-flex justify-content-between">
+                <h5 class="mb-0">Daftar Divisi</h5>
+                <div>
+                    @if (Auth::user()->role == 'admin')
+                        <button type="button" id="addDivision" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
+                    @endif
+                </div>
             </div>
 
             <table class="table table-striped datatable-pagination">

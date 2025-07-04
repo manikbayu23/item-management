@@ -29,7 +29,7 @@
 
                 <div class="dropdown-menu dropdown-menu-end">
                     <a href="{{ route('user.dashboard') }}" class="dropdown-item">
-                        <i class="ph-user-circle me-2"></i>
+                        <i class="ph-arrow-square-out me-2"></i>
                         Halaman User
                     </a>
                     <div class="dropdown-divider"></div>

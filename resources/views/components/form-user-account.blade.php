@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-12 mb-3 row">
-        <label class="form-label col-12 col-md-2">Nama: <span class="text-danger">*</span></label>
-        <div class="col-12 col-md-6">
+        <label class="form-label col-12 col-md-3">Nama: <span class="text-danger">*</span></label>
+        <div class="col-12 col-md-9">
             <input type="text" name="name" id="name"
                 value="{{ old('name', isset($user->name) ? $user->name : '') }}" class="form-control"
                 placeholder="Masukan nama lengkap">
@@ -12,8 +12,8 @@
         </div>
     </div>
     <div class="col-12 mb-3 row">
-        <label class="form-label col-12 col-md-2">Username: <span class="text-danger">*</span></label>
-        <div class="col-12 col-md-5">
+        <label class="form-label col-12 col-md-3">Username: <span class="text-danger">*</span></label>
+        <div class="col-12 col-md-9">
             <input type="text" name="username"
                 value="{{ old('username', isset($user->username) ? $user->username : '') }}" class="form-control"
                 placeholder="Masukan username">
@@ -24,8 +24,8 @@
         </div>
     </div>
     <div class="col-12 mb-3 row">
-        <label class="form-label col-12 col-md-2">No Telepon: <span class="text-danger">*</span></label>
-        <div class="col-12 col-md-5">
+        <label class="form-label col-12 col-md-3">No Telepon: <span class="text-danger">*</span></label>
+        <div class="col-12 col-md-9">
             <input type="text" name="phone" id="phone"
                 value="{{ old('phone', isset($user->phone_number) ? $user->phone_number : '') }}" class="form-control"
                 placeholder="Masukan no handpone">
@@ -36,8 +36,8 @@
         </div>
     </div>
     <div class="col-12 mb-3 row">
-        <label class="form-label col-12 col-md-2">Email: <span class="text-danger">*</span></label>
-        <div class="col-12 col-md-5">
+        <label class="form-label col-12 col-md-3">Email: <span class="text-danger">*</span></label>
+        <div class="col-12 col-md-9">
             <input type="email" name="email" id="email"
                 value="{{ old('email', isset($user->email) ? $user->email : '') }}" class="form-control"
                 placeholder="Masukan alamat email">
@@ -48,8 +48,8 @@
         </div>
     </div>
     <div class="col-12 mb-3 row">
-        <label class="form-label col-12 col-md-2">Divisi: <span class="text-danger">*</span></label>
-        <div class="col-12 col-md-5">
+        <label class="form-label col-12 col-md-3">Divisi: <span class="text-danger">*</span></label>
+        <div class="col-12 col-md-9">
             <select name="division" id="division" class="form-control select" data-placeholder="Pilih Divisi...">
                 <option></option>
                 @foreach ($divisions as $division)
@@ -65,8 +65,8 @@
         </div>
     </div>
     <div class="col-12 mb-3 row">
-        <label class="form-label col-12 col-md-2">Jabatan: <span class="text-danger">*</span></label>
-        <div class="col-12 col-md-5">
+        <label class="form-label col-12 col-md-3">Jabatan: <span class="text-danger">*</span></label>
+        <div class="col-12 col-md-9">
             <select name="position" id="position" class="form-control select" data-placeholder="Pilih Jabatan...">
                 <option></option>
                 @foreach ($positions as $position)
@@ -83,8 +83,8 @@
     </div>
 
     <div class="col-12 mb-3 row">
-        <label class="form-label col-12 col-md-2">Role: <span class="text-danger">*</span></label>
-        <div class="col-12 col-md-4">
+        <label class="form-label col-12 col-md-3">Role: <span class="text-danger">*</span></label>
+        <div class="col-12 col-md-9">
             <select name="role" id="role" class="form-control select" data-placeholder="Pilih Role...">
                 <option></option>
                 <option value="admin" @if ('admin' == old('role', isset($user->role) ? $user->role : '')) selected @endif>
@@ -103,11 +103,11 @@
     </div>
 
     <div class="col-12 mb-3 row">
-        <label class="form-label col-12 col-md-2">Password: @if (!isset($user))
+        <label class="form-label col-12 col-md-3">Password: @if (!isset($user))
                 <span class="text-danger">*</span>
             @endif
         </label>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-9">
             <div class="input-group">
                 <input type="text" name="password" id="password" value="{{ old('password') }}"
                     class="form-control">

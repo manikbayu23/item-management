@@ -4,10 +4,14 @@
 @section('content_admin')
     <div class="content">
         <div class="card">
-            <div class="card-header d-flex justify-content-end">
-                <a href="{{ route('admin.user-account.create') }}" class="btn btn-primary"><i class="ph-plus-circle me-1"></i>
-                    Buat
-                    Akun</a>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Daftar Akun Pengguna</h5>
+                <div>
+                    <a href="{{ route('admin.user-account.create') }}" class="btn btn-primary"><i
+                            class="ph-plus-circle me-1"></i>
+                        Buat
+                        Akun</a>
+                </div>
             </div>
             <table class="table table-striped datatable-pagination">
                 <thead>
