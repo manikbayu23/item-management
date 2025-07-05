@@ -61,19 +61,20 @@
                     //     Swal.close();
                     // },
                 },
-                columns: [{
-                        title: '#',
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        width: '10px',
-                        render: function(data, type, row, meta) {
-                            return `<div class="form-check">
-                                        <input type="checkbox" class="form-check-input check-asset "
-                                            id="check-asset-${meta.row}" data-name="${row.name}" data-code="${row.asset_code}">
-                                    </div>`;
-                        }
-                    },
+                columns: [
+                    // {
+                    //     title: '#',
+                    //     data: null,
+                    //     orderable: false,
+                    //     searchable: false,
+                    //     width: '10px',
+                    //     render: function(data, type, row, meta) {
+                    //         return `<div class="form-check">
+                //                     <input type="checkbox" class="form-check-input check-asset "
+                //                         id="check-asset-${meta.row}" data-name="${row.name}" data-code="${row.asset_code}">
+                //                 </div>`;
+                    //     }
+                    // },
                     {
                         title: 'No',
                         data: null,

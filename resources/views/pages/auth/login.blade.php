@@ -4,9 +4,8 @@
 
 @section('content_auth')
 
-    <section class="content"
-        style="position: relative; background-image: url({{ asset('assets/img/kantor.jpeg') }}); background-repeat: no-repeat; background-size: cover; background-color: #000;">
-        <div
+    <section class="content">
+        {{-- <div
             style="
         position: absolute;
         top: 0;
@@ -15,7 +14,7 @@
         bottom: 0;
         background-color: rgba(0, 0, 0, 0.4); /* Ubah nilai alpha (0.5) untuk mengatur kegelapan */
     ">
-        </div>
+        </div> --}}
         <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
             <div class="col-12 col-md-4">
                 <div class="card">

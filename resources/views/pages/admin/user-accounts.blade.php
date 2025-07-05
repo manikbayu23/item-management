@@ -53,11 +53,13 @@
                                             <i class="ph-list"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
-                                            <a href="{{ route('admin.user-account.edit', $row->id) }}"
-                                                class="edit-scope dropdown-item">
-                                                <i class="ph-pencil-line me-2"></i>
-                                                Edit
-                                            </a>
+                                            @if (Auth::user()->role !== 'pic' && $role !== 'pic')
+                                                <a href="{{ route('admin.user-account.edit', $row->id) }}"
+                                                    class="edit-scope dropdown-item">
+                                                    <i class="ph-pencil-line me-2"></i>
+                                                    Edit
+                                                </a>
+                                            @endif
                                             @if (Auth::user()->role == 'admin')
                                                 <button type="button" class="rooms-user dropdown-item"
                                                     data-id={{ $row->id }}>

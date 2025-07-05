@@ -12,6 +12,8 @@
     <link href="{{ asset('assets/icons/phosphor/styles.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/ltr/all.min.css') }}" id="stylesheet" rel="stylesheet" type="text/css">
     <!-- /global stylesheets -->
+    <link rel="icon" href="{{ asset('assets/img/panca-mahottama.png') }}" type="image/png">
+
 
     <!-- Core JS files -->
     <script src="{{ asset('assets/demo/demo_configurator.js') }}"></script>
