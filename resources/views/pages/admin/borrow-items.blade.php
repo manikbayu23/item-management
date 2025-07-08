@@ -539,7 +539,7 @@
                                     </button>
                                     <button type="button" class="btn btn-info action-detail-button" data-id="${data.id}" data-no="${data.borrow_number}" data-start="${data.start_date}" data-end="${data.end_date}" data-action="in_progress">
                                         <i class="ph-package me-2"></i>
-                                        Ambil Barang
+                                        Barang Diambil
                                     </button>`;
                 } else if (status == 'in_progress') {
                     actionsButton = `<button type="button" class="btn btn-primary action-detail-button" data-id="${data.id}" data-no="${data.borrow_number}" data-start="${data.start_date}" data-end="${data.end_date}" data-action="completed">
