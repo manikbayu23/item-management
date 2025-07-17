@@ -10,6 +10,7 @@ use App\Models\UserRoom;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\BorrowingLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,7 +45,7 @@ class UserAccountController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|min:4|unique:users,username',
+            'username' => 'required|string|min:3|unique:users,username',
             'division' => 'required', // Sesuaikan dengan nama tabel divisions
             'position' => 'required', // Sesuaikan dengan nama tabel divisions
             'role' => 'required|in:admin,pic,user', // Asumsi value role 1 dan 2
@@ -105,7 +106,7 @@ class UserAccountController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|min:4|unique:users,username,' . $user->id,
+            'username' => 'required|string|min:3|unique:users,username,' . $user->id,
             'division' => 'required',
             'position' => 'required',
             'role' => 'required|in:admin,pic,user',
@@ -153,6 +154,12 @@ class UserAccountController extends Controller
 
     public function destroy(string $id)
     {
+        $borrowingLogs = BorrowingLog::where('admin_id', Auth::user()->id)
+            ->orWhere('user_id', Auth::user()->id)
+            ->first();
+        if ($borrowingLogs) {
+            return back()->with('error', 'Tidak bisa hapus akun karena sudah ada transaksi!');
+        }
         $user = User::findOrFail($id);
         $user->delete();
         return redirect()->back()->with('success', 'Akun berhasil dihapus');

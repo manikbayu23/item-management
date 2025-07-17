@@ -53,7 +53,15 @@
                                             <i class="ph-list"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
-                                            @if (Auth::user()->role !== 'pic' && $role !== 'pic')
+                                            @if (Auth::user()->role == 'pic')
+                                                @if ($role !== 'pic')
+                                                    <a href="{{ route('admin.user-account.edit', $row->id) }}"
+                                                        class="edit-scope dropdown-item">
+                                                        <i class="ph-pencil-line me-2"></i>
+                                                        Edit
+                                                    </a>
+                                                @endif
+                                            @elseif (Auth::user()->role == 'admin')
                                                 <a href="{{ route('admin.user-account.edit', $row->id) }}"
                                                     class="edit-scope dropdown-item">
                                                     <i class="ph-pencil-line me-2"></i>
@@ -137,6 +145,12 @@
                 new Noty({
                     text: "{{ session('success') }}",
                     type: 'success'
+                }).show();
+            @endif
+            @if (session('error'))
+                new Noty({
+                    text: "{{ session('error') }}",
+                    type: 'error'
                 }).show();
             @endif
 

@@ -34,12 +34,12 @@
                             <td>{{ $room->name }}</td>
                             <td>{{ $room->description }}</td>
                             <td class="text-center">{{ $room->division->name }}</td>
+                            <td class="text-center">
+                                <button type="button" data-name="{{ $room->name }}" data-slug="{{ $room->slug }}"
+                                    class="print-room btn btn-flat-success btn-icon"><i class="ph-qr-code"></i>
+                                </button>
+                            </td>
                             @if (Auth::user()->role == 'admin')
-                                <td class="text-center">
-                                    <button type="button" data-name="{{ $room->name }}" data-slug="{{ $room->slug }}"
-                                        class="print-room btn btn-flat-success btn-icon"><i class="ph-qr-code"></i>
-                                    </button>
-                                </td>
                                 <td class="text-center">
                                     <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
                                         data-division="{{ $room->division_id }}" data-description="{{ $room->description }}"
