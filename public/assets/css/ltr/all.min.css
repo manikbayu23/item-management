@@ -9,7 +9,7 @@
     --body-line-height-lg: 1.375;
     --body-line-height-sm: 1.8334;
     --body-line-height-xs: 2.2;
-    --component-active-bg: #1574C4;
+    --component-active-bg: #113B87;
     --component-active-bg-rgb: 12, 131, 255;
     --component-active-color: #fff;
     --focus-ring-box-shadow: 0 0 0 0.125rem rgba(12, 131, 255, 0.25);
@@ -41,7 +41,7 @@
     --pink: #f35c86;
     --teal: #26A69A;
     --yellow: #ffd648;
-    --primary: #1574C4;
+    --primary: #113B87;
     --secondary: #247297;
     --success: #059669;
     --info: #049aad;
@@ -56,7 +56,7 @@
     --pink-rgb: 243, 92, 134;
     --teal-rgb: 38, 166, 154;
     --yellow-rgb: 255, 214, 72;
-    --primary-rgb: 21, 116, 196;
+    --primary-rgb: 17, 59, 135;
     --secondary-rgb: 36, 114, 151;
     --success-rgb: 5, 150, 105;
     --info-rgb: 4, 154, 173;
@@ -87,8 +87,8 @@
     --border-radius-xl: 1rem;
     --border-radius-2xl: 2rem;
     --border-radius-pill: 50rem;
-    --link-color: #1574C4;
-    --link-hover-color: #0962bf;
+    --link-color: #113B87;
+    --link-hover-color: #284986;
     --code-color: #f35c86;
     --highlight-bg: rgba(0, 0, 0, 0.15)
 }
@@ -3765,8 +3765,8 @@ fieldset:disabled .btn {
 
 .btn-primary {
     --btn-color: #fff;
-    --btn-bg: #1574C4;
-    --btn-border-color: #1574C4;
+    --btn-bg: #113B87;
+    --btn-border-color: #113B87;
     --btn-hover-color: #fff;
     --btn-hover-bg: #0b76e6;
     --btn-hover-border-color: #0b76e6;
@@ -3776,8 +3776,8 @@ fieldset:disabled .btn {
     --btn-active-border-color: #0a6fd9;
     --btn-active-shadow: inset 0 0 0 0 transparent;
     --btn-disabled-color: #fff;
-    --btn-disabled-bg: #1574C4;
-    --btn-disabled-border-color: #1574C4
+    --btn-disabled-bg: #113B87;
+    --btn-disabled-border-color: #113B87
 }
 
 .btn-secondary {
@@ -4014,17 +4014,17 @@ fieldset:disabled .btn {
 }
 
 .btn-outline-primary {
-    --btn-color: #1574C4;
-    --btn-border-color: #1574C4;
+    --btn-color: #113B87;
+    --btn-border-color: #113B87;
     --btn-hover-color: #fff;
-    --btn-hover-bg: #1574C4;
-    --btn-hover-border-color: #1574C4;
+    --btn-hover-bg: #113B87;
+    --btn-hover-border-color: #113B87;
     --btn-focus-shadow-rgb: 12, 131, 255;
     --btn-active-color: #fff;
     --btn-active-bg: #0076f2;
-    --btn-active-border-color: #1574C4;
+    --btn-active-border-color: #113B87;
     --btn-active-shadow: inset 0 0 0 0 transparent;
-    --btn-disabled-color: #1574C4;
+    --btn-disabled-color: #113B87;
     --btn-disabled-bg: transparent;
     --gradient: none
 }
@@ -8876,12 +8876,12 @@ fieldset:disabled .btn {
 }
 
 .link-primary {
-    color: #1574C4 !important
+    color: #113B87 !important
 }
 
 .link-primary:focus,
 .link-primary:hover {
-    color: #0962bf !important
+    color: #284986 !important
 }
 
 .link-secondary {
@@ -24193,8 +24193,8 @@ html[data-color-theme=dark] .trumbowyg-modal-box form .trumbowyg-input-html inpu
 
 .trumbowyg-modal-button.trumbowyg-modal-submit {
     --btn-color: #fff;
-    --btn-bg: #1574C4;
-    --btn-border-color: #1574C4;
+    --btn-bg: #113B87;
+    --btn-border-color: #113B87;
     --btn-hover-color: #fff;
     --btn-hover-bg: #0b76e6;
     --btn-hover-border-color: #0b76e6;
@@ -24204,8 +24204,8 @@ html[data-color-theme=dark] .trumbowyg-modal-box form .trumbowyg-input-html inpu
     --btn-active-border-color: #0a6fd9;
     --btn-active-shadow: inset 0 0 0 0 transparent;
     --btn-disabled-color: #fff;
-    --btn-disabled-bg: #1574C4;
-    --btn-disabled-border-color: #1574C4
+    --btn-disabled-bg: #113B87;
+    --btn-disabled-border-color: #113B87
 }
 
 .trumbowyg-overlay {
@@ -25570,8 +25570,8 @@ html[data-color-theme=dark] .sp-container {
 
 .plupload_start {
     --btn-color: #fff;
-    --btn-bg: #1574C4;
-    --btn-border-color: #1574C4;
+    --btn-bg: #113B87;
+    --btn-border-color: #113B87;
     --btn-hover-color: #fff;
     --btn-hover-bg: #0b76e6;
     --btn-hover-border-color: #0b76e6;
@@ -25581,8 +25581,8 @@ html[data-color-theme=dark] .sp-container {
     --btn-active-border-color: #0a6fd9;
     --btn-active-shadow: inset 0 0 0 0 transparent;
     --btn-disabled-color: #fff;
-    --btn-disabled-bg: #1574C4;
-    --btn-disabled-border-color: #1574C4
+    --btn-disabled-bg: #113B87;
+    --btn-disabled-border-color: #113B87
 }
 
 a.plupload_disabled {

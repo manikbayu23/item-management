@@ -3647,8 +3647,8 @@ html[data-color-theme=dark] .trumbowyg-modal-box form .trumbowyg-input-html inpu
 
 .trumbowyg-modal-button.trumbowyg-modal-submit {
     --btn-color: #fff;
-    --btn-bg: #1574C4;
-    --btn-border-color: #1574C4;
+    --btn-bg: #113B87;
+    --btn-border-color: #113B87;
     --btn-hover-color: #fff;
     --btn-hover-bg: #0b76e6;
     --btn-hover-border-color: #0b76e6;
@@ -3658,8 +3658,8 @@ html[data-color-theme=dark] .trumbowyg-modal-box form .trumbowyg-input-html inpu
     --btn-active-border-color: #0a6fd9;
     --btn-active-shadow: inset 0 0 0 0 transparent;
     --btn-disabled-color: #fff;
-    --btn-disabled-bg: #1574C4;
-    --btn-disabled-border-color: #1574C4
+    --btn-disabled-bg: #113B87;
+    --btn-disabled-border-color: #113B87
 }
 
 .trumbowyg-overlay {
@@ -5024,8 +5024,8 @@ html[data-color-theme=dark] .sp-container {
 
 .plupload_start {
     --btn-color: #fff;
-    --btn-bg: #1574C4;
-    --btn-border-color: #1574C4;
+    --btn-bg: #113B87;
+    --btn-border-color: #113B87;
     --btn-hover-color: #fff;
     --btn-hover-bg: #0b76e6;
     --btn-hover-border-color: #0b76e6;
@@ -5035,8 +5035,8 @@ html[data-color-theme=dark] .sp-container {
     --btn-active-border-color: #0a6fd9;
     --btn-active-shadow: inset 0 0 0 0 transparent;
     --btn-disabled-color: #fff;
-    --btn-disabled-bg: #1574C4;
-    --btn-disabled-border-color: #1574C4
+    --btn-disabled-bg: #113B87;
+    --btn-disabled-border-color: #113B87
 }
 
 a.plupload_disabled {

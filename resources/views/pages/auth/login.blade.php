@@ -19,9 +19,9 @@
             <div class="col-12 col-md-4">
                 <div class="card">
                     <div class="card-body">
-                        <div class="">
+                        <div class="mb-2">
                             <div class="text-center">
-                                <img src="{{ asset('assets/img/panca-mahottama.png') }}" width="130" class="img-fluid "
+                                <img src="{{ asset('assets/img/panca-mahottama.png') }}" width="130" class="img-fluid mb-3"
                                     alt="Sample image">
                             </div>
                             <form class="login-form w-100" method="POST" action="{{ route('do-login') }}">
@@ -35,7 +35,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                     </div>
                                 @endif
-                                <h3 class="text-center">Login</h3>
+                                {{-- <h3 class="text-center">Login</h3> --}}
 
                                 <div class="mb-3">
                                     <label class="form-label">Username / Email</label>
@@ -50,14 +50,41 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">Password</label>
-                                    <div class="form-control-feedback form-control-feedback-start">
-                                        <input type="password" name="password" class="form-control"
+                                    <div class="form-control-feedback form-control-feedback-start position-relative">
+                                        <input type="password" name="password" class="form-control" id="passwordInput"
                                             placeholder="•••••••••••" required>
-                                        <div class="form-control-feedback-icon">
+
+                                        <!-- Icon lock di sisi kiri -->
+                                        <div class="form-control-feedback-icon start-0">
                                             <i class="ph-lock text-muted"></i>
                                         </div>
+
+                                        <!-- Tombol lihat password di sisi kanan -->
+                                        <button type="button"
+                                            class="btn btn-sm position-absolute end-0 top-50 translate-middle-y me-2 border-0 bg-transparent"
+                                            onclick="togglePasswordVisibility()">
+                                            <i class="ph-eye text-muted" id="toggleIcon"></i>
+                                        </button>
                                     </div>
                                 </div>
+
+                                <!-- Script toggle password -->
+                                <script>
+                                    function togglePasswordVisibility() {
+                                        const input = document.getElementById('passwordInput');
+                                        const icon = document.getElementById('toggleIcon');
+                                        if (input.type === 'password') {
+                                            input.type = 'text';
+                                            icon.classList.remove('ph-eye');
+                                            icon.classList.add('ph-eye-slash');
+                                        } else {
+                                            input.type = 'password';
+                                            icon.classList.remove('ph-eye-slash');
+                                            icon.classList.add('ph-eye');
+                                        }
+                                    }
+                                </script>
+
 
                                 <div class="text-center">
                                     {{-- <a href="{{ route('forgot_password') }}">Forgot password?</a> --}}
@@ -68,7 +95,13 @@
 
                             </form>
                         </div>
+                        <div class="text-center text-body bg-white">
+                            <a href="/" class="text-body" style="color: rgb(152, 152, 152) !important">&copy;
+                                {{ Carbon\Carbon::now()->year }} -
+                                Perumda Air Minum Panca Mahottama Kab. Klungkung</a>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
