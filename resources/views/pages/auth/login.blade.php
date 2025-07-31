@@ -26,17 +26,12 @@
                             </div>
                             <form class="login-form w-100" method="POST" action="{{ route('do-login') }}">
                                 @csrf
-                                @if ($errors->has('failed'))
-                                    <div class="alert alert-warning alert-icon-start alert-dismissible fade show">
-                                        <span class="alert-icon bg-warning text-white">
-                                            <i class="ph-warning-circle"></i>
-                                        </span>
-                                        <span class="fw-semibold">Warning!</span> {{ $errors->first('failed') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                    </div>
-                                @endif
-                                {{-- <h3 class="text-center">Login</h3> --}}
 
+                                <h3 class="text-center mb-0">SI-ASET</h3>
+                                <span class="d-block text-center mb-1">SISTEM INFORMASI ASET</span>
+                                <span class="d-block text-muted text-center mb-2 text-uppercase">Perumda Air Minum Panca
+                                    Mahottama <br> Kab.
+                                    Klungkung</span>
                                 <div class="mb-3">
                                     <label class="form-label">Username / Email</label>
                                     <div class="form-control-feedback form-control-feedback-start">
@@ -67,6 +62,16 @@
                                         </button>
                                     </div>
                                 </div>
+
+                                @if ($errors->has('failed'))
+                                    <div class="alert alert-warning alert-icon-start alert-dismissible fade show">
+                                        <span class="alert-icon bg-warning text-white">
+                                            <i class="ph-warning-circle"></i>
+                                        </span>
+                                        <span class="fw-semibold">Warning!</span> {{ $errors->first('failed') }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                @endif
 
                                 <!-- Script toggle password -->
                                 <script>
