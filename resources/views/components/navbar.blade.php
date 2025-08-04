@@ -2,10 +2,13 @@
 <div
     class="navbar shadow navbar-light navbar-expand-lg navbar-static border-bottom border-bottom-white border-opacity-10">
     <div class="container-fluid">
-        <div class="d-flex d-lg-none me-2">
+        <div class="d-flex align-items-center d-lg-none me-2">
             <button type="button" class="navbar-toggler sidebar-mobile-main-toggle rounded-pill">
                 <i class="ph-list"></i>
             </button>
+            <div>
+                <h2 class="h2 mb-0">SI-ASET</h2>
+            </div>
         </div>
 
         <div class="navbar-brand flex-lg-0 flex-1">
@@ -19,7 +22,7 @@
             <li class="nav-item nav-item-dropdown-lg dropdown ms-lg-2">
                 <a href="#" class="navbar-nav-link align-items-center rounded-pill p-1" data-bs-toggle="dropdown">
                     <div class="status-indicator-container">
-                        <img src="{{ asset('assets/img/user.png') }}" class="w-32px h-32px rounded-pill"
+                        <img src="{{ asset('assets/img/user2.png') }}" class="w-32px h-32px rounded-pill"
                             alt="{{ Auth::user()->name }}">
                         {{-- <span class="ph-user"></span> --}}
                         <span class="status-indicator bg-success"></span>
