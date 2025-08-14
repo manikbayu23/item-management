@@ -262,7 +262,7 @@
                         searchable: false,
                         render: function(data, type, row, meta) {
                             const totalPinjam = data
-                                .reduce((sum, item) => sum + item.qty, 0)
+                                .reduce((sum, item) => sum + Number(item.qty), 0)
                             return `<span class="fw-semibold">${totalPinjam}</span>`
                         }
                     },
@@ -274,7 +274,7 @@
                         searchable: false,
                         render: function(data, type, row, meta) {
                             const totalBaik = row.conditions
-                                .filter(c => c.condition === 'baik')
+                                .filter(c => c.condition == 'baik')
                                 .reduce((sum, item) => sum +  Number(item.qty), 0);
 
                             const totalPinjam = row.borrowings
