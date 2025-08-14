@@ -237,14 +237,14 @@
                         searchable: false,
                         render: function(data, type, row, meta) {
                             const totalBaik = row.conditions
-                                .filter(c => c.condition === 'baik')
-                                .reduce((sum, item) => sum + item.qty, 0);
+                                .filter(c => c.condition == 'baik')
+                                .reduce((sum, item) => sum +  Number(item.qty), 0);
                             const totalRusak = row.conditions
-                                .filter(c => c.condition === 'rusak')
-                                .reduce((sum, item) => sum + item.qty, 0);
+                                .filter(c => c.condition == 'rusak')
+                                .reduce((sum, item) => sum +  Number(item.qty), 0);
                             const totalHilang = row.conditions
-                                .filter(c => c.condition === 'hilang')
-                                .reduce((sum, item) => sum + item.qty, 0);
+                                .filter(c => c.condition == 'hilang')
+                                .reduce((sum, item) => sum +  Number(item.qty), 0);
 
                             let html = `<div class="d-flex flex-column gap-1">
                             <span class="badge bg-success bg-opacity-75 rounded-4">Baik <b>${totalBaik}</b></span>
@@ -275,10 +275,10 @@
                         render: function(data, type, row, meta) {
                             const totalBaik = row.conditions
                                 .filter(c => c.condition === 'baik')
-                                .reduce((sum, item) => sum + item.qty, 0);
+                                .reduce((sum, item) => sum +  Number(item.qty), 0);
 
                             const totalPinjam = row.borrowings
-                                .reduce((sum, item) => sum + item.qty, 0);
+                                .reduce((sum, item) => sum +  Number(item.qty), 0);
                             const tersedia = totalBaik - totalPinjam;
 
                             let html = `<div class="">
@@ -367,14 +367,14 @@
                 const data = $(this).data('all');
 
                 const totalBaik = data.conditions
-                    .filter(c => c.condition === 'baik')
-                    .reduce((sum, item) => sum + item.qty, 0);
+                    .filter(c => c.condition == 'baik')
+                    .reduce((sum, item) => sum +  Number(item.qty), 0);
                 const totalRusak = data.conditions
-                    .filter(c => c.condition === 'rusak')
-                    .reduce((sum, item) => sum + item.qty, 0);
+                    .filter(c => c.condition == 'rusak')
+                    .reduce((sum, item) => sum +  Number(item.qty), 0);
                 const totalHilang = data.conditions
-                    .filter(c => c.condition === 'hilang')
-                    .reduce((sum, item) => sum + item.qty, 0);
+                    .filter(c => c.condition == 'hilang')
+                    .reduce((sum, item) => sum +  Number(item.qty), 0);
 
                 $('#roomItemModal .modal-title span').text('Edit Barang per Ruangan: ');
                 $('#idRoomItem').val(data.id);
@@ -383,7 +383,7 @@
                 $('#qtyGood').val(totalBaik);
                 $('#qtyDemaged').val(totalRusak);
                 $('#qtyMissing').val(totalHilang);
-                $('#qtyTotal').val((totalBaik + totalHilang + totalHilang));
+                $('#qtyTotal').val((totalBaik + totalHilang + totalRusak));
                 $('#roomItemModal').modal('show');
             });
 
