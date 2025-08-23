@@ -45,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <table id="itemRoomTable" class="table table-striped datatable-select-checkbox">
+            <table id="itemRoomTable" class="table table-striped">
             </table>
         </div>
     </div>

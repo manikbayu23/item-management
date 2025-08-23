@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ScopeController as AdminScope;
 use App\Http\Controllers\Admin\SubCategoryController as AdminSubCategory;
 use App\Http\Controllers\Admin\UserAccountController as AdminUserAccount;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\User\AccountController;
 use App\Http\Controllers\User\AssetSubmissionController as UserAssetSubmission;
 use App\Http\Controllers\User\DashboardController as UserDashboard;
 use App\Http\Controllers\User\HistoryController as UserHistory;
@@ -32,6 +33,10 @@ Route::middleware(['role:admin,pic,user'])->group(function () {
             Route::get('/', [UserItem::class, 'index']);
             Route::get('/{id}/form', [UserItem::class, 'form'])->name('.form');
             Route::post('/{id}/form', [UserItem::class, 'store'])->name('.store');
+        });
+        Route::prefix('/account')->name('.account')->group(function () {
+            Route::get('/', [AccountController::class, 'index']);
+            Route::put('/{id}', [AccountController::class, 'update'])->name('.update');
         });
         Route::prefix('/history')->name('.history')->group(function () {
             Route::get('/', [UserHistory::class, 'index']);

@@ -21,6 +21,10 @@
                  </a>
 
                  <div class="dropdown-menu dropdown-menu-end">
+                     <a href="{{ route('user.account') }}" class="dropdown-item">
+                         <i class="ph-user me-2"></i>
+                         Edit Akun
+                     </a>
                      @if (Auth::user()->role !== 'user')
                          <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
                              <i class="ph-arrow-square-out me-2"></i>
