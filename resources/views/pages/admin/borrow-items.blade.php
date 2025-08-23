@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            <table id="borrowItemsTable" class="table table-striped display nowrap" style="width:100%">
+            <table id="borrowItemsTable" class="table table-striped datatable-select-checkbox">
             </table>
         </div>
     </div>
@@ -190,7 +190,6 @@
 
     <script src="{{ asset('assets/demo/pages/form_select2.js') }}"></script>
     <script src="{{ asset('assets/demo/pages/components_tooltips.js') }}"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 @endpush
 
 @push('script_admin')
