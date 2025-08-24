@@ -190,6 +190,7 @@
 
     <script src="{{ asset('assets/demo/pages/form_select2.js') }}"></script>
     <script src="{{ asset('assets/demo/pages/components_tooltips.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables-responsive@1.0.7/js/dataTables.responsive.min.js"></script>
 @endpush
 
 @push('script_admin')
@@ -200,6 +201,7 @@
                 processing: true,
                 serverSide: true,
                 ordering: false,
+                responsive: true,
                 ajax: {
                     url: '{{ route('admin.borrow-item.data') }}',
                     data: function(d) {
