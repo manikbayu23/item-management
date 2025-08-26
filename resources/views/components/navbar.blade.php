@@ -33,7 +33,7 @@
                 <div class="dropdown-menu dropdown-menu-end">
                     <a href="{{ route('user.dashboard') }}" class="dropdown-item">
                         <i class="ph-arrow-square-out me-2"></i>
-                        Halaman User
+                        Halaman Staf
                     </a>
                     <div class="dropdown-divider"></div>
                     <form action="{{ route('logout') }}" method="POST">

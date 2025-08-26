@@ -27,7 +27,7 @@ class UserAccountController extends Controller
         });
 
         if ($auth->role !== 'admin') {
-            $data->whereIn('role', ['user', 'pic']);
+            $data->whereIn('role', ['staff', 'pic']);
         }
         $data = $data->orderBy('id', 'desc')
             ->get();

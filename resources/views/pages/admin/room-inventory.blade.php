@@ -297,20 +297,13 @@
                         className: 'text-center',
                         render: (data, type, row, meta) => {
 
-                            let html = `<div class="d-inline-flex">
-                                    <div class="dropdown">
-                                        <a href="#" class="text-body" data-bs-toggle="dropdown">
-                                            <i class="ph-list"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            <button type="button" class="edit-room-item dropdown-item" data-id="${data}" 
-                                                data-room="${data.room}" data-item="${data.item}" data-all='${JSON.stringify(row)}'>
-                                                <i class="ph-pencil-line me-2"></i>
-                                                Edit
-                                            </button>`;
+                            let html =
+                                `<div class="d-inline-flex">
+                                            
+                                            <button type="button" class="edit-room-item btn btn-outline-warning btn-sm" data-id="${data}" 
+                                                data-room="${data.room}" data-item="${data.item}" data-all='${JSON.stringify(row)}'><span class="ph-pencil-line"></span></button> `;
 
                             html += `
-                                        </div>
                                     </div>`;
 
                             return html;

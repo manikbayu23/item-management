@@ -324,31 +324,22 @@
                         className: 'text-center',
                         render: (data, type, row, meta) => {
 
-                            let html = `<div class="d-inline-flex">
-                                    <div class="dropdown">
-                                        <a href="#" class="text-body" data-bs-toggle="dropdown">
-                                            <i class="ph-list"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-end">`;
+                            let html = `<div class="d-inline-flex gap-1">`;
 
-                            html += `<button type="button" class="borrow-option dropdown-item" data-option="detail" data-id="${data}" 
-                                        data-no="${data}" data-item="${data.item}" data-all='${JSON.stringify(row)}'>
-                                        <i class="ph-eye me-2"></i>
-                                        Detail
-                                    </button>`;
+                            html +=
+                                `<button type="button" class="borrow-option btn btn-outline-info btn-sm" data-option="detail" data-id="${data}" 
+                                  data-no="${data}" data-item="${data.item}" data-all='${JSON.stringify(row)}'><span class="ph ph-eye"></span></button> `;
 
                             const dateNow = new Date();
                             const endDate = new Date(row.end_date);
                             if (row.status == 'in_progress') {
                                 if (endDate.setHours(0, 0, 0, 0) < dateNow.setHours(0, 0, 0, 0)) {
-                                    html += `<button type="button" class="borrow-option dropdown-item" data-option="reminder" data-id="${data}" data-no="${row.borrow_number}">
-                                        <i class="ph-bell-ringing me-2"></i>
-                                        Pengingat Pengembalian
-                                    </button>`;
+
+                                    html +=
+                                        `<button type="button" class="borrow-option btn btn-outline-warning btn-sm" data-option="reminder" data-id="${data}" data-no="${row.borrow_number}" ><span class="ph-bell-ringing"></span></button> `;
                                 }
                             }
                             html += `
-                                        </div>
                                     </div>`;
 
                             return html;

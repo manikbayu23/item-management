@@ -92,7 +92,7 @@
                 </option>
                 <option value="pic" @if ('pic' == old('role', isset($user->role) ? $user->role : '')) selected @endif>PIC
                 </option>
-                <option value="user" @if ('user' == old('role', isset($user->role) ? $user->role : '')) selected @endif>User
+                <option value="staff" @if ('user' == old('role', isset($user->role) ? $user->role : '')) selected @endif>Staf
                 </option>
             </select>
             @if ($errors->has('role'))
@@ -101,23 +101,24 @@
             @endif
         </div>
     </div>
-
-    <div class="col-12 mb-3 row">
-        <label class="form-label col-12 col-md-3">Password: @if (!isset($user))
-                <span class="text-danger">*</span>
-            @endif
-        </label>
-        <div class="col-12 col-md-9">
-            <div class="input-group">
-                <input type="text" name="password" id="password" value="{{ old('password') }}"
-                    class="form-control">
-                <button class="btn btn-light" type="button" id="repeat-password"><i class="ph-repeat"></i>
-                </button>
+    @if (!isset($user) || $user->id == Auth::user()->id)
+        <div class="col-12 mb-3 row">
+            <label class="form-label col-12 col-md-3">Password: @if (!isset($user))
+                    <span class="text-danger">*</span>
+                @endif
+            </label>
+            <div class="col-12 col-md-9">
+                <div class="input-group">
+                    <input type="text" name="password" id="password" value="{{ old('password') }}"
+                        class="form-control">
+                    <button class="btn btn-light" type="button" id="repeat-password"><i class="ph-repeat"></i>
+                    </button>
+                </div>
+                @if ($errors->has('password'))
+                    <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
+                        {{ $errors->first('password') }}</div>
+                @endif
             </div>
-            @if ($errors->has('password'))
-                <div class="form-text text-danger"><i class="ph-x-circle me-1"></i>
-                    {{ $errors->first('password') }}</div>
-            @endif
         </div>
-    </div>
+    @endif
 </div>
