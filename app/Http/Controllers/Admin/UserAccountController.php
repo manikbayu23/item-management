@@ -48,7 +48,7 @@ class UserAccountController extends Controller
             'username' => 'required|string|min:3|unique:users,username',
             'division' => 'required', // Sesuaikan dengan nama tabel divisions
             'position' => 'required', // Sesuaikan dengan nama tabel divisions
-            'role' => 'required|in:admin,pic,user', // Asumsi value role 1 dan 2
+            'role' => 'required|in:admin,pic,staff', // Asumsi value role 1 dan 2
             'phone' => 'required|numeric|digits_between:10,15|regex:/^[0-9]+$/',
             'email' => 'required|email|unique:users,email|max:255', // Sesuaikan dengan tabel users
             'password' => 'required|string|min:8|max:255',
@@ -109,7 +109,7 @@ class UserAccountController extends Controller
             'username' => 'required|string|min:3|unique:users,username,' . $user->id,
             'division' => 'required',
             'position' => 'required',
-            'role' => 'required|in:admin,pic,user',
+            'role' => 'required|in:admin,pic,staff',
             'phone' => 'required|numeric|digits_between:10,15',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|max:255',
