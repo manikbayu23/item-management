@@ -92,7 +92,7 @@
                 </option>
                 <option value="pic" @if ('pic' == old('role', isset($user->role) ? $user->role : '')) selected @endif>PIC
                 </option>
-                <option value="staff" @if ('user' == old('role', isset($user->role) ? $user->role : '')) selected @endif>Staf
+                <option value="staff" @if ('staff' == old('role', isset($user->role) ? $user->role : '')) selected @endif>Staf
                 </option>
             </select>
             @if ($errors->has('role'))
