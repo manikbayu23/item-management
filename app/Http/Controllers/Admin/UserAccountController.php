@@ -154,8 +154,8 @@ class UserAccountController extends Controller
 
     public function destroy(string $id)
     {
-        $borrowingLogs = BorrowingLog::where('admin_id', Auth::user()->id)
-            ->orWhere('user_id', Auth::user()->id)
+        $borrowingLogs = BorrowingLog::where('admin_id', $id)
+            ->orWhere('user_id', $id)
             ->first();
         if ($borrowingLogs) {
             return back()->with('error', 'Tidak bisa hapus akun karena sudah ada transaksi!');
