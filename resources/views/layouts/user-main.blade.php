@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
     <link rel="icon" href="{{ asset('assets/img/panca-mahottama.png') }}" type="image/png">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
 
     <!-- Global stylesheets -->
     <link href="{{ asset('assets/fonts/inter/inter.css') }}" rel="stylesheet" type="text/css">

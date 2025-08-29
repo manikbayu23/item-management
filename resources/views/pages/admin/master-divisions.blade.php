@@ -8,9 +8,7 @@
             <div class="card-header d-flex justify-content-between">
                 <h5 class="mb-0">Daftar Divisi</h5>
                 <div>
-                    @if (Auth::user()->role == 'admin')
-                        <button type="button" id="addDivision" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
-                    @endif
+                    <button type="button" id="addDivision" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
                 </div>
             </div>
 
@@ -20,9 +18,7 @@
                         <th class="text-center" style="width: 10%">No.</th>
                         <th style="width: 30%">Nama</th>
                         <th style="width: 40%">Deskripsi</th>
-                        @if (Auth::user()->role == 'admin')
-                            <th class="text-center">Aksi</th>
-                        @endif
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,21 +27,19 @@
                             <td class="text-center">{{ $index + 1 }}</td>
                             <td>{{ $division->name }}</td>
                             <td>{{ $division->description }}</td>
-                            @if (Auth::user()->role == 'admin')
-                                <td class="text-center">
-                                    <button type="button" data-id="{{ $division->id }}" data-name="{{ $division->name }}"
-                                        data-description="{{ $division->description }}"
-                                        class="edit-division btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
-                                    </button>
-                                    <button type="button" data-id="{{ $division->id }}" data-name="{{ $division->name }}"
-                                        class="delete-division btn btn-flat-danger btn-icon"><i class="ph-trash"></i>
-                                    </button>
-                                    <form class="delete-form" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                </td>
-                            @endif
+                            <td class="text-center">
+                                <button type="button" data-id="{{ $division->id }}" data-name="{{ $division->name }}"
+                                    data-description="{{ $division->description }}"
+                                    class="edit-division btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
+                                </button>
+                                <button type="button" data-id="{{ $division->id }}" data-name="{{ $division->name }}"
+                                    class="delete-division btn btn-flat-danger btn-icon"><i class="ph-trash"></i>
+                                </button>
+                                <form class="delete-form" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

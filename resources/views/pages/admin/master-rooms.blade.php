@@ -8,9 +8,7 @@
             <div class="card-header d-flex justify-content-between">
                 <h5 class="mb-0">Daftar Ruangan</h5>
                 <div>
-                    @if (Auth::user()->role == 'admin')
-                        <button type="button" id="addCategory" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
-                    @endif
+                    <button type="button" id="addCategory" class="btn btn-primary "><i class="ph-plus-circle"></i></button>
                 </div>
             </div>
 
@@ -22,9 +20,7 @@
                         <th style="width: 30%">Deskripsi</th>
                         <th class="text-center">Divisi</th>
                         <th class="text-center">Print QR</th>
-                        @if (Auth::user()->role == 'admin')
-                            <th class="text-center">Aksi</th>
-                        @endif
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,21 +35,19 @@
                                     class="print-room btn btn-flat-success btn-icon"><i class="ph-qr-code"></i>
                                 </button>
                             </td>
-                            @if (Auth::user()->role == 'admin')
-                                <td class="text-center">
-                                    <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
-                                        data-division="{{ $room->division_id }}" data-description="{{ $room->description }}"
-                                        class="edit-room btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
-                                    </button>
-                                    <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
-                                        class="delete-room btn btn-flat-danger btn-icon"><i class="ph-trash"></i>
-                                    </button>
-                                    <form class="delete-form" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                </td>
-                            @endif
+                            <td class="text-center">
+                                <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
+                                    data-division="{{ $room->division_id }}" data-description="{{ $room->description }}"
+                                    class="edit-room btn btn-flat-warning btn-icon"><i class="ph-pencil-line"></i>
+                                </button>
+                                <button type="button" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
+                                    class="delete-room btn btn-flat-danger btn-icon"><i class="ph-trash"></i>
+                                </button>
+                                <form class="delete-form" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
