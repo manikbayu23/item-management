@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use App\Models\Room;
 use App\Models\Division;
+use App\Models\UserRoom;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -13,6 +14,7 @@ use Illuminate\Validation\Rule;
 use Endroid\QrCode\Builder\Builder;
 use App\Http\Controllers\Controller;
 use Endroid\QrCode\Writer\PngWriter;
+use Illuminate\Support\Facades\Auth;
 
 
 class RoomController extends Controller
@@ -40,13 +42,21 @@ class RoomController extends Controller
             'description' => 'Deskripsi wajib diisi.',
         ]);
 
-        Room::create([
+        $room = Room::create([
             'name' => Str::upper($data['name']),
             'division_id' => $data['division'],
             'slug' => Str::slug(Str::lower(value: $data['name'])),
             'capacity' => 10,
             'description' => $data['description'],
         ]);
+
+        UserRoom::create([
+            'user_id' => Auth::user()->id,
+            'room_id' => $room->id,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
         return redirect()->back()->with('success', 'Berhasil menambah Ruangan.');
     }
 
