@@ -54,12 +54,19 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             @if (Auth::user()->role == 'pic')
-                                                @if ($role !== 'pic')
+                                                @if ($row->id == Auth::user()->id || $role !== 'pic')
                                                     <a href="{{ route('admin.user-account.edit', $row->id) }}"
                                                         class="edit-scope dropdown-item">
                                                         <i class="ph-pencil-line me-2"></i>
                                                         Edit
                                                     </a>
+                                                    @if ($role == 'staff')
+                                                        <button type="button" class="delete-user dropdown-item"
+                                                            data-id={{ $row->id }} data-name={{ $row->name }}>
+                                                            <i class="ph-trash me-2"></i>
+                                                            Delete
+                                                        </button>
+                                                    @endif
                                                 @endif
                                             @elseif (Auth::user()->role == 'admin')
                                                 <a href="{{ route('admin.user-account.edit', $row->id) }}"
@@ -67,6 +74,11 @@
                                                     <i class="ph-pencil-line me-2"></i>
                                                     Edit
                                                 </a>
+                                                <button type="button" class="delete-user dropdown-item"
+                                                    data-id={{ $row->id }} data-name={{ $row->name }}>
+                                                    <i class="ph-trash me-2"></i>
+                                                    Delete
+                                                </button>
                                             @endif
                                             @if (Auth::user()->role == 'admin')
                                                 <button type="button" class="rooms-user dropdown-item"
@@ -75,11 +87,6 @@
                                                     Akses Ruangan
                                                 </button>
                                             @endif
-                                            <button type="button" class="delete-user dropdown-item"
-                                                data-id={{ $row->id }} data-name={{ $row->name }}>
-                                                <i class="ph-trash me-2"></i>
-                                                Delete
-                                            </button>
                                             <form class="delete-form" method="POST">
                                                 @csrf
                                                 @method('DELETE')
