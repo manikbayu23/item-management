@@ -197,7 +197,7 @@ class BorrowItemController extends Controller
             try {
                 $user = User::find($borrow->user_id);
                 if ($user) {
-                    Mail::to($user->user)
+                    Mail::to($user->email)
                         ->bcc(Auth::user()->email)
                         ->send(new ResponseSubmission($borrow));
                 }
