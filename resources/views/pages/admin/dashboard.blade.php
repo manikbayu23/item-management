@@ -61,8 +61,37 @@
                                                 <span class="text-muted" id="completed"></span>
                                             </div>
                                         </div>
+                                        <div class="w-75 mx-auto mb-3" id="total-reject"></div>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="d-flex align-items-center justify-content-center mb-2">
+                                            <a href="#"
+                                                class="bg-warning bg-opacity-10 text-warning lh-1 rounded-pill p-2 me-3">
+                                                <i class="ph-prohibit"></i>
+                                            </a>
+                                            <div>
+                                                <div class="fw-semibold">Dibatalkan</div>
+                                                <span class="text-muted" id="canceled"></span>
+                                            </div>
+                                        </div>
+                                        <div class="w-75 mx-auto mb-3" id="total-cancel"></div>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="d-flex align-items-center justify-content-center mb-2">
+                                            <a href="#"
+                                                class="bg-danger bg-opacity-10 text-danger lh-1 rounded-pill p-2 me-3">
+                                                <i class="ph-x"></i>
+                                            </a>
+                                            <div>
+                                                <div class="fw-semibold">Ditolak</div>
+                                                <span class="text-muted" id="rejected"></span>
+                                            </div>
+                                        </div>
                                         <div class="w-75 mx-auto mb-3" id="total-online"></div>
                                     </div>
+
                                 </div>
                             </div>
                             <div class="chart position-relative" id="traffic-sources"></div>
@@ -190,10 +219,10 @@
                             <span class="badge bg-warning">{{ Auth::user()->role }}</span>
                         </div>
                         <div class="mb-1">
-                            <span>Divisi : {{ Auth::user()->division->name }}</span>
+                            <span>Divisi : {{ Auth::user()->division->name ?? '-' }}</span>
                         </div>
                         <div class="mb-1">
-                            <span>Jabatan : {{ Auth::user()->position->name }}</span>
+                            <span>Jabatan : {{ Auth::user()->position->name ?? '-' }}</span>
                         </div>
 
                     </div>
@@ -248,6 +277,8 @@
                     $('#borrowingsTotal').text((response.total || 0) + ' Pengajuan');
                     $('#inProgress').text((response.data['in_progress'] || 0) + ' Pengajuan');
                     $('#completed').text((response.data['completed'] || 0) + ' Pengajuan');
+                    $('#rejected').text((response.data['rejected'] || 0) + ' Pengajuan');
+                    $('#canceled').text((response.data['cancel'] || 0) + ' Pengajuan');
                 },
                 error: function(xhr) {
                     console.log(xhr);
